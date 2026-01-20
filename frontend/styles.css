@@ -432,14 +432,15 @@ body {
 }
 
 .bubble-image {
-    width: clamp(400px, 60vw, 700px);
-    height: clamp(400px, 60vw, 700px);
+    width: clamp(180px, 25vw, 400px);
+    height: clamp(180px, 25vw, 400px);
     object-fit: contain;
     mix-blend-mode: luminosity;
     animation: float-circle 8s ease-in-out infinite, pageEnterScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-    filter: drop-shadow(0 30px 80px rgba(95, 196, 184, 0.3));
+    filter: drop-shadow(0 30px 80px rgba(38, 77, 72, 0.253));
+    -webkit-user-select: none;
     user-select: none;
-    margin-right: -20%;
+    margin-right: -15%;
 }
 
 .decoration-circle {
