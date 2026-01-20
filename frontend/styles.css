@@ -297,3 +297,124 @@ body {
         padding: 2rem 2.5rem;
     }
 }
+
+/* Key Learning Section */
+.key-learning-section {
+    background: linear-gradient(100deg, #cdffd8 0%, #7dd4c4 50%, #539d96 100%);
+    padding: clamp(2rem, 8vw, 5rem) 0;
+    margin-top: clamp(3rem, 10vw, 8rem);
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+.key-learning-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 5vw, 3rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4rem);
+}
+
+.key-learning-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.key-learning-title {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: #000;
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+    line-height: 1.2;
+}
+
+.key-learning-text {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: #2c3e50;
+    line-height: 1.8;
+    text-align: justify;
+    max-width: 500px;
+}
+
+.robot-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: clamp(250px, 50vw, 400px);
+}
+
+.robot-image {
+    width: 100%;
+    height: auto;
+    max-width: clamp(200px, 80vw, 350px);
+    border-radius: clamp(15px, 4vw, 25px);
+    object-fit: cover;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive for Key Learning */
+@media (max-width: 1024px) {
+    .key-learning-container {
+        flex-direction: column;
+    }
+
+    .robot-image-container {
+        width: 100%;
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .key-learning-section {
+        padding: clamp(1.5rem, 6vw, 3rem) 0;
+        margin-top: clamp(2rem, 8vw, 4rem);
+    }
+
+    .key-learning-container {
+        flex-direction: column;
+        gap: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .key-learning-title {
+        margin-bottom: clamp(0.8rem, 2vw, 1.5rem);
+    }
+
+    .key-learning-text {
+        text-align: left;
+        font-size: clamp(0.85rem, 2.2vw, 1rem);
+    }
+
+    .robot-image-container {
+        width: 100%;
+        min-height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .key-learning-section {
+        padding: clamp(1rem, 5vw, 2rem) 0;
+    }
+
+    .key-learning-container {
+        padding: clamp(0.8rem, 3vw, 1.5rem);
+    }
+
+    .key-learning-title {
+        font-size: clamp(1.5rem, 7vw, 2.5rem);
+        letter-spacing: 0.05em;
+    }
+
+    .key-learning-text {
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        text-align: left;
+    }
+}
