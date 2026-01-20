@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prerequisite Quiz - ENWISE</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            padding: 2rem; 
+            background: linear-gradient(135deg, #cdffd8, #94b9ff); 
+            min-height: 100vh; 
+        }
+        .quiz-container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+        }
+        .quiz-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+            margin-bottom: 1.5rem; 
+        }
+        .quiz-header .icon { font-size: 2.5rem; }
+        h1 { color: #2d8a6e; margin: 0; font-size: 1.5rem; }
+        .quiz-subtitle { color: #666; margin-top: 0.3rem; }
+        .source-badge { 
+            background: #e8f5e9; 
+            color: #2d8a6e; 
+            padding: 0.3rem 0.8rem; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            display: inline-block; 
+            margin-bottom: 1rem; 
+        }
+        .intro-text { color: #555; margin-bottom: 1.5rem; line-height: 1.5; }
+        .question { 
+            margin: 1.5rem 0; 
+            padding: 1.2rem; 
+            background: #f8f9fa; 
+            border-radius: 12px; 
+            border-left: 4px solid #2d8a6e; 
+        }
+        .question p { margin: 0 0 0.8rem 0; font-weight: 500; }
+        .options label { 
+            display: block; 
+            padding: 0.6rem 1rem; 
+            margin: 0.4rem 0; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            border: 2px solid transparent; 
+            transition: all 0.2s; 
+        }
+        .options label:hover { background: #e8f5e9; border-color: #2d8a6e; }
+        .options input[type="radio"] { margin-right: 0.5rem; }
+        .submit-btn { 
+            background: linear-gradient(135deg, #2d8a6e, #1f6b54); 
+            color: white; 
+            border: none; 
+            padding: 1rem 2.5rem; 
+            border-radius: 10px; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            margin-top: 1.5rem; 
+            font-weight: 600; 
+            width: 100%;
+            transition: all 0.3s; 
+        }
+        .submit-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px rgba(45,138,110,0.4); 
+        }
+        .result { 
+            margin-top: 2rem; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            background: #f8f9fa; 
+            display: none;
+        }
+        .result.show { display: block; }
+        .score-circle { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, #2d8a6e, #1f6b54); 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            margin: 1rem auto; 
+        }
+        .weak-topics { 
+            color: #d32f2f; 
+            background: #ffebee; 
+            padding: 1rem; 
+            border-radius: 8px; 
+            margin-top: 1rem; 
+        }
+        .strong-topics { 
+            color: #2d8a6e; 
+            background: #e8f5e9; 
+            padding: 1rem; 
+            border-radius: 8px; 
+            margin-top: 1rem; 
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <span class="icon">🤖</span>
+            <div>
+                <h1>AI Prerequisite Quiz</h1>
+                <p class="quiz-subtitle" id="subjectName">Loading Subject...</p>
+            </div>
+        </div>
+        <span class="source-badge" id="sourceBadge">Analyzing Document...</span>
+        <p class="intro-text">Answer these questions based on your uploaded material to unlock your study path.</p>
+        
+        <div id="dynamic-questions-container">
+            <p style="text-align:center; padding: 20px;">🤖 AI is preparing your questions...</p>
+        </div>
+        
+        <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">📊 Submit & Analyze</button>
+        
+        <div class="result" id="quizResult"></div>
+    </div>
+
+    <script>
+        // 1. Get parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const subject = urlParams.get('subject') || 'Subject';
+        const source = urlParams.get('source') || 'File';
+        
+        document.getElementById('subjectName').textContent = subject;
+        document.getElementById('sourceBadge').textContent = '📄 Generated from ' + source;
+
+        // 2. Load the AI data from localStorage
+        let quizData = [];
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawData = localStorage.getItem('latest_quiz_data');
+            if (rawData) {
+                quizData = JSON.parse(rawData);
+                renderAIQuestions(quizData);
+            } else {
+                document.getElementById('dynamic-questions-container').innerHTML = 
+                    "<p style='color:red; text-align:center;'>No quiz data found. Please upload a file on the main page first.</p>";
+            }
+        });
+
+        // 3. Render questions to the screen
+        function renderAIQuestions(questions) {
+            const container = document.getElementById('dynamic-questions-container');
+            container.innerHTML = ""; 
+
+            questions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question';
+                qDiv.innerHTML = `
+                    <p><strong>Q${index + 1}:</strong> ${q.q}</p>
+                    <div class="options">
+                        ${q.options.map(opt => `
+                            <label>
+                                <input type="radio" name="q${index}" value="${opt}"> ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+        }
+
+        // 4. Submit and Send Weak Topics back to Dashboard
+        function submitQuiz() {
+            let correctCount = 0;
+            let weakTopics = [];
+
+            quizData.forEach((q, i) => {
+                const selected = document.querySelector(input[name="q${i}"]:checked);
+                
+                if (selected && selected.value === q.a) {
+                    correctCount++;
+                } else {
+                    // Extract a short topic name from the question text
+                    const topicGuess = q.q.split(' ').slice(0, 3).join(' ');
+                    weakTopics.push(topicGuess); 
+                }
+            });
+
+            const percentage = Math.round((correctCount / quizData.length) * 100);
+            
+            // Display Results on screen
+            const resultDiv = document.getElementById('quizResult');
+            resultDiv.className = 'result show';
+            document.getElementById('submitBtn').style.display = 'none';
+
+            let resultHTML = `
+                <div class="score-circle">${percentage}%</div>
+                <p style="text-align:center;">Score: <strong>${correctCount}/${quizData.length}</strong></p>
+            `;
+
+            if (weakTopics.length > 0) {
+                resultHTML += `
+                    <div class="weak-topics">
+                        <strong>⚠️ Found Weaknesses:</strong><br>
+                        ${weakTopics.map(t => '• ' + t).join('<br>')}
+                    </div>
+                    <p style="text-align:center; font-size: 0.8rem; margin-top: 10px; color: #666;">
+                        These topics have been added to your Dashboard MindMap.
+                    </p>
+                `;
+            } else {
+                resultHTML += <div class="strong-topics">✅ Perfect! You have mastered these prerequisites.</div>;
+            }
+
+            resultDiv.innerHTML = resultHTML;
+
+            // CRITICAL: Send data back to the parent Dashboard
+            if (window.opener) {
+                window.opener.postMessage({ weakTopics: weakTopics }, '*');
+            }
+        }
+    </script>
+</body>
+</html>

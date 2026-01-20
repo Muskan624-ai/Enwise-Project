@@ -5,21 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ENWISE - Your AI Study Coach</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="index-styles.css">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
             <a href="index.html" class="logo">
-                <span class="logo-icon">🧠</span>
                 <span class="logo-text">EnWise</span>
             </a>
             <nav class="nav">
                 <a href="index.html" class="nav-link active">Home</a>
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="upload.html" class="nav-link">Upload</a>
-                <a href="timetable.html" class="nav-link">Timetable</a>
-                <a href="ai-chat.html" class="nav-link chat-link">💬 AI Chat</a>
+
+                <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
             </nav>
             <button class="profile-btn">Student profile</button>
             
@@ -36,48 +35,245 @@
         
         <!-- Mobile Navigation -->
         <nav class="nav-mobile" id="navMobile">
-            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link active">Home</a>
             <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <a href="upload.html" class="nav-link">Upload</a>
-            <a href="timetable.html" class="nav-link">Timetable</a>
-            <a href="ai-chat.html" class="nav-link chat-link">💬 AI Chat</a>
+
+            <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
             <button class="profile-btn">Student profile</button>
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="content-left">
-                <h1 class="main-title">ENWISE</h1>
-                <div class="subtitle-badge">
-                    <p class="pill-badge">Think Unlimited</p>
-                    <p class="pill-badge">Your AI Study Coach</p>
+            <div class="hero-section">
+                <div class="content-left">
+                    <div class="hero-badge">
+                        <span class="badge-icon">✨</span>
+                        <span>AI-Powered Learning Platform</span>
+                    </div>
+                    
+                    <h1 class="main-title">
+                        Master Any Subject with
+                        <span class="gradient-text">AI Study Coach</span>
+                    </h1>
+                    
+                    <p class="main-description">
+                        Transform your learning experience with personalized AI tutoring, instant quiz generation, 
+                        and intelligent progress tracking. From theory to practice, we've got you covered! 🚀
+                    </p>
+                    
+                    <div class="feature-highlights">
+                        <div class="feature-pill">
+                            <span class="feature-icon">🎯</span>
+                            <span>Personalized Learning</span>
+                        </div>
+                        <div class="feature-pill">
+                            <span class="feature-icon">🤖</span>
+                            <span>AI Tutor 24/7</span>
+                        </div>
+                        <div class="feature-pill">
+                            <span class="feature-icon">📊</span>
+                            <span>Progress Tracking</span>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-buttons">
+                        <a href="dashboard.html" class="cta-btn primary-btn">
+                            <span>Start Learning</span>
+                            <span class="btn-arrow">→</span>
+                        </a>
+                        <a href="ai-chat.html" class="cta-btn secondary-btn">
+                            <span class="btn-icon">💬</span>
+                            <span>Try AI Tutor</span>
+                        </a>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-number">10K+</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Subjects</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">AI Support</div>
+                        </div>
+                    </div>
                 </div>
-                
-                <p class="main-description">Master any subject with personalized AI-powered learning paths and expert guidance. Get instant quiz generation, progress tracking, and personalized learning recommendations.</p>
-                
-                <div class="cta-buttons">
-                    <button class="cta-btn primary-btn">Get Started</button>
-                    <button class="cta-btn secondary-btn">Learn More</button>
-                </div>
-            </div>
 
-            <div class="content-right">
-                <img src="assets/images/bubble.webp" alt="AI Bubble" class="bubble-image" onerror="this.style.display='none'">
-                <div class="decoration-circle" id="fallbackBubble" style="display:none;"></div>
+                <div class="content-right">
+                    <div class="hero-visual">
+                        <div class="floating-card card-1">
+                            <div class="card-icon">📚</div>
+                            <div class="card-text">
+                                <div class="card-title">Smart Learning</div>
+                                <div class="card-desc">AI-Powered</div>
+                            </div>
+                        </div>
+                        <div class="floating-card card-2">
+                            <div class="card-icon">🎓</div>
+                            <div class="card-text">
+                                <div class="card-title">Master Topics</div>
+                                <div class="card-desc">Track Progress</div>
+                            </div>
+                        </div>
+                        <div class="floating-card card-3">
+                            <div class="card-icon">⚡</div>
+                            <div class="card-text">
+                                <div class="card-title">Quick Quizzes</div>
+                                <div class="card-desc">Instant Results</div>
+                            </div>
+                        </div>
+                        <div class="hero-circle-bg"></div>
+                        <img src="assets/images/bubble.webp" alt="AI Learning" class="bubble-image" onerror="this.style.display='none'">
+                        <div class="decoration-circle" id="fallbackBubble"></div>
+                    </div>
+                </div>
             </div>
         </main>
 
+        <!-- Features Section -->
+        <section class="features-section scroll-animate">
+            <div class="section-header">
+                <span class="section-badge">Why Choose Us</span>
+                <h2 class="section-title">Everything You Need to Excel</h2>
+                <p class="section-description">Comprehensive tools designed to make learning effective and enjoyable</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-box">🤖</div>
+                    <h3>AI-Powered Tutoring</h3>
+                    <p>Get instant answers with step-by-step solutions, real-life examples, and practice problems across all subjects.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon-box">🎯</div>
+                    <h3>Personalized Learning</h3>
+                    <p>Adaptive learning paths that adjust to your pace and identify weak areas for targeted improvement.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon-box">📊</div>
+                    <h3>Progress Tracking</h3>
+                    <p>Visualize your journey with detailed analytics, subject mastery indicators, and milestone achievements.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon-box">📝</div>
+                    <h3>Smart Quizzes</h3>
+                    <p>AI-generated quizzes based on your syllabus and notes to test prerequisite knowledge effectively.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon-box">🧠</div>
+                    <h3>Mind Maps</h3>
+                    <p>Interactive topic visualization to track weak topics and create personalized study plans.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon-box">⏰</div>
+                    <h3>Study Scheduler</h3>
+                    <p>Smart timetable management with reminders and optimal study session recommendations.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works-section scroll-animate">
+            <div class="section-header">
+                <span class="section-badge">Simple Process</span>
+                <h2 class="section-title">How EnWise Works</h2>
+                <p class="section-description">Get started in minutes and transform your learning experience</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📤</div>
+                    <h3>Upload Materials</h3>
+                    <p>Upload your syllabus, class notes, and study materials. Our AI analyzes them instantly.</p>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🎯</div>
+                    <h3>Take Assessment</h3>
+                    <p>AI generates prerequisite quizzes to identify your strengths and areas for improvement.</p>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">📚</div>
+                    <h3>Learn & Practice</h3>
+                    <p>Get personalized study plans, practice problems, and 24/7 AI tutor support.</p>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">🏆</div>
+                    <h3>Master Topics</h3>
+                    <p>Track progress, master weak topics, and achieve your academic goals with confidence.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Key Learning Section -->
         <section class="key-learning-section scroll-animate">
-            <div class="key-learning-content">
-                <div class="key-learning-bar">
-                    <h2 class="key-learning-title">KEY LEARNING</h2>
-                    <p class="key-learning-text">
-                        Data is the fuel for AI; the cleaner the data, the more accurate the results. Internal education is also crucial to reduce resistance to change. Start with the smallest cases, then scale up.
+            <div class="testimonial-container">
+                <div class="testimonial-content">
+                    <div class="quote-icon">"</div>
+                    <h2 class="testimonial-title">Transforming Education with AI</h2>
+                    <p class="testimonial-text">
+                        EnWise combines cutting-edge AI technology with proven learning methodologies to create 
+                        a personalized study experience. Our intelligent system adapts to your learning style, 
+                        identifies knowledge gaps, and provides targeted support exactly when you need it.
                     </p>
+                    <div class="testimonial-stats">
+                        <div class="testimonial-stat">
+                            <div class="stat-icon">⭐</div>
+                            <div>
+                                <div class="stat-value">4.9/5</div>
+                                <div class="stat-label">Student Rating</div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stat">
+                            <div class="stat-icon">📈</div>
+                            <div>
+                                <div class="stat-value">85%</div>
+                                <div class="stat-label">Grade Improvement</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="key-learning-image">
-                    <img src="assets/images/AI_Bot.png" alt="AI Robot" class="robot-image">
+                <div class="testimonial-image">
+                    <img src="assets/images/AI_Bot.png" alt="AI Learning" class="robot-image">
+                    <div class="image-decoration"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section scroll-animate">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Learning?</h2>
+                <p>Join thousands of students already mastering their subjects with AI-powered guidance</p>
+                <div class="cta-buttons-center">
+                    <a href="dashboard.html" class="cta-btn primary-btn large">
+                        <span>Get Started Free</span>
+                        <span class="btn-arrow">→</span>
+                    </a>
+                    <a href="ai-chat.html" class="cta-btn secondary-btn large">
+                        <span>Talk to AI Tutor</span>
+                    </a>
                 </div>
             </div>
         </section>
@@ -155,5 +351,38 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Scroll animations for sections
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('scrolled');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all scroll-animate elements
+        document.querySelectorAll('.scroll-animate').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Fallback bubble display if image fails
+        const bubbleImg = document.querySelector('.bubble-image');
+        const fallbackBubble = document.getElementById('fallbackBubble');
+        
+        if (bubbleImg) {
+            bubbleImg.addEventListener('error', function() {
+                this.style.display = 'none';
+                if (fallbackBubble) {
+                    fallbackBubble.style.display = 'block';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
