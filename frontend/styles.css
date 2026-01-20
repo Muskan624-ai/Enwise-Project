@@ -640,8 +640,41 @@ body {
     margin-top: 0;
     width: 100%;
     position: relative;
-    animation: slideUpIn 1s ease-out 0.4s both;
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scroll Animation */
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate.scrolled {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-animate .key-learning-bar {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+}
+
+.scroll-animate.scrolled .key-learning-bar {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-animate .key-learning-image {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+}
+
+.scroll-animate.scrolled .key-learning-image {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .key-learning-section:hover .key-learning-bar {
@@ -889,6 +922,8 @@ body {
 /* ============= DASHBOARD PAGE ============= */
 .dashboard-main {
     margin-top: clamp(2rem, 5vw, 4rem);
+    margin-bottom: 30px;
+    padding: 0 clamp(1.5rem, 4vw, 3rem);
 }
 
 /* Subjects Header Bar */
@@ -2331,8 +2366,11 @@ footer::before {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: clamp(1.5rem, 3vw, 2.5rem);
-    margin-top: clamp(2rem, 5vw, 3rem);
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 30px;
+    padding: 0 clamp(1.5rem, 4vw, 3rem);
     flex: 1;
+    min-height: calc(100vh - 180px);
 }
 
 .chat-container {
@@ -2342,7 +2380,8 @@ footer::before {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    height: calc(100vh - 300px);
+    height: 100%;
+    min-height: calc(100vh - 200px);
 }
 
 .chat-header {

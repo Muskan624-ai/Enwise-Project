@@ -7,6 +7,23 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Logic Links loaded');
     console.log('API Base URL:', API_BASE_URL);
     
+    // Scroll Animation Observer
+    const scrollElements = document.querySelectorAll('.scroll-animate');
+    
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('scrolled');
+                scrollObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    scrollElements.forEach(el => scrollObserver.observe(el));
+    
     // Handle bubble image fallback
     const bubbleImg = document.querySelector('.bubble-image');
     const fallbackBubble = document.getElementById('fallbackBubble');
