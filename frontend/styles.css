@@ -425,11 +425,11 @@ body {
 }
 
 .decoration-circle {
-    width: clamp(200px, 50vw, 500px);
-    height: clamp(200px, 50vw, 500px);
+    width: clamp(300px, 60vw, 600px);
+    height: clamp(300px, 60vw, 600px);
     position: relative;
-    animation: float 6s ease-in-out infinite;
-    filter: drop-shadow(0 20px 50px rgba(95, 196, 184, 0.3));
+    animation: float-circle 8s ease-in-out infinite;
+    filter: drop-shadow(0 30px 80px rgba(95, 196, 184, 0.4));
 }
 
 .decoration-circle::before {
@@ -440,9 +440,9 @@ body {
     border-radius: 45% 55% 50% 50% / 50% 50% 50% 50%;
     background: linear-gradient(135deg, #5a9b91 0%, #6ba399 25%, #7aaba1 50%, #6ba8b8 75%, #7ab8d4 100%);
     box-shadow: 
-        inset -40px -40px 80px rgba(0, 0, 0, 0.15),
-        inset 30px 30px 80px rgba(255, 255, 255, 0.4),
-        0 0 100px rgba(95, 196, 184, 0.3);
+        inset -60px -60px 120px rgba(0, 0, 0, 0.15),
+        inset 50px 50px 120px rgba(255, 255, 255, 0.5),
+        0 0 150px rgba(95, 196, 184, 0.4);
     animation: rotate 8s linear infinite;
 }
 
@@ -2212,38 +2212,43 @@ footer::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: clamp(1.2rem, 2.5vw, 1.8rem);
-    background: linear-gradient(135deg, #5fc4b8 0%, #7dd4c4 100%);
+    padding: clamp(2rem, 4vw, 3rem);
+    background: linear-gradient(135deg, #5fc4b8 0%, #7dd4c4 50%, #2d9b93 100%);
     color: white;
-    border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .chat-title {
     display: flex;
-    gap: 1rem;
+    gap: clamp(1rem, 2vw, 1.5rem);
     align-items: center;
     flex: 1;
 }
 
 .chat-icon {
-    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-size: clamp(3.5rem, 8vw, 5rem);
     animation: float 3s ease-in-out infinite;
+    display: block;
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-15px); }
 }
 
 .chat-title h1 {
-    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-size: clamp(2rem, 5vw, 2.8rem);
     margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 .chat-title p {
-    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+    font-size: clamp(1rem, 2vw, 1.2rem);
     margin: 0;
-    opacity: 0.9;
+    opacity: 0.95;
+    font-weight: 500;
 }
 
 .chat-actions {
@@ -2252,19 +2257,23 @@ footer::before {
 }
 
 .chat-action-btn {
-    padding: clamp(0.5rem, 1vw, 0.7rem) clamp(0.8rem, 1.5vw, 1rem);
-    background: rgba(255, 255, 255, 0.2);
+    padding: clamp(0.6rem, 1.2vw, 0.9rem) clamp(1rem, 1.8vw, 1.4rem);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
     cursor: pointer;
-    font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+    font-size: clamp(0.9rem, 1.8vw, 1rem);
+    font-weight: 600;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .chat-action-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
     transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .chat-messages-full {
@@ -2386,25 +2395,27 @@ footer::before {
 }
 
 .suggestion-btn {
-    padding: clamp(0.6rem, 1vw, 0.8rem);
-    background: linear-gradient(135deg, rgba(95, 196, 184, 0.1), rgba(125, 212, 196, 0.1));
-    border: 2px solid rgba(95, 196, 184, 0.3);
-    border-radius: 8px;
+    padding: clamp(0.7rem, 1.2vw, 0.9rem);
+    background: linear-gradient(135deg, rgba(95, 196, 184, 0.12), rgba(125, 212, 196, 0.12));
+    border: 2px solid rgba(95, 196, 184, 0.35);
+    border-radius: 10px;
     cursor: pointer;
-    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+    font-size: clamp(0.85rem, 1.6vw, 1rem);
     color: #2c3e50;
     font-weight: 600;
     transition: all 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    box-shadow: 0 2px 8px rgba(95, 196, 184, 0.1);
 }
 
 .suggestion-btn:hover {
     background: linear-gradient(135deg, #5fc4b8, #7dd4c4);
     color: white;
     border-color: #5fc4b8;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(95, 196, 184, 0.3);
 }
 
 .chat-input-area-full {
