@@ -388,3 +388,357 @@ function handleUpload(subject) {
         size: file.size
     });
 }
+
+// ==================== AI CHAT PAGE FUNCTIONS ====================
+
+// Send AI Chat Message (Full Page)
+function sendAIChatMessage() {
+    const chatInput = document.getElementById('aiChatInput');
+    const chatMessages = document.querySelector('.chat-messages-full');
+    
+    if (!chatInput || !chatMessages) return;
+    
+    const userMessage = chatInput.value.trim();
+    if (!userMessage) return;
+    
+    // Add user message to chat
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'message user-message-full';
+    userMessageDiv.innerHTML = `
+        <div class="message-content">
+            <p>${userMessage}</p>
+            <span class="message-time">${timestamp}</span>
+        </div>
+        <div class="message-avatar">👤</div>
+    `;
+    chatMessages.appendChild(userMessageDiv);
+    
+    // Clear input
+    chatInput.value = '';
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Show typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message ai-message-full typing-indicator';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+        <div class="message-avatar">🤖</div>
+        <div class="message-content">
+            <div class="typing-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Get AI response
+    getAIResponse(userMessage, chatMessages);
+}
+
+// Get AI Response from Backend
+async function getAIResponse(userMessage, chatMessages) {
+    const typingIndicator = document.getElementById('typingIndicator');
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/chat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                message: userMessage,
+                context: "educational",
+                allowExploration: true
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const aiResponse = data.response || data.message || generateLocalAIResponse(userMessage);
+            
+            // Remove typing indicator
+            if (typingIndicator) typingIndicator.remove();
+            
+            // Add AI response
+            const aiMessageDiv = document.createElement('div');
+            aiMessageDiv.className = 'message ai-message-full';
+            aiMessageDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>${aiResponse}</p>
+                    <span class="message-time">${timestamp}</span>
+                </div>
+            `;
+            chatMessages.appendChild(aiMessageDiv);
+        } else {
+            throw new Error('Backend error');
+        }
+    } catch (error) {
+        console.log("Using intelligent local response");
+        
+        // Remove typing indicator
+        if (typingIndicator) typingIndicator.remove();
+        
+        // Generate intelligent local response
+        const aiResponse = generateLocalAIResponse(userMessage);
+        
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.className = 'message ai-message-full';
+        aiMessageDiv.innerHTML = `
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+                <p>${aiResponse}</p>
+                <span class="message-time">${timestamp}</span>
+            </div>
+        `;
+        chatMessages.appendChild(aiMessageDiv);
+    }
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Generate Intelligent Local AI Response
+function generateLocalAIResponse(userMessage) {
+    const msg = userMessage.toLowerCase();
+    
+    // DSA & Algorithms
+    if (msg.includes('dsa') || msg.includes('data structure') || msg.includes('algorithm')) {
+        return `Great question about Data Structures & Algorithms! 🔥
+
+**DSA (Data Structures & Algorithms)** is the backbone of computer science and software development.
+
+**Real-life examples:**
+• **Arrays** → Your contact list on phone (ordered list of names)
+• **Stack** → Stack of plates in a cafeteria (Last In, First Out)
+• **Queue** → People waiting in a ticket line (First In, First Out)
+• **Trees** → Your computer's folder structure (hierarchical organization)
+• **Graphs** → Google Maps finding shortest route (networks & connections)
+• **Hash Tables** → Dictionary looking up word meanings (fast key-value lookup)
+
+**Why learn DSA?**
+1. Crack coding interviews at top companies
+2. Write efficient, optimized code
+3. Solve complex problems systematically
+4. Build scalable applications
+
+Would you like me to explain any specific data structure in detail? 📚`;
+    }
+    
+    // Time Complexity
+    if (msg.includes('time complexity') || msg.includes('big o') || msg.includes('complexity')) {
+        return `**Time Complexity** measures how long an algorithm takes as input grows! ⏱️
+
+**Common complexities (best to worst):**
+• **O(1)** - Constant: Accessing array[0] → instant
+• **O(log n)** - Logarithmic: Binary search → very fast
+• **O(n)** - Linear: Finding max in unsorted list → reasonable
+• **O(n log n)** - Merge Sort, Quick Sort → efficient sorting
+• **O(n²)** - Bubble Sort → gets slow with large data
+• **O(2ⁿ)** - Exponential: Fibonacci recursive → very slow
+
+**Real example:**
+If n = 1,000,000:
+- O(n) = 1 million operations ✅
+- O(n²) = 1 trillion operations ❌
+
+Want me to analyze the complexity of a specific algorithm? 🧠`;
+    }
+    
+    // Recursion
+    if (msg.includes('recursion') || msg.includes('recursive')) {
+        return `**Recursion** is when a function calls itself! 🔄
+
+**Key concepts:**
+1. **Base Case** - When to stop (prevents infinite loop)
+2. **Recursive Case** - Function calls itself with smaller input
+
+**Classic example - Factorial:**
+\`\`\`
+factorial(5) = 5 × factorial(4)
+            = 5 × 4 × factorial(3)
+            = 5 × 4 × 3 × factorial(2)
+            = 5 × 4 × 3 × 2 × factorial(1)
+            = 5 × 4 × 3 × 2 × 1 = 120
+\`\`\`
+
+**Real-life examples:**
+• Russian nesting dolls (each contains smaller version)
+• Mirrors facing each other (infinite reflections)
+• Folder navigation (folders inside folders)
+
+Would you like practice problems on recursion? 💡`;
+    }
+    
+    // Math related
+    if (msg.includes('discrete') || msg.includes('math') || msg.includes('logic') || msg.includes('probability')) {
+        return `**Discrete Mathematics** is crucial for computer science! 📐
+
+**Key topics:**
+• **Logic** - Truth tables, propositions, implications
+• **Set Theory** - Unions, intersections, complements
+• **Relations & Functions** - Mapping between sets
+• **Graph Theory** - Networks, paths, connectivity
+• **Combinatorics** - Counting, permutations, combinations
+• **Probability** - Random events, expected values
+
+**Why it matters:**
+- Logic → Programming conditions (if/else)
+- Graph Theory → Social networks, routing algorithms
+- Probability → Machine Learning, AI decisions
+
+What specific topic would you like to explore? 🎓`;
+    }
+    
+    // Study tips
+    if (msg.includes('study') || msg.includes('tips') || msg.includes('learn') || msg.includes('prepare')) {
+        return `**Top Study Strategies for Success!** 📖✨
+
+1. **Active Recall** - Test yourself instead of re-reading
+2. **Spaced Repetition** - Review at increasing intervals
+3. **Pomodoro Technique** - 25 min focus + 5 min break
+4. **Teach Others** - Explaining reinforces understanding
+5. **Practice Problems** - Apply theory to real questions
+
+**For Programming:**
+• Code daily, even 30 minutes helps
+• Build mini-projects
+• Solve LeetCode/HackerRank problems
+• Read others' code on GitHub
+
+**For Exams:**
+• Start 2 weeks early
+• Make summary sheets
+• Practice past papers
+• Get enough sleep!
+
+Need a personalized study plan? Tell me your subject and timeline! 🗓️`;
+    }
+    
+    // Quiz related
+    if (msg.includes('quiz') || msg.includes('test') || msg.includes('practice')) {
+        return `I'd be happy to help with quizzes! 📝
+
+**Options:**
+1. **Generate a Quiz** - Tell me the topic and I'll create questions
+2. **Practice Problems** - Step-by-step problem solving
+3. **Mock Test** - Simulate exam conditions
+4. **Review Mistakes** - Learn from your errors
+
+**Example topics I can quiz you on:**
+• Data Structures & Algorithms
+• Discrete Mathematics
+• Programming Concepts
+• Operating Systems
+• Database Management
+
+Which topic would you like to practice? 🎯`;
+    }
+    
+    // Career/exploration
+    if (msg.includes('career') || msg.includes('job') || msg.includes('future') || msg.includes('explore')) {
+        return `**Exploring Tech Career Paths!** 🚀
+
+**Popular Roles:**
+• **Software Developer** - Build applications
+• **Data Scientist** - Analyze data, ML models
+• **DevOps Engineer** - Infrastructure & deployment
+• **Cloud Architect** - AWS, Azure, GCP solutions
+• **AI/ML Engineer** - Build intelligent systems
+• **Cybersecurity Analyst** - Protect digital assets
+• **Full Stack Developer** - Frontend + Backend
+
+**Skills in demand (2026):**
+1. AI/Machine Learning
+2. Cloud Computing
+3. Cybersecurity
+4. Blockchain
+5. Data Engineering
+
+**Getting started:**
+- Build a strong GitHub portfolio
+- Contribute to open source
+- Get relevant certifications
+- Network on LinkedIn
+
+What career path interests you most? I can suggest a learning roadmap! 🗺️`;
+    }
+    
+    // Default response for any question
+    return `That's a great question! I can help you with:
+• Explaining concepts in detail
+• Solving practice problems step-by-step
+• Generating quizzes on specific topics
+• Recommending study strategies
+
+Feel free to ask follow-up questions or try one of my suggestions above! 😊`;
+}
+
+// Send predefined message
+function sendPredefinedMessage(message) {
+    const chatInput = document.getElementById('aiChatInput');
+    if (chatInput) {
+        chatInput.value = message;
+        sendAIChatMessage();
+    }
+}
+
+// Clear chat history
+function clearChatHistory() {
+    const chatMessages = document.querySelector('.chat-messages-full');
+    if (chatMessages) {
+        chatMessages.innerHTML = `
+            <div class="message welcome-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <h3>Chat cleared! 🗑️</h3>
+                    <p>Ready for a fresh start. How can I help you today?</p>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Export chat
+function exportChat() {
+    const chatMessages = document.querySelector('.chat-messages-full');
+    if (!chatMessages) return;
+    
+    const messages = chatMessages.querySelectorAll('.message');
+    let exportText = "EnWise AI Chat Export\n" + "=".repeat(40) + "\n\n";
+    
+    messages.forEach(msg => {
+        const content = msg.querySelector('.message-content p');
+        const time = msg.querySelector('.message-time');
+        const isUser = msg.classList.contains('user-message-full');
+        
+        if (content) {
+            exportText += `[${isUser ? 'You' : 'AI'}] ${time ? time.textContent : ''}\n`;
+            exportText += content.textContent + "\n\n";
+        }
+    });
+    
+    // Download as text file
+    const blob = new Blob([exportText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `enwise-chat-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Add Enter key support for AI Chat input
+document.addEventListener('DOMContentLoaded', function() {
+    const aiChatInput = document.getElementById('aiChatInput');
+    if (aiChatInput) {
+        aiChatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendAIChatMessage();
+            }
+        });
+    }
+});
