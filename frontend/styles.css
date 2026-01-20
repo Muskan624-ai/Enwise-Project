@@ -528,6 +528,70 @@ body {
     margin-top: clamp(2rem, 5vw, 4rem);
 }
 
+/* Subjects Header Bar */
+.subjects-header-bar {
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    background: linear-gradient(135deg, rgba(95, 196, 184, 0.1), rgba(125, 212, 196, 0.1));
+    border-radius: clamp(12px, 3vw, 18px);
+    border: 2px solid rgba(95, 196, 184, 0.2);
+}
+
+.subjects-header-title {
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
+.subjects-header-list {
+    display: flex;
+    gap: clamp(0.8rem, 1.5vw, 1rem);
+    flex-wrap: wrap;
+}
+
+.subject-header-btn {
+    padding: clamp(0.6rem, 1.2vw, 0.8rem) clamp(1rem, 2vw, 1.3rem);
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 50px;
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+    font-weight: 600;
+    color: #7dd4c4;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.subject-header-btn:hover {
+    border-color: #5fc4b8;
+    background: rgba(95, 196, 184, 0.1);
+    color: #5fc4b8;
+}
+
+.subject-header-btn.active {
+    background: linear-gradient(135deg, #5fc4b8, #7dd4c4);
+    color: white;
+    border-color: #5fc4b8;
+    box-shadow: 0 4px 12px rgba(95, 196, 184, 0.3);
+}
+
+/* Chat Link in Nav */
+.chat-link {
+    background: linear-gradient(135deg, #5fc4b8, #7dd4c4);
+    color: white !important;
+    padding: clamp(0.6rem, 1.5vw, 0.8rem) clamp(1rem, 2.5vw, 1.3rem) !important;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(95, 196, 184, 0.3);
+    transition: all 0.3s ease;
+}
+
+.chat-link:hover {
+    box-shadow: 0 6px 18px rgba(95, 196, 184, 0.4);
+    transform: translateY(-2px);
+}
+
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -957,6 +1021,28 @@ body {
     font-size: clamp(1.1rem, 2vw, 1.3rem);
     font-weight: 700;
     color: #2c3e50;
+}
+
+/* Subject Bar Chart Section */
+.subject-bar-chart-section {
+    background: white;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border-radius: clamp(12px, 3vw, 18px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.chart-title {
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    font-weight: 600;
+    color: #000;
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+
+.chart-container {
+    position: relative;
+    height: clamp(400px, 50vw, 600px);
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
 }
 
 .subject-content-grid {

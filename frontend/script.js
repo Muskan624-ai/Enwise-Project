@@ -1,7 +1,11 @@
 // Main JavaScript file for Logic Links
 
+// API Configuration
+const API_BASE_URL = 'http://172.18.237.93:8000';
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Logic Links loaded');
+    console.log('API Base URL:', API_BASE_URL);
     
     // Hamburger Menu Functionality
     const hamburger = document.getElementById('hamburger');
