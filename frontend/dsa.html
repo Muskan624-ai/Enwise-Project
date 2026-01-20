@@ -82,10 +82,10 @@
                 <div id="quiz-results"></div>
             </div>
 
-            <!-- Three Column Layout: Left | Center (AI) | Right -->
-            <div class="subject-layout-wrapper">
-                <!-- Left Column -->
-                <aside class="subject-sidebar-left">
+            <!-- Two Column Layout: Left (all content) | Center (AI) -->
+            <div class="subject-layout-wrapper two-column">
+                <!-- Left Column: All Content -->
+                <aside class="subject-sidebar-left full-content">
                     <!-- Syllabus Section -->
                     <section class="content-section">
                         <h2>📚 Syllabus</h2>
@@ -109,45 +109,6 @@
                         </div>
                     </section>
 
-                    <!-- Timetable Section -->
-                    <section class="content-section">
-                        <h2>📅 Schedule</h2>
-                        <div class="schedule-list">
-                            <div class="schedule-item">
-                                <p class="schedule-day">Tuesday & Thursday</p>
-                                <p class="schedule-time">3:00 PM - 4:30 PM</p>
-                            </div>
-                            <div class="schedule-item">
-                                <p class="schedule-day">Saturday</p>
-                                <p class="schedule-time">11:00 AM - 12:30 PM</p>
-                            </div>
-                            <div class="schedule-item">
-                                <p class="schedule-day">Sunday</p>
-                                <p class="schedule-time">5:00 PM - 6:30 PM</p>
-                            </div>
-                        </div>
-                    </section>
-                </aside>
-
-                <!-- Center Column: AI Chat -->
-                <section class="content-section ai-chat-center">
-                    <h2>🤖 Ask ENWISE AI</h2>
-                    <p class="ai-description">Get instant answers to your questions about DSA</p>
-                    <div class="ai-chat-box">
-                        <div class="chat-messages">
-                            <div class="message ai-message">
-                                <p>Hi! I'm ENWISE AI. Ask me anything about Data Structures & Algorithms!</p>
-                            </div>
-                        </div>
-                        <div class="chat-input-area">
-                            <input type="text" class="chat-input" placeholder="Ask a question...">
-                            <button class="send-btn">Send</button>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Right Column -->
-                <aside class="subject-sidebar-right">
                     <!-- Notes Section -->
                     <section class="content-section">
                         <h2>📝 Notes</h2>
@@ -170,23 +131,44 @@
                         </div>
                     </section>
 
-                    <!-- Resources Section -->
-                    <div class="resources-section">
-                        <h2>Related Resources</h2>
-                        <div class="resources-grid">
-                            <div class="resource-card">
-                                <span class="resource-icon">💡</span>
-                                <h3>Tips & Tricks</h3>
-                                <p>Useful study techniques and shortcuts</p>
+                    <!-- Timetable Section -->
+                    <section class="content-section">
+                        <h2>📅 Schedule</h2>
+                        <div class="schedule-list">
+                            <div class="schedule-item">
+                                <p class="schedule-day">Tuesday & Thursday</p>
+                                <p class="schedule-time">3:00 PM - 4:30 PM</p>
                             </div>
-                            <div class="resource-card">
-                                <span class="resource-icon">🧪</span>
-                                <h3>Practice Tests</h3>
-                                <p>Test your knowledge with quizzes</p>
+                            <div class="schedule-item">
+                                <p class="schedule-day">Saturday</p>
+                                <p class="schedule-time">11:00 AM - 12:30 PM</p>
+                            </div>
+                            <div class="schedule-item">
+                                <p class="schedule-day">Sunday</p>
+                                <p class="schedule-time">5:00 PM - 6:30 PM</p>
                             </div>
                         </div>
-                    </div>
+                    </section>
+
+                    
                 </aside>
+
+                <!-- Center Column: AI Chat -->
+                <section class="content-section ai-chat-center">
+                    <h2>🤖 Ask ENWISE AI</h2>
+                    <p class="ai-description">Get instant answers to your questions about DSA</p>
+                    <div class="ai-chat-box">
+                        <div class="chat-messages">
+                            <div class="message ai-message">
+                                <p>Hi! I'm ENWISE AI. Ask me anything about Data Structures & Algorithms!</p>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" placeholder="Ask a question...">
+                            <button class="send-btn">Send</button>
+                        </div>
+                    </div>
+                </section>
             </div>
 
 
@@ -222,7 +204,7 @@
                         <li><a href="#">Help Center</a></li>
                     </ul>
                 </div>
-
+            
                 <!-- Features -->
                 <div class="footer-section">
                     <h3>Features</h3>

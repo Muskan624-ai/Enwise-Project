@@ -1634,11 +1634,25 @@ footer {
     align-items: start;
 }
 
+/* Two-column layout variant */
+.subject-layout-wrapper.two-column {
+    grid-template-columns: 1fr 1.5fr;
+}
+
+.subject-layout-wrapper.two-column .ai-chat-center {
+    grid-column: 2;
+}
+
 .subject-sidebar-left,
 .subject-sidebar-right {
     display: flex;
     flex-direction: column;
     gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+/* Full content sidebar for two-column layout */
+.subject-sidebar-left.full-content {
+    grid-column: 1;
 }
 
 .ai-chat-center {
