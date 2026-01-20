@@ -1,19 +1,19 @@
 import os
 import json
 import fitz  # PyMuPDF
-import google.generativeai as genai
-from fastapi import FastAPI, UploadFile, File, HTTPException
+# 1. Update the import
+from google import genai
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from dotenv import load_dotenv
-from typing import List
 
+# --- INITIALIZATION ---
 load_dotenv(dotenv_path=".env.local") 
 API_KEY = os.getenv("GEMINI_API_KEY")
 
 app = FastAPI()
 
-# Allow Frontend access
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,70 +22,45 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-if API_KEY:
-    genai.configure(api_key=API_KEY)
+# 2. Initialize the new Client
+client = genai.Client(api_key=API_KEY)
 
-# --- DATA MODELS ---
-class QuizRequest(BaseModel):
-    topic: str
-    difficulty: str = "medium"
+# (Keep your helper functions: extract_text_from_pdf and clean_json_response)
 
-class AnswerSubmission(BaseModel):
-    question_id: int
-    selected_option: str
-    correct_option: str
-
-class TimetableSlot(BaseModel):
-    day: str
-    free_slots: List[str]
-
-# --- HELPER FUNCTIONS ---
-def extract_text_from_pdf(file_bytes):
-    try:
-        doc = fitz.open(stream=file_bytes, filetype="pdf")
-        text = ""
-        for page in doc:
-            text += page.get_text()
-        return text
-    except:
-        return ""
-
-def clean_json_response(response_text):
-    return response_text.replace("```json", "").replace("```", "").strip()
-
-# --- ENDPOINTS ---
-@app.post("/generate-map")
-async def generate_map(file: UploadFile = File(...)):
-    print(f"📥 Generating Map for: {file.filename}")
+@app.post("/generate-offline-pack")
+async def generate_offline_pack(
+    file: UploadFile = File(...), 
+    subject: str = Form(...), 
+    chapter: str = Form(...)
+):
+    print(f"📥 Generating Prerequisite Quiz for: {subject} - {chapter}")
     content = await file.read()
     text = extract_text_from_pdf(content)
 
-    if not API_KEY:
-        return {"nodes": [{"id": "1", "label": "Mock Topic", "type": "bridge", "status": "unlocked"}]}
+    if not text:
+        raise HTTPException(status_code=400, detail="Could not read PDF text.")
 
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        prompt = f"Create a hierarchical learning path (JSON) for this text: {text[:4000]}"
-        response = model.generate_content(prompt)
+        prompt = f"""
+        Act as an expert tutor for {subject}. 
+        Notes for {chapter}: {text[:5000]}
+        Generate a 5-question PREREQUISITE quiz testing ONLY foundational knowledge.
+        Return ONLY a JSON object: {{"summary": [], "quiz": [{{"q": "", "options": [], "a": ""}}]}}
+        """
+        
+        # 3. Update the generation call
+        response = client.models.generate_content(
+            model="gemini-1.5-flash", 
+            contents=prompt
+        )
+        
         return json.loads(clean_json_response(response.text))
+        
     except Exception as e:
         print(f"❌ Error: {e}")
-        raise HTTPException(status_code=500, detail="AI Generation Failed")
+        raise HTTPException(status_code=500, detail="Prerequisite Analysis Failed")
 
-@app.post("/generate-quiz")
-async def generate_quiz(request: QuizRequest):
-    return {"questions": [{"id": 1, "text": "Mock Question?", "options": ["A", "B"], "answer": "A"}]}
-
-@app.post("/submit-quiz")
-async def submit_quiz(answers: List[AnswerSubmission]):
-    return {"passed": True}
-
-@app.post("/optimize-schedule")
-async def optimize_schedule(timetable: TimetableSlot):
-    return {"optimized_schedule": []}
-
-# --- RUNNER ---
 if __name__ == "__main__":
     import uvicorn
-    print("🚀 Enwise Backend Live on Port 8000")
+    # Use 0.0.0.0 for teammate access
     uvicorn.run(app, host="0.0.0.0", port=8000)
