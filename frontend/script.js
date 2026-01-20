@@ -7,6 +7,17 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Logic Links loaded');
     console.log('API Base URL:', API_BASE_URL);
     
+    // Handle bubble image fallback
+    const bubbleImg = document.querySelector('.bubble-image');
+    const fallbackBubble = document.getElementById('fallbackBubble');
+    
+    if (bubbleImg && fallbackBubble) {
+        bubbleImg.addEventListener('error', function() {
+            this.style.display = 'none';
+            fallbackBubble.style.display = 'block';
+        });
+    }
+    
     // Hamburger Menu Functionality
     const hamburger = document.getElementById('hamburger');
     const navMobile = document.getElementById('navMobile');

@@ -425,6 +425,15 @@ body {
     justify-content: center;
 }
 
+.bubble-image {
+    width: clamp(350px, 70vw, 700px);
+    height: clamp(350px, 70vw, 700px);
+    object-fit: contain;
+    animation: float-circle 8s ease-in-out infinite, pageEnterScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 30px 80px rgba(95, 196, 184, 0.3));
+    user-select: none;
+}
+
 .decoration-circle {
     width: clamp(350px, 70vw, 700px);
     height: clamp(350px, 70vw, 700px);
