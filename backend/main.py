@@ -8,8 +8,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from typing import List
 
-# --- CONFIGURATION ---
-load_dotenv()
+load_dotenv(dotenv_path=".env.local") 
 API_KEY = os.getenv("GEMINI_API_KEY")
 
 app = FastAPI()

@@ -1,0 +1,8 @@
+# Ignore the secret key
+.env
+
+# Ignore the huge folder with thousands of files
+venv/
+__pycache__/
+*.pyc 
+*.local
