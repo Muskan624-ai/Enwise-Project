@@ -3,12 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Syllabus/Notes - Logic Links</title>
+    <title>Upload - ENWISE</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <h1>Upload Syllabus/Notes</h1>
-    <!-- Upload form content -->
+<body class="upload-page">
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">Think Unlimited</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="upload.html" class="nav-link active">Upload</a>
+            </nav>
+            <button class="profile-btn">Student profile</button>
+            
+            <!-- Hamburger Menu -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="nav-overlay" id="navOverlay"></div>
+        
+        <!-- Mobile Navigation -->
+        <nav class="nav-mobile" id="navMobile">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="upload.html" class="nav-link active">Upload</a>
+            <button class="profile-btn">Student profile</button>
+        </nav>
+
+        <!-- Upload Content -->
+        <main class="upload-main">
+            <h1 class="upload-title">Upload Study Materials</h1>
+            <p class="upload-subtitle">Share your notes, syllabus, and timetable with the community</p>
+
+            <div class="upload-tabs">
+                <button class="tab-btn active" data-tab="notes">📝 Notes</button>
+                <button class="tab-btn" data-tab="syllabus">📄 Syllabus</button>
+                <button class="tab-btn" data-tab="timetable">📅 Timetable</button>
+            </div>
+
+            <!-- Notes Tab -->
+            <div class="tab-content active" id="notes-tab">
+                <form class="upload-form">
+                    <div class="form-group">
+                        <label for="notes-subject">Select Subject:</label>
+                        <select id="notes-subject" class="form-select">
+                            <option value="">Choose a subject</option>
+                            <option value="math">Mathematics</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="english">English</option>
+                            <option value="history">History</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes-title">Title:</label>
+                        <input type="text" id="notes-title" class="form-input" placeholder="e.g., Chapter 5 Notes">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes-description">Description:</label>
+                        <textarea id="notes-description" class="form-textarea" placeholder="Brief description of your notes..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes-file">Upload File (PDF, DOC, TXT):</label>
+                        <div class="file-upload">
+                            <input type="file" id="notes-file" class="file-input" accept=".pdf,.doc,.docx,.txt">
+                            <div class="file-upload-hint">
+                                <span class="upload-icon">📎</span>
+                                <p>Drag and drop your file here or click to browse</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Upload Notes</button>
+                </form>
+            </div>
+
+            <!-- Syllabus Tab -->
+            <div class="tab-content" id="syllabus-tab">
+                <form class="upload-form">
+                    <div class="form-group">
+                        <label for="syllabus-subject">Select Subject:</label>
+                        <select id="syllabus-subject" class="form-select">
+                            <option value="">Choose a subject</option>
+                            <option value="math">Mathematics</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="english">English</option>
+                            <option value="history">History</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="syllabus-year">Academic Year:</label>
+                        <input type="text" id="syllabus-year" class="form-input" placeholder="e.g., 2024-2025">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="syllabus-file">Upload Syllabus (PDF):</label>
+                        <div class="file-upload">
+                            <input type="file" id="syllabus-file" class="file-input" accept=".pdf">
+                            <div class="file-upload-hint">
+                                <span class="upload-icon">📎</span>
+                                <p>Drag and drop your syllabus PDF here</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Upload Syllabus</button>
+                </form>
+            </div>
+
+            <!-- Timetable Tab -->
+            <div class="tab-content" id="timetable-tab">
+                <form class="upload-form">
+                    <div class="form-group">
+                        <label for="timetable-class">Class/Grade:</label>
+                        <input type="text" id="timetable-class" class="form-input" placeholder="e.g., Class 10-A">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timetable-semester">Semester:</label>
+                        <select id="timetable-semester" class="form-select">
+                            <option value="">Choose semester</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="annual">Annual</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timetable-file">Upload Timetable (Image/PDF):</label>
+                        <div class="file-upload">
+                            <input type="file" id="timetable-file" class="file-input" accept=".pdf,.jpg,.jpeg,.png">
+                            <div class="file-upload-hint">
+                                <span class="upload-icon">📎</span>
+                                <p>Upload your timetable image or PDF</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Upload Timetable</button>
+                </form>
+            </div>
+
+            <!-- Recent Uploads -->
+            <div class="recent-uploads">
+                <h2>Your Recent Uploads</h2>
+                <div class="uploads-list">
+                    <div class="upload-item">
+                        <span class="upload-date">📝 January 20, 2024</span>
+                        <p class="upload-name">Physics Chapter 3 Notes</p>
+                        <span class="upload-status">✓ Verified</span>
+                    </div>
+                    <div class="upload-item">
+                        <span class="upload-date">📄 January 15, 2024</span>
+                        <p class="upload-name">Mathematics Syllabus 2024</p>
+                        <span class="upload-status">✓ Verified</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <!-- About Section -->
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <span class="footer-logo-icon">🧠</span>
+                        <span>ENWISE</span>
+                    </div>
+                    <p class="footer-description">
+                        Your AI-powered study coach helping students master any subject with personalized learning paths and expert guidance.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook">f</a>
+                        <a href="#" title="Twitter">𝕏</a>
+                        <a href="#" title="Instagram">📷</a>
+                        <a href="#" title="LinkedIn">in</a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="upload.html">Upload Materials</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+
+                <!-- Features -->
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <ul>
+                        <li><a href="#">AI Study Coach</a></li>
+                        <li><a href="#">Subject Dashboard</a></li>
+                        <li><a href="#">Progress Tracking</a></li>
+                        <li><a href="#">Community Forum</a></li>
+                        <li><a href="#">Practice Tests</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="footer-section">
+                    <h3>Stay Updated</h3>
+                    <p class="footer-description">Subscribe to get study tips and updates delivered to your inbox.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-left">
+                    &copy; 2024 ENWISE. All rights reserved. | Empowering students worldwide.
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>

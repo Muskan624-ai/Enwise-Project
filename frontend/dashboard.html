@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ENWISE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-page">
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">Think Unlimited</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </nav>
+            <button class="profile-btn">Student profile</button>
+            
+            <!-- Hamburger Menu -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="nav-overlay" id="navOverlay"></div>
+        
+        <!-- Mobile Navigation -->
+        <nav class="nav-mobile" id="navMobile">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link active">Dashboard</a>
+            <a href="upload.html" class="nav-link">Upload</a>
+            <button class="profile-btn">Student profile</button>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-main">
+            <!-- Search and Filter Section -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">My Subjects</h1>
+                <div class="search-filter">
+                    <input type="text" class="search-input" placeholder="Search subjects...">
+                    <select class="filter-select">
+                        <option value="">All Subjects</option>
+                        <option value="math">Mathematics</option>
+                        <option value="science">Science</option>
+                        <option value="english">English</option>
+                        <option value="history">History</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Subjects Grid -->
+            <div class="subjects-grid">
+                <!-- Subject Card 1 -->
+                <a href="subject.html?id=1" class="subject-card">
+                    <div class="subject-icon">📐</div>
+                    <h3 class="subject-name">Mathematics</h3>
+                    <p class="subject-progress">Progress: 65%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%"></div>
+                    </div>
+                </a>
+
+                <!-- Subject Card 2 -->
+                <a href="subject.html?id=2" class="subject-card">
+                    <div class="subject-icon">🔬</div>
+                    <h3 class="subject-name">Physics</h3>
+                    <p class="subject-progress">Progress: 45%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                </a>
+
+                <!-- Subject Card 3 -->
+                <a href="subject.html?id=3" class="subject-card">
+                    <div class="subject-icon">⚗️</div>
+                    <h3 class="subject-name">Chemistry</h3>
+                    <p class="subject-progress">Progress: 78%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 78%"></div>
+                    </div>
+                </a>
+
+                <!-- Subject Card 4 -->
+                <a href="subject.html?id=4" class="subject-card">
+                    <div class="subject-icon">📚</div>
+                    <h3 class="subject-name">English</h3>
+                    <p class="subject-progress">Progress: 52%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 52%"></div>
+                    </div>
+                </a>
+
+                <!-- Subject Card 5 -->
+                <a href="subject.html?id=5" class="subject-card">
+                    <div class="subject-icon">🌍</div>
+                    <h3 class="subject-name">History</h3>
+                    <p class="subject-progress">Progress: 88%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 88%"></div>
+                    </div>
+                </a>
+
+                <!-- Subject Card 6 -->
+                <a href="subject.html?id=6" class="subject-card">
+                    <div class="subject-icon">🗺️</div>
+                    <h3 class="subject-name">Geography</h3>
+                    <p class="subject-progress">Progress: 71%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 71%"></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a href="upload.html" class="action-btn upload-btn">
+                    <span class="action-icon">📤</span>
+                    Upload Notes
+                </a>
+                <button class="action-btn schedule-btn">
+                    <span class="action-icon">📅</span>
+                    View Schedule
+                </button>
+                <button class="action-btn chat-btn">
+                    <span class="action-icon">💬</span>
+                    AI Chat
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <!-- About Section -->
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <span class="footer-logo-icon">🧠</span>
+                        <span>ENWISE</span>
+                    </div>
+                    <p class="footer-description">
+                        Your AI-powered study coach helping students master any subject with personalized learning paths and expert guidance.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook">f</a>
+                        <a href="#" title="Twitter">𝕏</a>
+                        <a href="#" title="Instagram">📷</a>
+                        <a href="#" title="LinkedIn">in</a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="upload.html">Upload Materials</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+
+                <!-- Features -->
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <ul>
+                        <li><a href="#">AI Study Coach</a></li>
+                        <li><a href="#">Subject Dashboard</a></li>
+                        <li><a href="#">Progress Tracking</a></li>
+                        <li><a href="#">Community Forum</a></li>
+                        <li><a href="#">Practice Tests</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="footer-section">
+                    <h3>Stay Updated</h3>
+                    <p class="footer-description">Subscribe to get study tips and updates delivered to your inbox.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-left">
+                    &copy; 2024 ENWISE. All rights reserved. | Empowering students worldwide.
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
