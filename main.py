@@ -1,26 +1,21 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
-from fastapi.middleware.cors import CORSMiddleware
-import json  # <--- Essential for safe parsing
+from google import genai  # THE NEW 2026 SDK
+from google.genai import types 
+import json
+import fitz  # PyMuPDF
 
-# --- 1. SETUP ENV & KEY ---
-current_dir = os.path.dirname(os.path.abspath(__file__))
-env_path = os.path.join(current_dir, ".env")
-load_dotenv(env_path)
+# --- 1. SETUP & ENVIRONMENT ---
+load_dotenv()
 
-API_KEY = os.getenv("GEMINI_API_KEY")
+# The Client now handles the API key and global configuration
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-print("--------------------------------------------------")
-print(f"🔍 DEBUG CHECK:")
-if API_KEY:
-    print(f"   - API Key Found: ✅ YES")
-    genai.configure(api_key=API_KEY)
-else:
-    print(f"   - API Key Found: ❌ NO")
-print("--------------------------------------------------")
+# Use the latest stable 2.5 Flash model for reliability
+MODEL_ID = "gemini-2.5-flash"
 
 app = FastAPI()
 
@@ -31,135 +26,62 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- 2. DEFINE MODELS ---
 class QuizRequest(BaseModel):
     topic: str
     difficulty: str
 
+# --- 3. HELPERS ---
+def extract_text_from_pdf(pdf_file: bytes) -> str:
+    try:
+        doc = fitz.open(stream=pdf_file, filetype="pdf")
+        text = ""
+        for page in doc:
+            text += page.get_text()
+        return text
+    except Exception as e:
+        print(f"Error reading PDF: {e}")
+        return ""
+
+# --- 4. THE "DIAGNOSTIC & BRIDGE" ENDPOINT ---
+@app.post("/generate-offline-pack")
+async def generate_offline_pack(file: UploadFile = File(...)):
+    print(f"🩺 Starting Diagnosis for: {file.filename}")
+    
+    content = await file.read()
+    pdf_text = extract_text_from_pdf(content)[:15000]
+
+    # Task prompt for adaptive learning diagnosis
+    prompt = f"Identify prerequisite gaps and generate a Diagnostic JSON for these notes: {pdf_text}"
+
+    try:
+        # Using Structured Output configuration for Gemini
+        response = client.models.generate_content(
+            model=MODEL_ID,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                # SYSTEM INSTRUCTION: Sets the 'Professor Clone' persona
+                system_instruction="You are a Professor Clone. Analyze the provided text for tone and adopt this persona. Always return valid JSON only.",
+                response_mime_type="application/json",
+            )
+        )
+        # Detailed log for terminal debugging
+        print(f"Successfully generated diagnosis using {MODEL_ID}")
+        return json.loads(response.text)
+    except Exception as e:
+        print(f"❌ DETAILED AI ERROR: {e}")
+        return {"error": "Diagnosis failed. Check terminal for details."}
+
+# --- 5. TRADITIONAL QUIZ ENDPOINT ---
 @app.post("/generate-quiz")
 async def generate_quiz(request: QuizRequest):
-    print(f"📩 Request Received: {request.topic} ({request.difficulty})")
-    
-    model = genai.GenerativeModel("gemini-2.5-flash")
-    
-    prompt = f"""
-    Create 5 multiple choice questions about {request.topic}.
-    Difficulty: {request.difficulty}.
-    Return ONLY a raw JSON list. No markdown. No ```json```.
-    Format:
-    [
-      {{
-        "id": 1,
-        "text": "Question?",
-        "options": ["A", "B", "C", "D"],
-        "answer": "Correct Option"
-      }}
-    ]
-    """
-
     try:
-        response = model.generate_content(prompt)
-        # Clean markdown if Gemini adds it
-        clean_text = response.text.replace("```json", "").replace("```", "").strip()
-        
-        # FIX: Use json.loads instead of eval()
-        data = json.loads(clean_text)
-        
-        print("✅ Gemini Success! Sending real questions.")
-        return {"questions": data}
-        
+        response = client.models.generate_content(
+            model=MODEL_ID,
+            contents=f"Create 5 {request.difficulty} quiz questions about {request.topic} as JSON.",
+            config=types.GenerateContentConfig(response_mime_type="application/json")
+        )
+        return {"questions": json.loads(response.text)}
     except Exception as e:
-        print(f"❌ ERROR: Gemini Failed. Reason: {e}")
-        print("⚠️  Switching to Mock Data...")
-        
-        return {
-            "questions": [
-                {
-                    "id": 1,
-                    "text": f"Mock Question about {request.topic}?",
-                    "options": ["A", "B"],
-                    "answer": "A"
-                }
-            ]
-        }
-# --- NEW: ROADMAP REQUEST MODEL ---
-class RoadmapRequest(BaseModel):
-    topic: str
-    duration: str  # e.g., "4 weeks", "3 months"
-
-# --- NEW: ROADMAP ENDPOINT ---
-@app.post("/generate-map")
-async def generate_map(request: RoadmapRequest):
-    print(f"🗺️  Generating Roadmap for: {request.topic} ({request.duration})")
-    
-    # We use the same model you already set up
-    model = genai.GenerativeModel("gemini-2.5-flash")
-    
-    prompt = f"""
-    Create a {request.duration} study roadmap for {request.topic}.
-    Return ONLY a raw JSON list. No markdown.
-    Format:
-    [
-      {{
-        "week": 1,
-        "theme": "Basics",
-        "topics": ["Topic A", "Topic B"],
-        "project": "Build a simple X"
-      }}
-    ]
-    """
-    
-    try:
-        response = model.generate_content(prompt)
-        clean_text = response.text.replace("```json", "").replace("```", "").strip()
-        data = json.loads(clean_text)
-        print("✅ Roadmap Generated Successfully!")
-        return {"roadmap": data}
-        
-    except Exception as e:
-        print(f"❌ Roadmap Error: {e}")
-        return {"error": "Failed to generate roadmap"}
-    
-# --- NEW: GRADING REQUEST MODEL ---
-class SubmitRequest(BaseModel):
-    question: str
-    user_answer: str
-    correct_answer: str
-
-# --- NEW: GRADING ENDPOINT ---
-@app.post("/submit-quiz")
-async def submit_quiz(request: SubmitRequest):
-    print(f"📝 Grading Answer: {request.user_answer} (Correct: {request.correct_answer})")
-    
-    # Logic: If correct, just cheer. If wrong, ask AI to explain.
-    is_correct = (request.user_answer.strip().lower() == request.correct_answer.strip().lower())
-    
-    if is_correct:
-        return {
-            "correct": True,
-            "feedback": "🎉 Spot on! That is the correct answer."
-        }
-    else:
-        # Ask Gemini to explain WHY it's wrong (The "AI Tutor" Feature)
-        model = genai.GenerativeModel("gemini-2.5-flash")
-        
-        # --- THE ENWISE PERSONA UPDATE IS HERE ---
-        prompt = f"""
-        The user answered "{request.user_answer}" to the question: "{request.question}".
-        The correct answer was "{request.correct_answer}".
-        Explain briefly (in 1 sentence) why the user is wrong and why the correct answer is right.
-        You are Enwise, a wise and encouraging AI Tutor. Explain the mistake simply, using an analogy if possible.
-        """
-        
-        try:
-            response = model.generate_content(prompt)
-            feedback = response.text.strip()
-        except:
-            feedback = f"Incorrect. The right answer was {request.correct_answer}."
-            
-        return {
-            "correct": False,
-            "feedback": feedback
-        }
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+        print(f"❌ Quiz Error: {e}")
+        return {"questions": []}
