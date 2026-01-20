@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>End-to-End Quiz Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d8a6e 100%);
+            padding: 20px;
+            color: white;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { margin-bottom: 20px; }
+        .step { 
+            background: rgba(255,255,255,0.1); 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .step h2 { color: #5fc4b8; margin-bottom: 10px; font-size: 1.2rem; }
+        button { 
+            background: #2d8a6e; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 1rem;
+            margin: 10px 5px 0 0;
+            font-weight: 600;
+        }
+        button:hover { background: #5fc4b8; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(95, 196, 184, 0.4); }
+        button:disabled { background: #666; cursor: not-allowed; }
+        .result { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: rgba(0,0,0,0.3); 
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .info { color: #5fc4b8; }
+        input[type="file"] { 
+            margin: 10px 0; 
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+        }
+        .status { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .status.pending { background: #ffa726; }
+        .status.success { background: #4caf50; }
+        .status.error { background: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Complete Quiz Flow Test</h1>
+        <p>This page tests the entire quiz generation workflow from start to finish</p>
+
+        <!-- Step 1 -->
+        <div class="step">
+            <h2><span class="status pending" id="status1"></span>Step 1: Backend Health Check</h2>
+            <p>Verify the Flask backend is running</p>
+            <button onclick="checkBackend()" id="btn1">Check Backend</button>
+            <div class="result" id="result1"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <h2><span class="status pending" id="status2"></span>Step 2: Upload File & Generate Quiz</h2>
+            <p>Upload a file to generate quiz questions</p>
+            <input type="file" id="fileInput" accept=".pdf,.txt,.doc,.docx">
+            <br>
+            <button onclick="uploadFile()" id="btn2">Upload & Generate</button>
+            <button onclick="generateFallback()" id="btn2b">Use Fallback (No Backend)</button>
+            <div class="result" id="result2"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <h2><span class="status pending" id="status3"></span>Step 3: Verify LocalStorage</h2>
+            <p>Check if quiz data was stored correctly</p>
+            <button onclick="verifyStorage()" id="btn3">Verify Storage</button>
+            <div class="result" id="result3"></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <h2><span class="status pending" id="status4"></span>Step 4: Open Quiz Page</h2>
+            <p>Open the quiz in a new tab and check if questions load</p>
+            <button onclick="openQuizPage()" id="btn4">Open Quiz</button>
+            <div class="result" id="result4">Check the console in the quiz page window!</div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="step" style="background: rgba(45, 138, 110, 0.2);">
+            <h2>⚡ Quick Actions</h2>
+            <button onclick="window.location.reload()">Reset Test</button>
+            <button onclick="localStorage.clear(); alert('Cleared!')">Clear Storage</button>
+            <button onclick="window.open('debug-storage.html')">Storage Debugger</button>
+            <button onclick="window.open('test-connection.html')">Connection Test</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+
+        async function checkBackend() {
+            const result = document.getElementById('result1');
+            const status = document.getElementById('status1');
+            
+            result.innerHTML = '<span class="info">Connecting to ' + API_BASE_URL + '...</span>';
+            
+            try {
+                const response = await fetch(API_BASE_URL + '/health');
+                const data = await response.json();
+                
+                result.innerHTML = '<span class="success">✅ Backend is online!</span>\n' +
+                    'Response: ' + JSON.stringify(data, null, 2);
+                status.className = 'status success';
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Backend is offline!</span>\n' +
+                    'Error: ' + error.message + '\n\n' +
+                    'Make sure to run: python backend/test_backend.py';
+                status.className = 'status error';
+            }
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const result = document.getElementById('result2');
+            const status = document.getElementById('status2');
+            
+            if (!fileInput.files[0]) {
+                result.innerHTML = '<span class="error">Please select a file first!</span>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('subject', 'Test Subject');
+            formData.append('chapter', 'Test Chapter');
+
+            result.innerHTML = '<span class="info">Uploading to backend...</span>';
+
+            try {
+                const response = await fetch(API_BASE_URL + '/generate-offline-pack', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('Backend returned error');
+
+                const data = await response.json();
+                console.log('Backend response:', data);
+
+                // Store in localStorage (same as subject.html does)
+                let quizToStore = [];
+                
+                if (data.quiz && Array.isArray(data.quiz.questions)) {
+                    quizToStore = data.quiz.questions.map(q => ({
+                        q: q.question,
+                        options: q.options,
+                        a: q.options[q.correct] || q.answer
+                    }));
+                }
+
+                localStorage.setItem('latest_quiz_data', JSON.stringify(quizToStore));
+                localStorage.setItem('latest_summary_data', JSON.stringify(data.summary || {}));
+
+                result.innerHTML = '<span class="success">✅ Upload successful!</span>\n' +
+                    'Questions: ' + quizToStore.length + '\n' +
+                    'Stored in localStorage: ' + (localStorage.getItem('latest_quiz_data') ? 'YES' : 'NO');
+                status.className = 'status success';
+
+                // Auto-verify
+                setTimeout(verifyStorage, 500);
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Upload failed!</span>\n' +
+                    'Error: ' + error.message + '\n\n' +
+                    'Try "Use Fallback" instead.';
+                status.className = 'status error';
+            }
+        }
+
+        function generateFallback() {
+            const result = document.getElementById('result2');
+            const status = document.getElementById('status2');
+
+            const fallbackQuiz = [
+                {
+                    q: "What is the fundamental concept in Test Subject?",
+                    options: ["Basic principles", "Advanced theories", "Applied methods", "Historical context"],
+                    a: "Basic principles"
+                },
+                {
+                    q: "Which prerequisite knowledge is essential?",
+                    options: ["Foundation concepts", "Expert level skills", "Research experience", "Industry practice"],
+                    a: "Foundation concepts"
+                },
+                {
+                    q: "What approach is recommended for learning?",
+                    options: ["Step-by-step progression", "Random exploration", "Skip basics", "Memorization only"],
+                    a: "Step-by-step progression"
+                }
+            ];
+
+            localStorage.setItem('latest_quiz_data', JSON.stringify(fallbackQuiz));
+            localStorage.setItem('latest_summary_data', JSON.stringify({
+                topics: ['Test basics'],
+                source: 'fallback'
+            }));
+
+            result.innerHTML = '<span class="success">✅ Fallback quiz generated!</span>\n' +
+                'Questions: ' + fallbackQuiz.length + '\n' +
+                'Stored in localStorage: YES';
+            status.className = 'status success';
+
+            // Auto-verify
+            setTimeout(verifyStorage, 500);
+        }
+
+        function verifyStorage() {
+            const result = document.getElementById('result3');
+            const status = document.getElementById('status3');
+
+            const quizData = localStorage.getItem('latest_quiz_data');
+            const summaryData = localStorage.getItem('latest_summary_data');
+
+            if (!quizData) {
+                result.innerHTML = '<span class="error">❌ No quiz data found!</span>\n' +
+                    'Please complete Step 2 first.';
+                status.className = 'status error';
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(quizData);
+                const summary = summaryData ? JSON.parse(summaryData) : {};
+
+                result.innerHTML = '<span class="success">✅ Data verified!</span>\n\n' +
+                    'Questions: ' + parsed.length + '\n' +
+                    'Sample Q1: ' + parsed[0].q + '\n' +
+                    'Options: ' + parsed[0].options.join(', ') + '\n' +
+                    'Answer: ' + parsed[0].a + '\n\n' +
+                    'Summary: ' + JSON.stringify(summary, null, 2);
+                status.className = 'status success';
+            } catch (e) {
+                result.innerHTML = '<span class="error">❌ Invalid data format!</span>\n' + e.message;
+                status.className = 'status error';
+            }
+        }
+
+        function openQuizPage() {
+            const status = document.getElementById('status4');
+            const quizData = localStorage.getItem('latest_quiz_data');
+
+            if (!quizData) {
+                alert('⚠️ No quiz data! Complete steps 2 and 3 first.');
+                return;
+            }
+
+            console.log('Opening quiz with data:', quizData);
+            const quizWindow = window.open('quiz.html?subject=TestSubject&source=test', '_blank');
+            
+            if (quizWindow) {
+                status.className = 'status success';
+                document.getElementById('result4').innerHTML = 
+                    '<span class="success">✅ Quiz page opened!</span>\n\n' +
+                    'Check the quiz window and open DevTools (F12) to see debug logs.\n' +
+                    'You should see: "✅ Immediate parse successful: X questions"';
+            } else {
+                status.className = 'status error';
+                document.getElementById('result4').innerHTML = 
+                    '<span class="error">❌ Popup blocked!</span>\n' +
+                    'Allow popups for this site and try again.';
+            }
+        }
+
+        // Auto-check backend on load
+        window.addEventListener('load', () => {
+            checkBackend();
+        });
+    </script>
+</body>
+</html>

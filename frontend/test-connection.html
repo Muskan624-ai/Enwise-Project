@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Connection Test - EnWise</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .test-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #2d8a6e;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #2d8a6e;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        button {
+            background: linear-gradient(135deg, #2d8a6e, #5fc4b8);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(45, 138, 110, 0.4);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #e8f5e9;
+            color: #2d8a6e;
+            border: 2px solid #2d8a6e;
+        }
+        .error {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 2px solid #d32f2f;
+        }
+        .info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 2px solid #1976d2;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-dot.online { background: #4caf50; }
+        .status-dot.offline { background: #f44336; }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Backend Connection Test</h1>
+        <p class="subtitle">Test your EnWise backend connection and diagnose issues</p>
+
+        <!-- Backend Status -->
+        <div class="test-section">
+            <h3><span class="status-dot" id="statusDot"></span>Backend Status</h3>
+            <p>Backend URL: <code id="backendUrl">http://localhost:5000</code></p>
+            <button onclick="testHealth()">Check Health</button>
+            <div id="healthResult"></div>
+        </div>
+
+        <!-- Test File Upload -->
+        <div class="test-section">
+            <h3>📤 Test File Upload</h3>
+            <p>Upload a test file to see if backend processes it correctly</p>
+            <input type="file" id="testFile" style="margin: 10px 0;">
+            <br>
+            <button onclick="testUpload()">Test Upload</button>
+            <div id="uploadResult"></div>
+        </div>
+
+        <!-- LocalStorage Check -->
+        <div class="test-section">
+            <h3>💾 LocalStorage Check</h3>
+            <p>Check if quiz data is stored properly in your browser</p>
+            <button onclick="checkLocalStorage()">Check Storage</button>
+            <button onclick="clearLocalStorage()">Clear Storage</button>
+            <div id="storageResult"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="test-section">
+            <h3>⚡ Quick Actions</h3>
+            <button onclick="window.location.href='subject.html?subject=Test'">Open Subject Page</button>
+            <button onclick="generateTestQuiz()">Generate Test Quiz</button>
+            <button onclick="window.location.href='index.html'">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+
+        async function testHealth() {
+            const result = document.getElementById('healthResult');
+            const dot = document.getElementById('statusDot');
+            
+            result.innerHTML = '<div class="result info">Testing connection...</div>';
+            
+            try {
+                const response = await fetch(API_BASE_URL + '/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    dot.className = 'status-dot online';
+                    result.innerHTML = `<div class="result success">✅ Backend is ONLINE!
+                    
+Response: ${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    throw new Error('Backend returned error');
+                }
+            } catch (error) {
+                dot.className = 'status-dot offline';
+                result.innerHTML = `<div class="result error">❌ Backend is OFFLINE
+
+Error: ${error.message}
+
+Troubleshooting:
+1. Make sure backend is running: python test_backend.py
+2. Check if port 5000 is available
+3. Verify firewall settings</div>`;
+            }
+        }
+
+        async function testUpload() {
+            const fileInput = document.getElementById('testFile');
+            const result = document.getElementById('uploadResult');
+            
+            if (!fileInput.files[0]) {
+                result.innerHTML = '<div class="result error">Please select a file first!</div>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('subject', 'Test Subject');
+            formData.append('chapter', 'Test');
+
+            result.innerHTML = '<div class="result info">Uploading file...</div>';
+
+            try {
+                const response = await fetch(API_BASE_URL + '/generate-offline-pack', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    result.innerHTML = `<div class="result success">✅ Upload Successful!
+
+Questions Generated: ${data.quiz?.questions?.length || 0}
+Topics: ${data.summary?.topics?.join(', ') || 'N/A'}
+
+Full Response:
+${JSON.stringify(data, null, 2)}</div>`;
+                    
+                    // Store in localStorage
+                    if (data.quiz) {
+                        localStorage.setItem('latest_quiz_data', JSON.stringify(data.quiz.questions || data.quiz));
+                        localStorage.setItem('latest_summary_data', JSON.stringify(data.summary));
+                    }
+                } else {
+                    throw new Error('Backend returned error: ' + JSON.stringify(data));
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="result error">❌ Upload Failed
+
+Error: ${error.message}
+
+Make sure backend is running!</div>`;
+            }
+        }
+
+        function checkLocalStorage() {
+            const result = document.getElementById('storageResult');
+            const quizData = localStorage.getItem('latest_quiz_data');
+            const summaryData = localStorage.getItem('latest_summary_data');
+
+            if (quizData) {
+                try {
+                    const parsed = JSON.parse(quizData);
+                    result.innerHTML = `<div class="result success">✅ Quiz Data Found!
+
+Number of questions: ${parsed.length}
+Format: ${Array.isArray(parsed) ? 'Array' : 'Object'}
+
+Sample question:
+${JSON.stringify(parsed[0] || parsed, null, 2)}
+
+Summary Data: ${summaryData ? 'Found' : 'Not found'}</div>`;
+                } catch (e) {
+                    result.innerHTML = `<div class="result error">❌ Invalid quiz data format!
+
+Error: ${e.message}</div>`;
+                }
+            } else {
+                result.innerHTML = `<div class="result info">ℹ️ No quiz data in storage
+
+Upload a file first to generate quiz data.</div>`;
+            }
+        }
+
+        function clearLocalStorage() {
+            localStorage.removeItem('latest_quiz_data');
+            localStorage.removeItem('latest_summary_data');
+            document.getElementById('storageResult').innerHTML = 
+                '<div class="result success">✅ Storage cleared!</div>';
+        }
+
+        function generateTestQuiz() {
+            const testQuiz = [
+                {
+                    q: "What is 2 + 2?",
+                    options: ["3", "4", "5", "6"],
+                    a: "4"
+                },
+                {
+                    q: "What color is the sky?",
+                    options: ["Red", "Blue", "Green", "Yellow"],
+                    a: "Blue"
+                },
+                {
+                    q: "How many days in a week?",
+                    options: ["5", "6", "7", "8"],
+                    a: "7"
+                }
+            ];
+
+            localStorage.setItem('latest_quiz_data', JSON.stringify(testQuiz));
+            localStorage.setItem('latest_summary_data', JSON.stringify({ topics: ['Test'] }));
+            
+            alert('Test quiz generated! Click OK to open quiz page.');
+            window.open('quiz.html?subject=Test&source=manual', '_blank');
+        }
+
+        // Run health check on load
+        window.addEventListener('load', testHealth);
+    </script>
+</body>
+</html>

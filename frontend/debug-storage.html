@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LocalStorage Debug</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #fff; }
+        .box { background: #2a2a2a; padding: 20px; margin: 10px 0; border-radius: 8px; border: 2px solid #2d8a6e; }
+        button { background: #2d8a6e; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #5fc4b8; }
+        pre { background: #000; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+    </style>
+</head>
+<body>
+    <h1>🔍 LocalStorage Debugger</h1>
+    
+    <div class="box">
+        <h2>Test 1: Write Sample Quiz Data</h2>
+        <button onclick="testWrite()">Write Test Data</button>
+        <pre id="writeResult"></pre>
+    </div>
+
+    <div class="box">
+        <h2>Test 2: Read Quiz Data</h2>
+        <button onclick="testRead()">Read Stored Data</button>
+        <pre id="readResult"></pre>
+    </div>
+
+    <div class="box">
+        <h2>Test 3: All LocalStorage Keys</h2>
+        <button onclick="showAll()">Show All Keys</button>
+        <pre id="allKeys"></pre>
+    </div>
+
+    <div class="box">
+        <h2>Test 4: Clear All Data</h2>
+        <button onclick="clearAll()">Clear LocalStorage</button>
+        <pre id="clearResult"></pre>
+    </div>
+
+    <div class="box">
+        <h2>Test 5: Open Quiz Page</h2>
+        <p>After writing data, click here to test if quiz.html can read it:</p>
+        <button onclick="openQuiz()">Open Quiz Page</button>
+    </div>
+
+    <script>
+        function testWrite() {
+            const testQuiz = [
+                {
+                    q: "Test Question 1: What is 2+2?",
+                    options: ["3", "4", "5", "6"],
+                    a: "4"
+                },
+                {
+                    q: "Test Question 2: What color is the sky?",
+                    options: ["Red", "Blue", "Green", "Yellow"],
+                    a: "Blue"
+                },
+                {
+                    q: "Test Question 3: How many days in a week?",
+                    options: ["5", "6", "7", "8"],
+                    a: "7"
+                }
+            ];
+
+            try {
+                localStorage.setItem('latest_quiz_data', JSON.stringify(testQuiz));
+                localStorage.setItem('latest_summary_data', JSON.stringify({ 
+                    topics: ['Test Topic'], 
+                    source: 'debug' 
+                }));
+
+                const verify = localStorage.getItem('latest_quiz_data');
+                
+                document.getElementById('writeResult').innerHTML = 
+                    `<span class="success">✅ SUCCESS!</span>\n\nWrote: ${testQuiz.length} questions\nVerified: ${verify ? 'Data exists' : 'FAILED'}\n\nData:\n${JSON.stringify(testQuiz, null, 2)}`;
+            } catch (e) {
+                document.getElementById('writeResult').innerHTML = 
+                    `<span class="error">❌ ERROR!</span>\n${e.message}`;
+            }
+        }
+
+        function testRead() {
+            try {
+                const rawData = localStorage.getItem('latest_quiz_data');
+                const summaryData = localStorage.getItem('latest_summary_data');
+
+                if (rawData) {
+                    const parsed = JSON.parse(rawData);
+                    document.getElementById('readResult').innerHTML = 
+                        `<span class="success">✅ FOUND!</span>\n\nQuestions: ${parsed.length}\n\nData:\n${JSON.stringify(parsed, null, 2)}\n\nSummary:\n${summaryData || 'None'}`;
+                } else {
+                    document.getElementById('readResult').innerHTML = 
+                        `<span class="error">❌ NOT FOUND</span>\n\nNo quiz data in localStorage.\nClick "Write Test Data" first.`;
+                }
+            } catch (e) {
+                document.getElementById('readResult').innerHTML = 
+                    `<span class="error">❌ ERROR!</span>\n${e.message}`;
+            }
+        }
+
+        function showAll() {
+            const keys = Object.keys(localStorage);
+            const result = {};
+            
+            keys.forEach(key => {
+                const value = localStorage.getItem(key);
+                try {
+                    result[key] = JSON.parse(value);
+                } catch {
+                    result[key] = value;
+                }
+            });
+
+            document.getElementById('allKeys').innerHTML = 
+                `Total keys: ${keys.length}\n\nAll data:\n${JSON.stringify(result, null, 2)}`;
+        }
+
+        function clearAll() {
+            localStorage.clear();
+            document.getElementById('clearResult').innerHTML = 
+                `<span class="success">✅ CLEARED!</span>\n\nAll localStorage data has been removed.`;
+        }
+
+        function openQuiz() {
+            // Make sure data exists first
+            const data = localStorage.getItem('latest_quiz_data');
+            if (!data) {
+                alert('⚠️ No quiz data! Click "Write Test Data" first.');
+                return;
+            }
+
+            console.log('Opening quiz with data:', data);
+            window.open('quiz.html?subject=Debug&source=test', '_blank');
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            testRead();
+            showAll();
+        });
+    </script>
+</body>
+</html>
