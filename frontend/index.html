@@ -45,35 +45,45 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="main-content">Think Unlimited</h1>
+        <main class="main-content">
+            <div class="content-left">
+                <h1 class="main-title">ENWISE</h1>
                 <div class="subtitle-badge">
                     <p class="pill-badge">Your AI Study Coach</p>
                 </div>
                 
-                <div class="about-card">
-                    <p>Master any subject with personalized AI-powered learning paths and expert guidance</p>
+                <p class="main-description">Master any subject with personalized AI-powered learning paths and expert guidance. Get instant quiz generation, progress tracking, and personalized learning recommendations.</p>
+                
+                <div class="cta-buttons">
+                    <button class="cta-btn primary-btn">Get Started</button>
+                    <button class="cta-btn secondary-btn">Learn More</button>
                 </div>
             </div>
 
             <div class="content-right">
-                <div class="decoration-circ
                 <div class="decoration-circle"></div>
-                <div class="decoration-bubble"></div>
             </div>
         </main>
 
         <!-- Key Learning Section -->
         <section class="key-learning-section">
-            <div class="key-learning-container">
-                <div class="key-learning-content">
-                    <h2 class="key-learning-title">KEY LEARNING</h2>
-                    <p class="key-learning-text">
-                        Data is the fuel for AI; the cleaner the data, the more accurate the results. Internal education is also crucial to reduce resistance to change. Start with the smallest cases, then scale up.
-                    </p>
+            <div class="key-learning-bar">
+                <h2 class="key-learning-title">KEY LEARNING</h2>
+                <p class="key-learning-text">
+                    Data is the fuel for AI; the cleaner the data, the more accurate the results. Internal education is also crucial to reduce resistance to change. Start with the smallest cases, then scale up.
+                </p>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section class="quiz-section">
+            <h2 class="section-heading">Generate Your Quiz</h2>
+            <div class="quiz-container">
+                <div class="form-group">
+                    <label for="userTopic">Enter Topic:</label>
+                    <input type="text" id="userTopic" placeholder="e.g., Data Structures, Calculus..." class="quiz-input">
                 </div>
-                <div class="robot-image-container">
-                    <img src="assets/images/AI_Bot.png" alt="AI Robot" class="robot-image">
-                </div>
+                <button onclick="generateQuiz()" class="submit-btn quiz-btn">Generate Quiz</button>
             </div>
         </section>
     </div>

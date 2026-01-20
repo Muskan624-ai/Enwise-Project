@@ -112,3 +112,76 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Backend API Constants
+const BACKEND_URL = "http://172.18.237.93:8000";
+
+// Quiz Generation Function
+async function generateQuiz() {
+    // 1. Get the user's input from the HTML text box
+    const topicInput = document.getElementById("userTopic").value; 
+    
+    // Validate input
+    if (!topicInput.trim()) {
+        alert("Please enter a topic to generate a quiz.");
+        return;
+    }
+    
+    console.log("🚀 Sending request to backend for:", topicInput);
+
+    try {
+        // 2. The Handshake: Talking to your Python Backend
+        const response = await fetch(`${BACKEND_URL}/generate-quiz`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            // 3. The Parcel: Sending the data exactly how Python expects it
+            body: JSON.stringify({
+                topic: topicInput,
+                difficulty: "medium" // You can make this dynamic later if you want
+            })
+        });
+
+        // 4. Check if the backend said "OK"
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        // 5. Open the package (Parse JSON)
+        const data = await response.json();
+        console.log("✅ Quiz Received:", data);
+
+        // 6. NOW you can use 'data.questions' to show the quiz on screen
+        alert("✅ Quiz Generated Successfully! Check the Console (F12) to see the questions.");
+        
+        // Example: Display the quiz data (you can customize this)
+        if (data.questions && data.questions.length > 0) {
+            console.log("Quiz Questions:", data.questions);
+            // You can display the quiz on the page here
+            displayQuiz(data.questions);
+        }
+
+    } catch (error) {
+        console.error("❌ Connection Failed:", error);
+        alert("Could not connect to the backend. Is the AI Backend server running at " + BACKEND_URL + "?");
+    }
+}
+
+// Helper function to display quiz on the page
+function displayQuiz(questions) {
+    let quizHTML = '<div class="quiz-display"><h3>Generated Quiz</h3>';
+    
+    questions.forEach((q, index) => {
+        quizHTML += `
+            <div class="quiz-question">
+                <p><strong>Q${index + 1}: ${q.text || q.question}</strong></p>
+                ${q.options ? `<ul>${q.options.map(opt => `<li>${opt}</li>`).join('')}</ul>` : ''}
+            </div>
+        `;
+    });
+    
+    quizHTML += '</div>';
+    console.log(quizHTML);
+    // Optional: You can display this in a modal or on the page
+}

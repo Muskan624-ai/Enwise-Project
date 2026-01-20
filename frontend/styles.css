@@ -247,6 +247,54 @@ body {
     word-wrap: break-word;
 }
 
+.main-description {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: #2c3e50;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: clamp(1rem, 3vw, 1.5rem);
+    flex-wrap: wrap;
+}
+
+.cta-btn {
+    padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: 50px;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #5fc4b8, #7dd4c4);
+    color: white;
+    box-shadow: 0 6px 20px rgba(95, 196, 184, 0.3);
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(95, 196, 184, 0.4);
+}
+
+.secondary-btn {
+    background: transparent;
+    color: #5fc4b8;
+    border: 2px solid #5fc4b8;
+}
+
+.secondary-btn:hover {
+    background: #5fc4b8;
+    color: white;
+    transform: translateY(-3px);
+}
+
 .subtitle {
     font-size: clamp(1rem, 3vw, 1.3rem);
     color: #2c3e50;
@@ -405,7 +453,7 @@ body {
 /* Key Learning Section */
 .key-learning-section {
     background: linear-gradient(100deg, #cdffd8 0%, #7dd4c4 50%, #539d96 100%);
-    padding: clamp(2rem, 8vw, 5rem) 0;
+    padding: clamp(2rem, 5vw, 4rem) 0;
     margin-top: clamp(3rem, 10vw, 8rem);
     width: 100vw;
     position: relative;
@@ -415,54 +463,32 @@ body {
     margin-right: -50vw;
 }
 
-.key-learning-container {
+.key-learning-bar {
     width: 100%;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 3rem);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 clamp(1rem, 5vw, 3rem);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: clamp(2rem, 5vw, 4rem);
-}
-
-.key-learning-content {
-    flex: 1;
-    min-width: 0;
 }
 
 .key-learning-title {
-    font-size: clamp(2rem, 10vw, 3.5rem);
-    font-weight: 300;
-    letter-spacing: 0.08em;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: 0.05em;
     color: #000;
-    margin-bottom: clamp(1rem, 3vw, 2rem);
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
     line-height: 1.2;
 }
 
 .key-learning-text {
-    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    font-size: clamp(0.95rem, 2.2vw, 1.15rem);
     color: #2c3e50;
     line-height: 1.8;
-    text-align: justify;
-    max-width: 500px;
-}
-
-.robot-image-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: clamp(250px, 50vw, 400px);
-}
-
-.robot-image {
-    width: 100%;
-    height: auto;
-    max-width: clamp(200px, 80vw, 350px);
-    border-radius: clamp(15px, 4vw, 25px);
-    object-fit: cover;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    margin: 0;
+    font-weight: 500;
 }
 
 /* Responsive for Key Learning */
@@ -521,6 +547,52 @@ body {
         font-size: clamp(0.8rem, 2vw, 0.95rem);
         text-align: left;
     }
+}
+
+/* ============= QUIZ SECTION ============= */
+.quiz-section {
+    margin-top: clamp(3rem, 8vw, 6rem);
+    padding: clamp(2rem, 5vw, 4rem);
+    background: white;
+    border-radius: clamp(15px, 4vw, 25px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-heading {
+    font-size: clamp(1.8rem, 5vw, 2.3rem);
+    font-weight: 600;
+    color: #000;
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    text-align: center;
+}
+
+.quiz-container {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.quiz-input {
+    width: 100%;
+    padding: clamp(0.8rem, 1.8vw, 1rem) clamp(1rem, 2vw, 1.3rem);
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.quiz-input:focus {
+    outline: none;
+    border-color: #5fc4b8;
+    box-shadow: 0 0 15px rgba(95, 196, 184, 0.2);
+}
+
+.quiz-btn {
+    width: 100%;
 }
 
 /* ============= DASHBOARD PAGE ============= */
