@@ -420,8 +420,9 @@ body {
     position: relative;
     height: clamp(250px, 50vw, 400px);
     min-height: 250px;
+    mix-blend-mode: luminosity;
     display: flex;
-    align-items: center;
+    align-items: right;
     justify-content: center;
 }
 
@@ -582,6 +583,13 @@ body {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
+    animation: slideUpIn 1s ease-out 0.4s both;
+    opacity: 0.95;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.key-learning-section:hover {
+    opacity: 1;
 }
 
 .key-learning-bar {
@@ -593,6 +601,15 @@ body {
     border-radius: 12px;
     max-width: 1400px;
     margin: 0 auto;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideUpIn 1s ease-out 0.5s both;
+}
+
+.key-learning-bar:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(95, 196, 184, 0.15);
 }
 
 .key-learning-title {
@@ -602,6 +619,7 @@ body {
     color: #000;
     margin-bottom: clamp(1rem, 2vw, 1.5rem);
     line-height: 1.2;
+    animation: slideUpIn 1s ease-out 0.6s both;
 }
 
 .key-learning-text {
@@ -610,6 +628,13 @@ body {
     line-height: 1.8;
     margin: 0;
     font-weight: 500;
+    animation: slideUpIn 1s ease-out 0.7s both;
+    transition: color 0.4s ease;
+}
+
+.key-learning-bar:hover .key-learning-text {
+    color: #1a1a1a;
+}
 }
 
 /* Responsive for Key Learning */
