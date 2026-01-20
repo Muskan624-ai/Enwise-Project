@@ -1,0 +1,299 @@
+/* Custom CSS for Logic Links */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: clamp(14px, 2vw, 16px);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(100deg, #cdffd8 0%, #7dd4c4 50%, #539d96 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: clamp(1rem, 5vw, 3rem);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(1rem, 3vw, 2rem);
+    margin-bottom: clamp(2rem, 8vw, 5rem);
+    padding-bottom: clamp(1rem, 2vw, 1.5rem);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    width: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.3rem, 1vw, 0.5rem);
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-weight: 600;
+    background-color: #000;
+    color: #fff;
+    padding: clamp(0.5rem, 1.5vw, 0.8rem) clamp(0.8rem, 2vw, 1.2rem);
+    border-radius: 50px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.logo-icon {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+}
+
+.logo-text {
+    letter-spacing: 0.5px;
+    font-size: clamp(0.75rem, 1.8vw, 1rem);
+}
+
+.nav {
+    display: flex;
+    gap: clamp(1rem, 4vw, 3rem);
+    flex: 1;
+    justify-content: center;
+    min-width: fit-content;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    position: relative;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    color: #000;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #2c3e50;
+}
+
+.profile-btn {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    padding: clamp(0.4rem, 1.5vw, 0.7rem) clamp(1rem, 3vw, 1.5rem);
+    border-radius: 50px;
+    font-size: clamp(0.75rem, 1.8vw, 0.95rem);
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.profile-btn:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    flex: 1;
+    gap: clamp(2rem, 5vw, 4rem);
+    width: 100%;
+}
+
+.content-left {
+    flex: 1 1 100%;
+    z-index: 10;
+    min-width: 0;
+}
+
+.main-title {
+    font-size: clamp(2.5rem, 12vw, 5rem);
+    font-weight: 700;
+    color: #000;
+    letter-spacing: 0.05em;
+    margin-bottom: clamp(0.5rem, 2vw, 1rem);
+    line-height: 1.1;
+    word-wrap: break-word;
+}
+
+.subtitle {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    color: #2c3e50;
+    margin-bottom: clamp(1.5rem, 5vw, 3rem);
+    font-weight: 500;
+}
+
+.about-card {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(200, 230, 220, 0.5);
+    border-radius: clamp(15px, 4vw, 20px);
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    max-width: 90vw;
+    width: fit-content;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+}
+
+.about-card p {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    color: #5fc4b8;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.content-right {
+    flex: 1 1 100%;
+    position: relative;
+    height: clamp(250px, 50vw, 400px);
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.decoration-circle {
+    width: clamp(200px, 50vw, 500px);
+    height: clamp(200px, 50vw, 500px);
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(0 20px 50px rgba(95, 196, 184, 0.3));
+}
+
+.decoration-circle::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 45% 55% 50% 50% / 50% 50% 50% 50%;
+    background: linear-gradient(135deg, #5a9b91 0%, #6ba399 25%, #7aaba1 50%, #6ba8b8 75%, #7ab8d4 100%);
+    box-shadow: 
+        inset -40px -40px 80px rgba(0, 0, 0, 0.15),
+        inset 30px 30px 80px rgba(255, 255, 255, 0.4),
+        0 0 100px rgba(95, 196, 184, 0.3);
+    animation: rotate 8s linear infinite;
+}
+
+.decoration-circle::after {
+    content: '';
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    border-radius: 50% 45% 55% 50% / 50% 50% 50% 45%;
+    background: linear-gradient(225deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 40%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: rotate 6s linear infinite reverse;
+}
+
+.decoration-bubble {
+    position: absolute;
+    bottom: 10%;
+    left: 15%;
+    width: clamp(30px, 8vw, 60px);
+    height: clamp(30px, 8vw, 60px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(100, 200, 200, 0.3));
+    box-shadow: inset -2px -2px 8px rgba(0, 0, 0, 0.1), 0 0 20px rgba(95, 196, 184, 0.2);
+    animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-title {
+        font-size: 3.5rem;
+    }
+
+    .content-right {
+        display: none;
+    }
+
+    .main-content {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .nav {
+        gap: 1.5rem;
+        order: 3;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .logo {
+        order: 1;
+    }
+
+    .profile-btn {
+        order: 2;
+    }
+
+    .main-title {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .about-card {
+        padding: 2rem 2.5rem;
+    }
+}
