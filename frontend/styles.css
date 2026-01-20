@@ -22,12 +22,11 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1400px;
     margin: 0 auto;
-    padding: clamp(1rem, 5vw, 3rem);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding: 0;
 }
 
 /* Header */
@@ -37,14 +36,12 @@ body {
     align-items: center;
     flex-wrap: wrap;
     gap: clamp(1rem, 3vw, 2rem);
-    margin-bottom: clamp(2rem, 8vw, 5rem);
-    padding: clamp(1.2rem, 2.5vw, 1.8rem) 0;
-    padding-bottom: clamp(1.2rem, 2.5vw, 1.8rem);
+    padding: clamp(1.2rem, 2.5vw, 1.8rem) clamp(1.5rem, 5vw, 3rem);
     border-bottom: 3px solid rgba(95, 196, 184, 0.5);
     width: 100%;
     position: sticky;
     top: 0;
-    background: linear-gradient(135deg, rgba(205, 255, 216, 0.95) 0%, rgba(125, 212, 196, 0.95) 50%, rgba(83, 157, 150, 0.95) 100%);
+    background: linear-gradient(135deg, rgba(205, 255, 216, 0.98) 0%, rgba(125, 212, 196, 0.98) 50%, rgba(83, 157, 150, 0.98) 100%);
     z-index: 100;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(95, 196, 184, 0.2);
     backdrop-filter: blur(12px);
@@ -318,6 +315,7 @@ body {
     flex: 1;
     gap: clamp(2rem, 5vw, 4rem);
     width: 100%;
+    padding: clamp(1rem, 5vw, 3rem);
 }
 
 .content-left {
@@ -334,6 +332,7 @@ body {
     margin-bottom: clamp(0.5rem, 2vw, 1rem);
     line-height: 1.1;
     word-wrap: break-word;
+    animation: slideUpIn 0.8s ease-out 0.1s both;
 }
 
 .main-description {
@@ -343,12 +342,14 @@ body {
     font-weight: 500;
     line-height: 1.6;
     max-width: 500px;
+    animation: slideUpIn 0.8s ease-out 0.2s both;
 }
 
 .cta-buttons {
     display: flex;
     gap: clamp(1rem, 3vw, 1.5rem);
     flex-wrap: wrap;
+    animation: slideUpIn 0.8s ease-out 0.3s both;
 }
 
 .cta-btn {
@@ -425,10 +426,10 @@ body {
 }
 
 .decoration-circle {
-    width: clamp(300px, 60vw, 600px);
-    height: clamp(300px, 60vw, 600px);
+    width: clamp(350px, 70vw, 700px);
+    height: clamp(350px, 70vw, 700px);
     position: relative;
-    animation: float-circle 8s ease-in-out infinite;
+    animation: float-circle 8s ease-in-out infinite, pageEnterScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     filter: drop-shadow(0 30px 80px rgba(95, 196, 184, 0.4));
 }
 
@@ -486,6 +487,28 @@ body {
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes slideUpIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pageEnterScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
