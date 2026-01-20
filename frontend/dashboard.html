@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ENWISE</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 </head>
 <body class="dashboard-page">
     <div class="container">
@@ -64,7 +65,7 @@
             <!-- Subjects Grid -->
             <div class="subjects-grid">
                 <!-- Subject Card 1 -->
-                <a href="subject.html?id=1" class="subject-card">
+                <a href="discrete.html" class="subject-card">
                     <div class="subject-icon">📐</div>
                     <h3 class="subject-name">Discrete Mathematics</h3>
                     <p class="subject-progress">Progress: 65%</p>
@@ -74,8 +75,8 @@
                 </a>
 
                 <!-- Subject Card 2 -->
-                <a href="subject.html?id=2" class="subject-card">
-                    <div class="subject-icon"><img scr=""></div>
+                <a href="dsa.html" class="subject-card">
+                    <div class="subject-icon">🌳</div>
                     <h3 class="subject-name">DSA</h3>
                     <p class="subject-progress">Progress: 45%</p>
                     <div class="progress-bar">
@@ -83,45 +84,7 @@
                     </div>
                 </a>
 
-                <!-- Subject Card 3 -->
-                <a href="subject.html?id=3" class="subject-card">
-                    <div class="subject-icon">⚗️</div>
-                    <h3 class="subject-name">Chemistry</h3>
-                    <p class="subject-progress">Progress: 78%</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 78%"></div>
-                    </div>
-                </a>
-
-                <!-- Subject Card 4 -->
-                <a href="subject.html?id=4" class="subject-card">
-                    <div class="subject-icon">📚</div>
-                    <h3 class="subject-name">English</h3>
-                    <p class="subject-progress">Progress: 52%</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 52%"></div>
-                    </div>
-                </a>
-
-                <!-- Subject Card 5 -->
-                <a href="subject.html?id=5" class="subject-card">
-                    <div class="subject-icon">🌍</div>
-                    <h3 class="subject-name">History</h3>
-                    <p class="subject-progress">Progress: 88%</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 88%"></div>
-                    </div>
-                </a>
-
-                <!-- Subject Card 6 -->
-                <a href="subject.html?id=6" class="subject-card">
-                    <div class="subject-icon">🗺️</div>
-                    <h3 class="subject-name">Geography</h3>
-                    <p class="subject-progress">Progress: 71%</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 71%"></div>
-                    </div>
-                </a>
+                
             </div>
             <!-- Subject Bar Chart Section -->
             <div class="subject-bar-chart-section">
@@ -220,5 +183,69 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Initialize Bar Chart for Subject Progress
+        document.addEventListener('DOMContentLoaded', function() {
+            const barChartCanvas = document.getElementById('subjectBarChart');
+            if (barChartCanvas) {
+                const barChart = new Chart(barChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Discrete Maths', 'DSA'],
+                        datasets: [
+                            {
+                                label: 'Your Progress (%)',
+                                data: [65, 45],
+                                backgroundColor: [
+                                    '#5fc4b8',
+                                    '#45B7D1'
+                                ],
+                                borderRadius: 8,
+                                borderSkipped: false,
+                                borderWidth: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        indexAxis: 'x',
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    padding: 15,
+                                    font: {
+                                        size: 13,
+                                        weight: '600'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        weight: '600'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 // Main JavaScript file for Logic Links
 
 // API Configuration
-const API_BASE_URL = 'http://172.18.237.93:8000';
+const API_BASE_URL = 'https://enwise-backend.onrender.com';
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Logic Links loaded');
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Backend API Constants
-const BACKEND_URL = "http://172.18.237.93:8000";
+const BACKEND_URL = "https://enwise-backend.onrender.com";
 
 // Quiz Generation Function
 async function generateQuiz() {
@@ -185,3 +185,53 @@ function displayQuiz(questions) {
     console.log(quizHTML);
     // Optional: You can display this in a modal or on the page
 }
+
+// AI Chat Message Handler
+function sendChatMessage() {
+    const chatInput = document.querySelector('.chat-input');
+    const chatMessages = document.querySelector('.chat-messages');
+    
+    if (!chatInput || !chatMessages) return;
+    
+    const userMessage = chatInput.value.trim();
+    if (!userMessage) return;
+    
+    // Add user message to chat
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'message user-message';
+    userMessageDiv.innerHTML = `<p>${userMessage}</p>`;
+    chatMessages.appendChild(userMessageDiv);
+    
+    // Clear input
+    chatInput.value = '';
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Simulate AI response (replace with actual backend call if available)
+    setTimeout(() => {
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.className = 'message ai-message';
+        aiMessageDiv.innerHTML = `<p>Thanks for your question! I'm here to help you learn better.</p>`;
+        chatMessages.appendChild(aiMessageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 500);
+}
+
+// Add event listener for chat send button
+document.addEventListener('DOMContentLoaded', function() {
+    const sendBtn = document.querySelector('.send-btn');
+    const chatInput = document.querySelector('.chat-input');
+    
+    if (sendBtn) {
+        sendBtn.addEventListener('click', sendChatMessage);
+    }
+    
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+    }
+});
