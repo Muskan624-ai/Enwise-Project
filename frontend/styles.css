@@ -809,7 +809,7 @@ body {
 
 .upload-subtitle {
     text-align: center;
-    color: #7dd4c4;
+    color: #000000;
     margin-bottom: clamp(2rem, 5vw, 3rem);
     font-size: clamp(0.95rem, 2vw, 1.1rem);
 }
@@ -829,7 +829,7 @@ body {
     border-bottom: 3px solid transparent;
     font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: 600;
-    color: #7dd4c4;
+    color: #000000;
     cursor: pointer;
     transition: all 0.3s ease;
 }

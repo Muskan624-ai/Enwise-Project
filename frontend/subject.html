@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject - ENWISE</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 </head>
 <body class="subject-page">
     <div class="container">
@@ -73,12 +72,14 @@
                 </div>
             </div>
 
-            <!-- Subject Bar Chart Section -->
-            <div class="subject-bar-chart-section">
-                <h2 class="chart-title">Subject Progress Comparison</h2>
-                <div class="chart-container">
-                    <canvas id="subjectBarChart"></canvas>
+            <!-- Quiz Section -->
+            <div class="quiz-section">
+                <h2 class="section-heading">Generate Quiz</h2>
+                <div class="quiz-container">
+                    <input type="text" id="userTopic" class="quiz-input" placeholder="Enter topic to generate quiz...">
+                    <button class="quiz-btn" onclick="generateQuiz()">Generate Quiz</button>
                 </div>
+                <div id="quiz-results"></div>
             </div>
 
             <!-- Content Sections -->
@@ -261,72 +262,5 @@
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        // Initialize Bar Chart for Subject Progress
-        const barChartCanvas = document.getElementById('subjectBarChart');
-        if (barChartCanvas) {
-            const barChart = new Chart(barChartCanvas, {
-                type: 'bar',
-                data: {
-                    labels: ['DSA', 'OS', 'Discrete Maths', 'OOPS', 'Tech English', 'Eng Physics', 'Eng Chemistry'],
-                    datasets: [
-                        {
-                            label: 'Your Progress (%)',
-                            data: [65, 45, 78, 52, 88, 71, 62],
-                            backgroundColor: [
-                                '#FF6B6B',
-                                '#4ECDC4',
-                                '#45B7D1',
-                                '#FFA07A',
-                                '#98D8C8',
-                                '#F7DC6F',
-                                '#BB8FCE'
-                            ],
-                            borderRadius: 8,
-                            borderSkipped: false,
-                            borderWidth: 0
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                padding: 15,
-                                font: {
-                                    size: 13,
-                                    weight: '600'
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                font: {
-                                    size: 12,
-                                    weight: '600'
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    </script>
 </body>
 </html>

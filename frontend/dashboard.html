@@ -44,22 +44,7 @@
             <button class="profile-btn">Student profile</button>
         </nav>
 
-        <!-- Dashbubjects Bar (Header) -->
-            <div class="subjects-header-bar">
-                <h2 class="subjects-header-title">Subjects</h2>
-                <div class="subjects-header-list">
-                    <button class="subject-header-btn active" data-subject="all">All</button>
-                    <button class="subject-header-btn" data-subject="dsa">DSA</button>
-                    <button class="subject-header-btn" data-subject="os">OS</button>
-                    <button class="subject-header-btn" data-subject="discrete">Discrete Maths</button>
-                    <button class="subject-header-btn" data-subject="oops">OOPS</button>
-                    <button class="subject-header-btn" data-subject="english">Tech English</button>
-                    <button class="subject-header-btn" data-subject="physics">Eng Physics</button>
-                    <button class="subject-header-btn" data-subject="chemistry">Eng Chemistry</button>
-                </div>
-            </div>
-
-            <!-- Soard Content -->
+        <!-- Dashboard Content -->
         <main class="dashboard-main">
             <!-- Search and Filter Section -->
             <div class="dashboard-header">
@@ -138,7 +123,13 @@
                     </div>
                 </a>
             </div>
-
+            <!-- Subject Bar Chart Section -->
+            <div class="subject-bar-chart-section">
+                <h2 class="chart-title">Subject Progress Comparison</h2>
+                <div class="chart-container">
+                    <canvas id="subjectBarChart"></canvas>
+                </div>
+            </div>
             <!-- Quick Actions -->
             <div class="quick-actions">
                 <a href="upload.html" class="action-btn upload-btn">
