@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable - ENWISE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="timetable-page">
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">Think Unlimited</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+                <a href="timetable.html" class="nav-link active">Timetable</a>
+                <a href="ai-chat.html" class="nav-link">💬 AI Chat</a>
+            </nav>
+            <button class="profile-btn">Student profile</button>
+            
+            <!-- Hamburger Menu -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="nav-overlay" id="navOverlay"></div>
+        
+        <!-- Mobile Navigation -->
+        <nav class="nav-mobile" id="navMobile">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="upload.html" class="nav-link">Upload</a>
+            <a href="timetable.html" class="nav-link active">Timetable</a>
+            <a href="ai-chat.html" class="nav-link">💬 AI Chat</a>
+            <button class="profile-btn">Student profile</button>
+        </nav>
+
+        <!-- Main Timetable Content -->
+        <main class="timetable-main">
+            <!-- Header Section -->
+            <div class="timetable-header">
+                <h1>📅 Study Timetable</h1>
+                <p>Organize your learning schedule efficiently</p>
+                <div class="timetable-controls">
+                    <button class="timetable-btn" onclick="switchView('week')">📆 Weekly</button>
+                    <button class="timetable-btn active" onclick="switchView('day')">📅 Daily</button>
+                    <button class="timetable-btn" onclick="switchView('month')">📊 Monthly</button>
+                    <button class="timetable-btn" onclick="generateAISchedule()">🤖 AI Schedule</button>
+                </div>
+            </div>
+
+            <!-- Timetable Content -->
+            <div class="timetable-content">
+                <!-- Left Sidebar: Days/Navigation -->
+                <aside class="timetable-sidebar">
+                    <h3>📚 Subjects</h3>
+                    <div class="subject-list-tt">
+                        <label class="subject-checkbox">
+                            <input type="checkbox" checked data-subject="Discrete Math">
+                            <span>Discrete Mathematics</span>
+                        </label>
+                        <label class="subject-checkbox">
+                            <input type="checkbox" checked data-subject="DSA">
+                            <span>Data Structures</span>
+                        </label>
+                        <label class="subject-checkbox">
+                            <input type="checkbox" checked data-subject="Web Dev">
+                            <span>Web Development</span>
+                        </label>
+                        <label class="subject-checkbox">
+                            <input type="checkbox" checked data-subject="Physics">
+                            <span>Engineering Physics</span>
+                        </label>
+                    </div>
+
+                    <hr style="margin: 1.5rem 0; opacity: 0.2;">
+
+                    <h3>📅 This Week</h3>
+                    <div class="week-days">
+                        <button class="day-btn active" onclick="selectDay(this, 'Monday')">Mon</button>
+                        <button class="day-btn" onclick="selectDay(this, 'Tuesday')">Tue</button>
+                        <button class="day-btn" onclick="selectDay(this, 'Wednesday')">Wed</button>
+                        <button class="day-btn" onclick="selectDay(this, 'Thursday')">Thu</button>
+                        <button class="day-btn" onclick="selectDay(this, 'Friday')">Fri</button>
+                        <button class="day-btn" onclick="selectDay(this, 'Saturday')">Sat</button>
+                        <button class="day-btn" onclick="selectDay(this, 'Sunday')">Sun</button>
+                    </div>
+                </aside>
+
+                <!-- Main Timetable Grid -->
+                <section class="timetable-grid-section">
+                    <!-- Daily View (Default) -->
+                    <div id="dayView" class="timetable-view active">
+                        <h2 id="currentDay" class="day-title">Monday</h2>
+                        <div class="schedule-grid">
+                            <div class="time-slot">
+                                <div class="time">8:00 AM</div>
+                                <div class="slot-content morning-routine">
+                                    <h4>🌅 Morning Review</h4>
+                                    <p>Review yesterday's notes</p>
+                                    <span class="duration">30 min</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">8:30 AM</div>
+                                <div class="slot-content study-session" data-subject="DSA">
+                                    <h4>🌳 Data Structures & Algorithms</h4>
+                                    <p>Learn: Trees & Graphs</p>
+                                    <span class="duration">1.5 hr</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">10:00 AM</div>
+                                <div class="slot-content break-time">
+                                    <h4>☕ Break</h4>
+                                    <p>Stretch & hydrate</p>
+                                    <span class="duration">15 min</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">10:15 AM</div>
+                                <div class="slot-content study-session" data-subject="Discrete Math">
+                                    <h4>📐 Discrete Mathematics</h4>
+                                    <p>Practice: Logic & Proofs</p>
+                                    <span class="duration">1.5 hr</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">11:45 AM</div>
+                                <div class="slot-content practice-session">
+                                    <h4>✏️ Practice Questions</h4>
+                                    <p>Solve 5 DSA problems</p>
+                                    <span class="duration">1 hr</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">12:45 PM</div>
+                                <div class="slot-content break-time">
+                                    <h4>🍽️ Lunch Break</h4>
+                                    <p>Take a proper break</p>
+                                    <span class="duration">45 min</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">1:30 PM</div>
+                                <div class="slot-content study-session" data-subject="Web Dev">
+                                    <h4>💻 Web Development</h4>
+                                    <p>Build: React Components</p>
+                                    <span class="duration">1.5 hr</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">3:00 PM</div>
+                                <div class="slot-content quiz-session">
+                                    <h4>📝 Quiz / Assessment</h4>
+                                    <p>Test your knowledge</p>
+                                    <span class="duration">45 min</span>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time">3:45 PM</div>
+                                <div class="slot-content revision-session">
+                                    <h4>🔄 Revision & Notes</h4>
+                                    <p>Summarize today's learning</p>
+                                    <span class="duration">30 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly View -->
+                    <div id="weekView" class="timetable-view">
+                        <div class="week-grid">
+                            <div class="day-column">
+                                <h3>Monday</h3>
+                                <div class="daily-summary">
+                                    <div class="summary-item">🌳 DSA: 1.5h</div>
+                                    <div class="summary-item">📐 Discrete: 1.5h</div>
+                                    <div class="summary-item">💻 Web Dev: 1.5h</div>
+                                    <div class="summary-item">✏️ Practice: 1h</div>
+                                    <p class="total-hours">Total: 5.5 hours</p>
+                                </div>
+                            </div>
+                            <div class="day-column">
+                                <h3>Tuesday</h3>
+                                <div class="daily-summary">
+                                    <div class="summary-item">📐 Discrete: 2h</div>
+                                    <div class="summary-item">💻 Web Dev: 1.5h</div>
+                                    <div class="summary-item">🌳 DSA: 1h</div>
+                                    <div class="summary-item">📝 Quiz: 45m</div>
+                                    <p class="total-hours">Total: 5.25 hours</p>
+                                </div>
+                            </div>
+                            <div class="day-column">
+                                <h3>Wednesday</h3>
+                                <div class="daily-summary">
+                                    <div class="summary-item">🌳 DSA: 2h</div>
+                                    <div class="summary-item">📐 Discrete: 1h</div>
+                                    <div class="summary-item">💻 Web Dev: 1.5h</div>
+                                    <div class="summary-item">✏️ Practice: 1.5h</div>
+                                    <p class="total-hours">Total: 6 hours</p>
+                                </div>
+                            </div>
+                            <div class="day-column">
+                                <h3>Thursday</h3>
+                                <div class="daily-summary">
+                                    <div class="summary-item">💻 Web Dev: 2h</div>
+                                    <div class="summary-item">🌳 DSA: 1.5h</div>
+                                    <div class="summary-item">📐 Discrete: 1h</div>
+                                    <div class="summary-item">📝 Quiz: 45m</div>
+                                    <p class="total-hours">Total: 5.25 hours</p>
+                                </div>
+                            </div>
+                            <div class="day-column">
+                                <h3>Friday</h3>
+                                <div class="daily-summary">
+                                    <div class="summary-item">📐 Discrete: 1.5h</div>
+                                    <div class="summary-item">💻 Web Dev: 1.5h</div>
+                                    <div class="summary-item">🌳 DSA: 1.5h</div>
+                                    <div class="summary-item">📝 Review: 1h</div>
+                                    <p class="total-hours">Total: 5.5 hours</p>
+                                </div>
+                            </div>
+                            <div class="day-column">
+                                <h3>Saturday</h3>
+                                <div class="daily-summary">
+                                    <div class="summary-item">🌳 DSA: 2.5h</div>
+                                    <div class="summary-item">💻 Web Dev: 1.5h</div>
+                                    <div class="summary-item">✏️ Projects: 2h</div>
+                                    <p class="total-hours">Total: 6 hours</p>
+                                </div>
+                            </div>
+                            <div class="day-column">
+                                <h3>Sunday</h3>
+                                <div class="daily-summary">
+                                    <div class="summary-item">📐 Discrete: 2h</div>
+                                    <div class="summary-item">🔄 Revision: 1.5h</div>
+                                    <div class="summary-item">📝 Mock Test: 1.5h</div>
+                                    <p class="total-hours">Total: 5 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly View -->
+                    <div id="monthView" class="timetable-view">
+                        <div class="month-stats">
+                            <div class="stat-card">
+                                <h4>📚 Total Study Hours</h4>
+                                <p class="stat-value">156 hours</p>
+                                <p class="stat-subtitle">Target: 150 hours ✓</p>
+                            </div>
+                            <div class="stat-card">
+                                <h4>📈 Completion Rate</h4>
+                                <p class="stat-value">87%</p>
+                                <p class="stat-subtitle">On track for success</p>
+                            </div>
+                            <div class="stat-card">
+                                <h4>🌟 Focus Areas</h4>
+                                <p class="stat-value">3 subjects</p>
+                                <p class="stat-subtitle">Balanced distribution</p>
+                            </div>
+                            <div class="stat-card">
+                                <h4>⚡ Consistency</h4>
+                                <p class="stat-value">28 days</p>
+                                <p class="stat-subtitle">28-day streak 🔥</p>
+                            </div>
+                        </div>
+                        <div class="month-heatmap">
+                            <h3>Study Frequency Heatmap</h3>
+                            <p style="color: #999; margin-bottom: 1rem;">Daily study minutes throughout the month</p>
+                            <div class="heatmap-grid" id="heatmapGrid"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Action Panel -->
+            <div class="timetable-actions">
+                <button class="action-btn" onclick="addNewSession()">➕ Add Session</button>
+                <button class="action-btn" onclick="exportTimetable()">📥 Export</button>
+                <button class="action-btn" onclick="printTimetable()">🖨️ Print</button>
+                <button class="action-btn" onclick="shareSchedule()">📤 Share</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Timetable specific functions
+        function switchView(view) {
+            // Hide all views
+            document.getElementById('dayView').classList.remove('active');
+            document.getElementById('weekView').classList.remove('active');
+            document.getElementById('monthView').classList.remove('active');
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.timetable-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected view and mark button active
+            if (view === 'day') {
+                document.getElementById('dayView').classList.add('active');
+            } else if (view === 'week') {
+                document.getElementById('weekView').classList.add('active');
+            } else if (view === 'month') {
+                document.getElementById('monthView').classList.add('active');
+                generateHeatmap();
+            }
+            
+            // Mark button as active
+            event.target.classList.add('active');
+        }
+
+        function selectDay(element, day) {
+            // Remove active from all day buttons
+            document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active to clicked button
+            element.classList.add('active');
+            
+            // Update day title
+            document.getElementById('currentDay').textContent = day;
+            
+            // In real app, fetch schedule for that day
+            console.log('Selected:', day);
+        }
+
+        function generateAISchedule() {
+            alert('🤖 AI generating optimized schedule based on your preferences and weak areas...\n\nSchedule will be updated shortly!');
+        }
+
+        function addNewSession() {
+            alert('Opening session creation modal...');
+        }
+
+        function exportTimetable() {
+            alert('📥 Exporting timetable as PDF...');
+        }
+
+        function printTimetable() {
+            window.print();
+        }
+
+        function shareSchedule() {
+            alert('📤 Share your timetable with classmates or teachers');
+        }
+
+        function generateHeatmap() {
+            const heatmapGrid = document.getElementById('heatmapGrid');
+            if (heatmapGrid.innerHTML) return; // Already generated
+            
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const weeks = 4;
+            let html = '<div style="display: grid; gap: 0.5rem;">';
+            
+            for (let w = 0; w < weeks; w++) {
+                html += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;">';
+                for (let d = 0; d < 7; d++) {
+                    const intensity = Math.random() > 0.3 ? Math.floor(Math.random() * 4) : 0;
+                    const colors = ['#f0f0f0', '#c3e9e5', '#7dd4c4', '#5fc4b8', '#2d9b93'];
+                    html += `<div style="width: 20px; height: 20px; background: ${colors[intensity]}; border-radius: 4px; cursor: pointer; transition: all 0.3s;" title="${w*7+d+1}"></div>`;
+                }
+                html += '</div>';
+            }
+            html += '</div>';
+            
+            heatmapGrid.innerHTML = html;
+        }
+
+        // Initialize heatmap on load if month view is shown
+        window.addEventListener('load', function() {
+            // Init tooltip on day buttons
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectDay(this, this.textContent);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
