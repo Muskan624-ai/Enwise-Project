@@ -1,7 +1,7 @@
 // Main JavaScript file for Logic Links
 
 // API Configuration
-const API_BASE_URL = 'https://enwise-backend.onrender.com';
+const API_BASE_URL = 'http://172.18.236.5:8000';
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Logic Links loaded');
@@ -141,8 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Backend API Constants
-const BACKEND_URL = "https://enwise-backend.onrender.com";
+
 
 // Quiz Generation Function
 async function generateQuiz() {
@@ -159,7 +158,7 @@ async function generateQuiz() {
 
     try {
         // 2. The Handshake: Talking to your Python Backend
-        const response = await fetch(`${API_BASE_URL}/generate-quiz`, {
+        const response = await fetch(${API_BASE_URL}/generate-quiz, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -190,10 +189,11 @@ async function generateQuiz() {
             displayQuiz(data.questions);
         }
 
-    } catch (error) {
-        console.error("❌ Connection Failed:", error);
-        alert("Could not connect to the backend. Is the AI Backend server running at " + BACKEND_URL + "?");
-    }
+    }  catch (error) {
+    console.error("❌ Technical Error Details:", error);
+    // This will show if it's a "Network Error" or "Refused"
+    alert(Connection Failed!\n\nReason: ${error.message}\nTarget: ${API_BASE_URL});
+}
 }
 
 // Helper function to display quiz on the page
@@ -361,34 +361,76 @@ function closeUploadModal() {
     }
 }
 
-function handleUpload(subject) {
+async function handleUpload(subject) {
     const title = document.getElementById('uploadTitle').value;
     const file = document.getElementById('uploadFile').files[0];
-    const description = document.getElementById('uploadDescription').value;
-    const type = document.getElementById('uploadType').value;
+    const chapter = document.getElementById('uploadDescription').value || "General Chapter";
     
     if (!title || !file) {
         alert('Please fill in title and select a file');
         return;
     }
-    
-    // Show success message
-    alert(`✅ File "${title}" uploaded successfully for ${subject}!`);
-    
-    // Close modal
-    closeUploadModal();
-    
-    // Here you would typically send the file to backend
-    console.log('Upload data:', {
-        subject: subject,
-        title: title,
-        file: file.name,
-        description: description,
-        type: type,
-        size: file.size
-    });
-}
 
+    // Show a "Processing" state
+    const uploadBtn = document.querySelector('.modal-btn-upload');
+    uploadBtn.innerText = "⏳ Processing with AI...";
+    uploadBtn.disabled = true;
+
+    try {
+        // 1. Create the Parcel (FormData)
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("subject", subject);
+        formData.append("chapter", chapter);
+
+        // 2. The Handshake (API Call)
+        const response = await fetch(${API_BASE_URL}/generate-offline-pack, {
+            method: "POST",
+            body: formData // Note: No headers needed for FormData, browser does it automatically
+        });
+
+        if (!response.ok) throw new Error('AI Generation failed');
+
+        const data = await response.json();
+        console.log("✅ Study Pack Received:", data);
+
+        // 3. Save for Offline Use
+        localStorage.setItem(offline_${subject}_${title}, JSON.stringify(data));
+
+        alert(✅ AI has analyzed your notes! You can now access the summary and quiz offline.);
+        
+        // Optional: Trigger a UI update to show the summary immediately
+        displayStudyPack(data); 
+        closeUploadModal();
+
+    } catch (error) {
+        console.error("❌ Integration Error:", error);
+        alert("Could not connect to the AI backend. Make sure the server is running.");
+    } finally {
+        uploadBtn.innerText = "Upload File";
+        uploadBtn.disabled = false;
+    }
+}
+function displayStudyPack(data) {
+    const resultsArea = document.getElementById('quiz-results'); // Or any container
+    if (!resultsArea) return;
+
+    let html = `
+        <div class="ai-pack-card">
+            <h3>📖 AI Summary</h3>
+            <ul>${data.summary.map(s => <li>${s}</li>).join('')}</ul>
+            <hr>
+            <h3>📝 Quick Practice Quiz</h3>
+            ${data.quiz.map((q, i) => `
+                <div class="q-block">
+                    <p><strong>${i+1}. ${q.q}</strong></p>
+                    ${q.options.map(opt => <button onclick="alert('${opt === q.a ? 'Correct!' : 'Try again!'}')">${opt}</button>).join('')}
+                </div>
+            `).join('')}
+        </div>
+    `;
+    resultsArea.innerHTML = html;
+}
 // ==================== AI CHAT PAGE FUNCTIONS ====================
 
 // Send AI Chat Message (Full Page)
@@ -501,180 +543,433 @@ async function getAIResponse(userMessage, chatMessages) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Generate Intelligent Local AI Response
+// Generate Intelligent Local AI Response - Enhanced for Comprehensive Learning
 function generateLocalAIResponse(userMessage) {
     const msg = userMessage.toLowerCase();
     
-    // DSA & Algorithms
+    // Math & Calculus with numericals
+    if (msg.includes('derivative') || msg.includes('differentiation') || msg.includes('calculus')) {
+        return `**Derivatives & Calculus** 📊
+
+**Concept:** Rate of change at any instant
+
+**Rules:**
+• Power Rule: d/dx(xⁿ) = n·xⁿ⁻¹
+• Product Rule: d/dx(uv) = u'v + uv'
+• Chain Rule: d/dx(f(g(x))) = f'(g(x))·g'(x)
+
+**Example Numerical:**
+Find dy/dx if y = 3x³ - 5x² + 7x - 2
+
+**Solution:**
+dy/dx = d/dx(3x³) - d/dx(5x²) + d/dx(7x) - d/dx(2)
+     = 3(3x²) - 5(2x) + 7(1) - 0
+     = 9x² - 10x + 7
+
+**Real-Life Applications:**
+• **Physics:** Velocity = derivative of position (speed of a car)
+• **Economics:** Marginal cost = derivative of total cost
+• **Medicine:** Rate of drug concentration change in blood
+• **Engineering:** Optimization of rocket trajectories
+
+Need more examples or a specific problem solved? 🚀`;
+    }
+
+    // Integration
+    if (msg.includes('integrat') || msg.includes('antiderivative')) {
+        return `**Integration - Finding Area & Accumulation** 📐
+
+**Basic Formulas:**
+• ∫xⁿ dx = xⁿ⁺¹/(n+1) + C (n ≠ -1)
+• ∫sin(x) dx = -cos(x) + C
+• ∫cos(x) dx = sin(x) + C
+• ∫eˣ dx = eˣ + C
+
+**Numerical Example:**
+Evaluate: ∫(4x³ - 6x² + 2x - 5) dx
+
+**Solution:**
+= 4∫x³dx - 6∫x²dx + 2∫xdx - 5∫dx
+= 4(x⁴/4) - 6(x³/3) + 2(x²/2) - 5x + C
+= x⁴ - 2x³ + x² - 5x + C
+
+**Real-World Uses:**
+• **Physics:** Distance = integral of velocity (total distance traveled)
+• **Economics:** Total profit = integral of marginal profit
+• **Engineering:** Volume of irregular solids
+• **Statistics:** Probability distributions (area under curve)
+
+Want a definite integral or specific application? 🎯`;
+    }
+
+    // Physics - Mechanics
+    if (msg.includes('physics') || msg.includes('force') || msg.includes('motion') || msg.includes('newton')) {
+        return `**Physics - Mechanics & Motion** ⚡
+
+**Newton's Laws:**
+1. F = ma (Force = mass × acceleration)
+2. Action = Reaction
+3. Inertia (object stays at rest/motion)
+
+**Example Problem:**
+A car of mass 1000 kg accelerates from 0 to 60 km/h in 5 seconds. Find the force applied.
+
+**Solution:**
+v₁ = 0 km/h = 0 m/s
+v₂ = 60 km/h = 60/3.6 = 16.67 m/s
+t = 5 s
+a = (v₂ - v₁)/t = 16.67/5 = 3.33 m/s²
+F = ma = 1000 × 3.33 = 3330 N
+
+**Real-Life Applications:**
+• **Automotive:** Braking systems (deceleration)
+• **Sports:** Baseball trajectory calculations
+• **Space:** Rocket propulsion & orbital mechanics
+• **Construction:** Load-bearing capacity of structures
+
+Need help with kinematics, energy, or projectile motion? 🚗`;
+    }
+
+    // Chemistry
+    if (msg.includes('chemistry') || msg.includes('chemical') || msg.includes('reaction') || msg.includes('mole')) {
+        return `**Chemistry - Reactions & Calculations** 🧪
+
+**Basic Concepts:**
+• Mole = 6.022 × 10²³ particles (Avogadro's number)
+• Molarity (M) = moles/liters
+• Mass = moles × molecular weight
+
+**Numerical Example:**
+Find moles in 90g of water (H₂O)
+
+**Solution:**
+Molecular weight of H₂O = 2(1) + 16 = 18 g/mol
+Moles = mass/molecular weight
+     = 90/18 = 5 moles
+
+**Real-World Applications:**
+• **Medicine:** Drug dosage calculations (molarity)
+• **Industry:** Chemical manufacturing ratios
+• **Environment:** Air quality & pollution measurement
+• **Food:** Nutritional content analysis
+
+Need help with stoichiometry, pH, or equilibrium? 🔬`;
+    }
+
+    // Algebra & Equations
+    if (msg.includes('algebra') || msg.includes('equation') || msg.includes('solve') || msg.includes('quadratic')) {
+        return `**Algebra - Solving Equations** 🔢
+
+**Quadratic Formula:** x = [-b ± √(b² - 4ac)] / 2a
+
+**Example Problem:**
+Solve: 2x² + 5x - 3 = 0
+
+**Solution:**
+a = 2, b = 5, c = -3
+Discriminant = b² - 4ac = 25 - 4(2)(-3) = 25 + 24 = 49
+x = [-5 ± √49] / 4
+x = [-5 ± 7] / 4
+x₁ = 2/4 = 0.5
+x₂ = -12/4 = -3
+
+**Real-Life Applications:**
+• **Business:** Profit/loss calculations (break-even point)
+• **Architecture:** Parabolic arch designs
+• **Sports:** Trajectory of basketball shots
+• **Finance:** Compound interest optimization
+
+Want linear equations, systems, or inequalities? 📈`;
+    }
+
+    // Statistics & Probability
+    if (msg.includes('statistic') || msg.includes('probability') || msg.includes('mean') || msg.includes('standard deviation')) {
+        return `**Statistics & Probability** 📊
+
+**Key Formulas:**
+• Mean (x̄) = Σx / n
+• Variance (σ²) = Σ(x - x̄)² / n
+• Standard Deviation (σ) = √variance
+• Probability (P) = favorable outcomes / total outcomes
+
+**Example:**
+Dataset: 12, 15, 18, 20, 25. Find mean and standard deviation.
+
+**Solution:**
+Mean = (12+15+18+20+25)/5 = 90/5 = 18
+Deviations: -6, -3, 0, 2, 7
+Squares: 36, 9, 0, 4, 49
+Variance = (36+9+0+4+49)/5 = 98/5 = 19.6
+SD = √19.6 ≈ 4.43
+
+**Real Applications:**
+• **Finance:** Risk assessment & portfolio management
+• **Medicine:** Clinical trial analysis
+• **Marketing:** Customer behavior prediction
+• **Sports:** Player performance analytics
+
+Need help with distributions, hypothesis testing, or regression? 📉`;
+    }
+
+    // Programming & Coding
+    if (msg.includes('code') || msg.includes('program') || msg.includes('python') || msg.includes('javascript')) {
+        return `**Programming - Real Problem Solving** 💻
+
+**Example: Find Fibonacci Number**
+
+**Problem:** Generate nth Fibonacci number (0, 1, 1, 2, 3, 5, 8...)
+
+**Solution (Python):**
+\`\`\`python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# Example: 7th Fibonacci
+result = fibonacci(7)  # Output: 13
+\`\`\`
+
+**Real-World Applications:**
+• **Finance:** Stock market analysis patterns
+• **Nature:** Flower petal arrangements, shell spirals
+• **Art:** Golden ratio in design
+• **Biology:** Population growth modeling
+
+**More Complex Example:**
+\`\`\`python
+# Binary Search - O(log n)
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+\`\`\`
+
+Need help with loops, arrays, objects, or specific algorithms? 🎮`;
+    }
+
+    // Economics & Business
+    if (msg.includes('econom') || msg.includes('business') || msg.includes('profit') || msg.includes('cost')) {
+        return `**Economics & Business Math** 💰
+
+**Key Concepts:**
+• Profit = Revenue - Cost
+• Break-even: Revenue = Cost
+• ROI = (Profit / Investment) × 100%
+
+**Example Problem:**
+A business sells product at $50/unit. Fixed costs = $10,000, variable cost = $20/unit. Find break-even point.
+
+**Solution:**
+Let x = number of units
+Revenue = 50x
+Total Cost = 10000 + 20x
+Break-even: 50x = 10000 + 20x
+30x = 10000
+x = 334 units (rounded up)
+
+**Real Applications:**
+• **Startups:** Investment decisions & fundraising
+• **Retail:** Pricing strategies & inventory management
+• **Manufacturing:** Production optimization
+• **Stock Market:** Portfolio diversification
+
+Need help with supply-demand, elasticity, or financial ratios? 📊`;
+    }
+
+    // Geometry & Trigonometry
+    if (msg.includes('geometry') || msg.includes('trigonometry') || msg.includes('triangle') || msg.includes('angle')) {
+        return `**Geometry & Trigonometry** 📐
+
+**Key Formulas:**
+• sin²θ + cos²θ = 1
+• Area of triangle = ½ × base × height
+• Pythagorean: a² + b² = c²
+
+**Example:**
+A ladder 10m long leans against a wall at 60°. How high does it reach?
+
+**Solution:**
+sin(60°) = height / 10
+height = 10 × sin(60°)
+height = 10 × 0.866
+height ≈ 8.66 meters
+
+**Real Applications:**
+• **Architecture:** Building design & roof angles
+• **Navigation:** GPS & ship positioning (triangulation)
+• **Astronomy:** Calculating distances to stars
+• **Gaming:** 3D graphics rendering & collision detection
+• **Surveying:** Land measurement
+
+Need help with circles, polygons, or 3D shapes? 🏗️`;
+    }
+
+    // Data Structures & Algorithms
     if (msg.includes('dsa') || msg.includes('data structure') || msg.includes('algorithm')) {
-        return `Great question about Data Structures & Algorithms! 🔥
+        return `**Data Structures & Algorithms** 🔥
 
-**DSA (Data Structures & Algorithms)** is the backbone of computer science and software development.
+**Real-Life Examples:**
+• **Arrays** → Contact list (ordered storage)
+• **Stack** → Browser back button (LIFO)
+• **Queue** → Print job queue (FIFO)
+• **Trees** → File system hierarchy
+• **Graphs** → Social networks, Google Maps routes
+• **Hash Tables** → Dictionary, database indexing
 
-**Real-life examples:**
-• **Arrays** → Your contact list on phone (ordered list of names)
-• **Stack** → Stack of plates in a cafeteria (Last In, First Out)
-• **Queue** → People waiting in a ticket line (First In, First Out)
-• **Trees** → Your computer's folder structure (hierarchical organization)
-• **Graphs** → Google Maps finding shortest route (networks & connections)
-• **Hash Tables** → Dictionary looking up word meanings (fast key-value lookup)
+**Practical Problem:**
+Find duplicates in an array [1,2,3,2,4,3,5]
 
-**Why learn DSA?**
-1. Crack coding interviews at top companies
-2. Write efficient, optimized code
-3. Solve complex problems systematically
-4. Build scalable applications
+**Solution (Hash Map):**
+\`\`\`python
+def find_duplicates(arr):
+    seen = {}
+    duplicates = []
+    for num in arr:
+        if num in seen:
+            duplicates.append(num)
+        else:
+            seen[num] = True
+    return duplicates
 
-Would you like me to explain any specific data structure in detail? 📚`;
-    }
-    
-    // Time Complexity
-    if (msg.includes('time complexity') || msg.includes('big o') || msg.includes('complexity')) {
-        return `**Time Complexity** measures how long an algorithm takes as input grows! ⏱️
-
-**Common complexities (best to worst):**
-• **O(1)** - Constant: Accessing array[0] → instant
-• **O(log n)** - Logarithmic: Binary search → very fast
-• **O(n)** - Linear: Finding max in unsorted list → reasonable
-• **O(n log n)** - Merge Sort, Quick Sort → efficient sorting
-• **O(n²)** - Bubble Sort → gets slow with large data
-• **O(2ⁿ)** - Exponential: Fibonacci recursive → very slow
-
-**Real example:**
-If n = 1,000,000:
-- O(n) = 1 million operations ✅
-- O(n²) = 1 trillion operations ❌
-
-Want me to analyze the complexity of a specific algorithm? 🧠`;
-    }
-    
-    // Recursion
-    if (msg.includes('recursion') || msg.includes('recursive')) {
-        return `**Recursion** is when a function calls itself! 🔄
-
-**Key concepts:**
-1. **Base Case** - When to stop (prevents infinite loop)
-2. **Recursive Case** - Function calls itself with smaller input
-
-**Classic example - Factorial:**
-\`\`\`
-factorial(5) = 5 × factorial(4)
-            = 5 × 4 × factorial(3)
-            = 5 × 4 × 3 × factorial(2)
-            = 5 × 4 × 3 × 2 × factorial(1)
-            = 5 × 4 × 3 × 2 × 1 = 120
+result = find_duplicates([1,2,3,2,4,3,5])
+# Output: [2, 3]
 \`\`\`
 
-**Real-life examples:**
-• Russian nesting dolls (each contains smaller version)
-• Mirrors facing each other (infinite reflections)
-• Folder navigation (folders inside folders)
+**Applications:**
+• **E-commerce:** Recommendation systems
+• **Social Media:** Friend suggestions
+• **Finance:** Fraud detection
+• **Healthcare:** Patient record management
 
-Would you like practice problems on recursion? 💡`;
+Want sorting, searching, or graph algorithms? 🚀`;
     }
-    
-    // Math related
-    if (msg.includes('discrete') || msg.includes('math') || msg.includes('logic') || msg.includes('probability')) {
-        return `**Discrete Mathematics** is crucial for computer science! 📐
 
-**Key topics:**
-• **Logic** - Truth tables, propositions, implications
-• **Set Theory** - Unions, intersections, complements
-• **Relations & Functions** - Mapping between sets
-• **Graph Theory** - Networks, paths, connectivity
-• **Combinatorics** - Counting, permutations, combinations
-• **Probability** - Random events, expected values
+    // Biology
+    if (msg.includes('biology') || msg.includes('cell') || msg.includes('dna') || msg.includes('genetics')) {
+        return `**Biology - Life Sciences** 🧬
 
-**Why it matters:**
-- Logic → Programming conditions (if/else)
-- Graph Theory → Social networks, routing algorithms
-- Probability → Machine Learning, AI decisions
+**Cell Structure:**
+• Nucleus - Control center (DNA)
+• Mitochondria - Energy production (ATP)
+• Ribosomes - Protein synthesis
 
-What specific topic would you like to explore? 🎓`;
+**Genetics Example:**
+If a plant is heterozygous Tt (tall), what offspring ratios?
+
+**Punnett Square:**
+\`\`\`
+    T    t
+T  TT   Tt
+t  Tt   tt
+\`\`\`
+Ratio: 3 Tall : 1 Short (75% : 25%)
+
+**Real Applications:**
+• **Medicine:** Gene therapy for diseases
+• **Agriculture:** GMO crops for higher yield
+• **Forensics:** DNA fingerprinting
+• **Ecology:** Conservation of endangered species
+
+Need help with photosynthesis, evolution, or ecosystem? 🌱`;
     }
-    
+
     // Study tips
     if (msg.includes('study') || msg.includes('tips') || msg.includes('learn') || msg.includes('prepare')) {
-        return `**Top Study Strategies for Success!** 📖✨
+        return `**Comprehensive Study Strategies** 📖✨
 
-1. **Active Recall** - Test yourself instead of re-reading
+**Proven Techniques:**
+1. **Active Recall** - Test yourself without looking
 2. **Spaced Repetition** - Review at increasing intervals
-3. **Pomodoro Technique** - 25 min focus + 5 min break
-4. **Teach Others** - Explaining reinforces understanding
-5. **Practice Problems** - Apply theory to real questions
+3. **Feynman Technique** - Teach concepts in simple terms
+4. **Pomodoro** - 25 min focus + 5 min break
+5. **Practice Problems** - Apply concepts to real scenarios
 
-**For Programming:**
-• Code daily, even 30 minutes helps
-• Build mini-projects
-• Solve LeetCode/HackerRank problems
-• Read others' code on GitHub
+**For STEM Subjects:**
+• Solve 5-10 numerical problems daily
+• Create formula sheets with examples
+• Watch visualization videos (Khan Academy, 3Blue1Brown)
+• Form study groups for problem-solving
+• Use real-life analogies
 
-**For Exams:**
-• Start 2 weeks early
-• Make summary sheets
-• Practice past papers
-• Get enough sleep!
+**For Conceptual Subjects:**
+• Make mind maps connecting ideas
+• Write summary notes in own words
+• Discuss with peers
+• Find real-world applications
 
-Need a personalized study plan? Tell me your subject and timeline! 🗓️`;
+**Time Management:**
+📅 Week 1-2: Understand concepts + easy problems
+📅 Week 3-4: Medium difficulty + mixed problems
+📅 Final week: Past papers + revision
+
+Need a subject-specific study plan? 🎯`;
     }
-    
-    // Quiz related
-    if (msg.includes('quiz') || msg.includes('test') || msg.includes('practice')) {
-        return `I'd be happy to help with quizzes! 📝
 
-**Options:**
-1. **Generate a Quiz** - Tell me the topic and I'll create questions
-2. **Practice Problems** - Step-by-step problem solving
-3. **Mock Test** - Simulate exam conditions
-4. **Review Mistakes** - Learn from your errors
+    // General Help
+    if (msg.includes('help') || msg.includes('how') || msg.includes('what') || msg.includes('explain')) {
+        return `**I'm here to help with everything!** 🤝
 
-**Example topics I can quiz you on:**
-• Data Structures & Algorithms
-• Discrete Mathematics
-• Programming Concepts
-• Operating Systems
-• Database Management
+I can assist with:
 
-Which topic would you like to practice? 🎯`;
+📚 **Subjects:**
+• Math (Algebra, Calculus, Statistics)
+• Physics (Mechanics, Electricity, Thermodynamics)
+• Chemistry (Organic, Inorganic, Physical)
+• Computer Science (Programming, DSA, Databases)
+• Economics & Business
+• Biology & Life Sciences
+
+🔢 **Problem Solving:**
+• Step-by-step numerical solutions
+• Real-life application examples
+• Practice problems with explanations
+• Formula derivations
+
+💡 **Conceptual Learning:**
+• Simple analogies & visual explanations
+• Real-world connections
+• Study strategies & tips
+
+Just ask any question - theoretical or numerical, and I'll provide detailed explanations with examples! 😊
+
+**Examples:**
+"Solve: ∫x²dx"
+"Explain photosynthesis with real example"
+"How to find time complexity?"`;
     }
-    
-    // Career/exploration
-    if (msg.includes('career') || msg.includes('job') || msg.includes('future') || msg.includes('explore')) {
-        return `**Exploring Tech Career Paths!** 🚀
 
-**Popular Roles:**
-• **Software Developer** - Build applications
-• **Data Scientist** - Analyze data, ML models
-• **DevOps Engineer** - Infrastructure & deployment
-• **Cloud Architect** - AWS, Azure, GCP solutions
-• **AI/ML Engineer** - Build intelligent systems
-• **Cybersecurity Analyst** - Protect digital assets
-• **Full Stack Developer** - Frontend + Backend
+    // Default comprehensive response
+    return `**Ask me anything!** 🎓
 
-**Skills in demand (2026):**
-1. AI/Machine Learning
-2. Cloud Computing
-3. Cybersecurity
-4. Blockchain
-5. Data Engineering
+I can help with:
 
-**Getting started:**
-- Build a strong GitHub portfolio
-- Contribute to open source
-- Get relevant certifications
-- Network on LinkedIn
+**Mathematics:** Calculus, Algebra, Statistics, Geometry
+**Sciences:** Physics, Chemistry, Biology
+**Programming:** Python, JavaScript, DSA, Algorithms
+**Business:** Economics, Finance, Accounting
+**Study Skills:** Time management, exam prep, learning techniques
 
-What career path interests you most? I can suggest a learning roadmap! 🗺️`;
-    }
-    
-    // Default response for any question
-    return `That's a great question! I can help you with:
-• Explaining concepts in detail
-• Solving practice problems step-by-step
-• Generating quizzes on specific topics
-• Recommending study strategies
+**I provide:**
+✅ Step-by-step solutions with numericals
+✅ Real-life applications & examples
+✅ Conceptual explanations in simple terms
+✅ Practice problems & study tips
 
-Feel free to ask follow-up questions or try one of my suggestions above! 😊`;
+**Try asking:**
+• "Solve derivative of x³ + 2x²"
+• "Explain Newton's laws with examples"
+• "How to calculate compound interest?"
+• "Binary search algorithm with code"
+
+What would you like to learn today? 😊`;
 }
 
 // Send predefined message

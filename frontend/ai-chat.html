@@ -11,15 +11,13 @@
         <!-- Header -->
         <header class="header">
             <a href="index.html" class="logo">
-                <span class="logo-icon">🧠</span>
                 <span class="logo-text">EnWise</span>
             </a>
             <nav class="nav">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="upload.html" class="nav-link">Upload</a>
-                <a href="#timetable" class="nav-link">Timetable</a>
-                <a href="ai-chat.html" class="nav-link active">💬 AI Chat</a>
+
+                <a href="ai-chat.html" class="nav-link active">AI-Tutor</a>
             </nav>
             <button class="profile-btn">Student profile</button>
             
@@ -38,9 +36,8 @@
         <nav class="nav-mobile" id="navMobile">
             <a href="index.html" class="nav-link">Home</a>
             <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <a href="upload.html" class="nav-link">Upload</a>
-            <a href="#timetable" class="nav-link">Timetable</a>
-            <a href="ai-chat.html" class="nav-link active">💬 AI Chat</a>
+
+            <a href="ai-chat.html" class="nav-link active">AI-Tutor</a>
             <button class="profile-btn">Student profile</button>
         </nav>
 
@@ -66,16 +63,35 @@
                     <div class="message welcome-message">
                         <div class="message-avatar">🤖</div>
                         <div class="message-content">
-                            <h3>Welcome to Study Assistant!</h3>
-                            <p>I'm here to help you learn and understand concepts better. You can:</p>
-                            <ul>
-                                <li>Ask questions about any topic</li>
-                                <li>Request quiz explanations</li>
-                                <li>Get study tips and advice</li>
-                                <li>Discuss difficult concepts</li>
-                                <li>Prepare for exams</li>
-                            </ul>
-                            <p style="margin-top: 1rem; color: #999; font-size: 0.9rem;">💡 Tip: Be specific in your questions for better answers!</p>
+                            <h3>Welcome to Your Comprehensive AI Tutor! 🎓</h3>
+                            <p>I can help you with <strong>any subject, any question</strong> - from theory to numericals!</p>
+                            
+                            <div style="margin: 1rem 0;">
+                                <strong>📚 Subjects I Cover:</strong>
+                                <ul style="margin: 0.5rem 0; columns: 2;">
+                                    <li>Mathematics & Calculus</li>
+                                    <li>Physics & Chemistry</li>
+                                    <li>Computer Science</li>
+                                    <li>Biology & Life Sciences</li>
+                                    <li>Economics & Business</li>
+                                    <li>Statistics & Probability</li>
+                                </ul>
+                            </div>
+                            
+                            <div style="margin: 1rem 0;">
+                                <strong>💡 What I Provide:</strong>
+                                <ul style="margin: 0.5rem 0;">
+                                    <li>✅ Step-by-step numerical solutions</li>
+                                    <li>✅ Real-life examples & applications</li>
+                                    <li>✅ Conceptual explanations</li>
+                                    <li>✅ Code examples & algorithms</li>
+                                    <li>✅ Study strategies & exam tips</li>
+                                </ul>
+                            </div>
+                            
+                            <p style="margin-top: 1rem; color: #2d8a6e; font-weight: 600;">
+                                Try: "Solve: ∫x²dx" or "Explain Newton's laws with real examples"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -83,14 +99,15 @@
                 <!-- Chat Input Area -->
                 <div class="chat-input-full-area">
                     <div class="input-suggestions">
-                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Explain the concept of time complexity')">⏱️ Time Complexity</button>
-                        <button class="suggestion-btn" onclick="sendPredefinedMessage('How do I solve this recursion problem?')">🔄 Recursion</button>
-                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Generate a practice quiz on trees')">🌳 Practice Quiz</button>
-                        <button class="suggestion-btn" onclick="sendPredefinedMessage('What are the best study tips?')">💡 Study Tips</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Solve: derivative of x³ + 5x² - 3x')">🔢 Solve Derivative</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Explain photosynthesis with real example')">🌱 Photosynthesis</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Binary search algorithm with code')">💻 Binary Search</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Calculate compound interest formula')">💰 Compound Interest</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Newton second law with numerical example')">⚡ Newton's Law</button>
                     </div>
                     
                     <div class="chat-input-area-full">
-                        <input type="text" class="chat-input-full" placeholder="Ask me anything about your studies... 💬" id="aiChatInput">
+                        <input type="text" class="chat-input-full" placeholder="Ask anything - theory, numericals, real-life examples... 🎓" id="aiChatInput">
                         <button class="send-btn-full" onclick="sendAIChatMessage()">Send →</button>
                     </div>
                 </div>
@@ -100,16 +117,16 @@
             <aside class="chat-sidebar">
                 <div class="sidebar-section">
                     <h3>📚 Subject Help</h3>
-                    <a href="discrete.html" class="sidebar-link">Discrete Mathematics</a>
-                    <a href="dsa.html" class="sidebar-link">DSA & Algorithms</a>
-                    <a href="#" class="sidebar-link">Data Science</a>
-                    <a href="#" class="sidebar-link">Web Development</a>
+                    <a href="subject.html?subject=Calculus" class="sidebar-link">Calculus</a>
+                    <a href="subject.html?subject=Data%20Structures" class="sidebar-link">Data Structures</a>
+                    <a href="subject.html?subject=Data%20Science" class="sidebar-link">Data Science</a>
+                    <a href="subject.html?subject=Web%20Development" class="sidebar-link">Web Development</a>
                 </div>
 
                 <div class="sidebar-section">
                     <h3>⚡ Quick Actions</h3>
-                    <button class="sidebar-btn" onclick="openUploadModal('current-subject')">📤 Upload Material</button>
-                    <button class="sidebar-btn" onclick="window.location.href='#timetable'">📅 View Schedule</button>
+                    <button class="sidebar-btn" onclick="window.location.href='upload.html'">📤 Upload Material</button>
+                    <button class="sidebar-btn" onclick="window.location.href='timetable.html'">📅 View Schedule</button>
                     <button class="sidebar-btn" onclick="window.location.href='dashboard.html'">📊 Dashboard</button>
                 </div>
 

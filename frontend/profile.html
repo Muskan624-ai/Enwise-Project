@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - EnWise</title>
+    <link rel="stylesheet" href="styles-fixed.css">
+    <link rel="stylesheet" href="gamification.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        .profile-main{min-height:100vh;padding:100px 20px 50px;background:linear-gradient(135deg,#0a0e27 0%,#1a1f3a 100%)}
+        .profile-container{max-width:1200px;margin:0 auto}
+        .profile-hero{background:linear-gradient(135deg,#5fc4b8 0%,#6bcf7f 100%);border-radius:24px;padding:60px 40px;text-align:center;color:#fff;margin-bottom:30px;box-shadow:0 10px 40px rgba(0,0,0,.3);position:relative;overflow:hidden}
+        .profile-hero::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.2) 0%,transparent 70%);animation:pulse 3s infinite}
+        .avatar-display{width:120px;height:120px;border-radius:50%;background:#fff;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:60px;border:5px solid rgba(255,255,255,.5);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+        .level-display{font-size:72px;font-weight:900;margin:20px 0;text-shadow:0 4px 10px rgba(0,0,0,.2)}
+        .xp-display{font-size:24px;opacity:.95;margin-bottom:10px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:30px}
+        .stat-box{background:#fff;padding:30px;border-radius:16px;text-align:center;box-shadow:0 5px 20px rgba(0,0,0,.15);transition:all .3s}
+        .stat-box:hover{transform:translateY(-5px);box-shadow:0 8px 30px rgba(95,196,184,.3)}
+        .stat-icon{font-size:40px;margin-bottom:15px}
+        .stat-value{font-size:36px;font-weight:700;color:#5fc4b8;margin:10px 0}
+        .stat-label{color:#666;font-size:14px;text-transform:uppercase;letter-spacing:1px}
+        .badges-section,.challenges-section{background:#fff;padding:40px;border-radius:20px;margin-bottom:30px;box-shadow:0 5px 20px rgba(0,0,0,.15)}
+        .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+        .section-title{font-size:28px;color:#0a0e27;margin:0}
+        .badge-showcase{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:20px}
+        .badge-item{background:linear-gradient(135deg,#f8f9fa 0%,#e8f5f4 100%);padding:25px;border-radius:16px;text-align:center;transition:all .3s;cursor:pointer;border:3px solid transparent}
+        .badge-item:hover{transform:scale(1.05);border-color:#5fc4b8;box-shadow:0 8px 25px rgba(95,196,184,.3)}
+        .badge-item.locked{opacity:.4;filter:grayscale(100%)}
+        .badge-item-icon{font-size:60px;margin-bottom:15px}
+        .badge-item-name{font-weight:700;color:#0a0e27;margin-bottom:5px;font-size:15px}
+        .badge-item-desc{font-size:12px;color:#666;line-height:1.4}
+        .badge-date{font-size:10px;color:#999;margin-top:8px}
+        .progress-chart{background:#fff;padding:40px;border-radius:20px;margin-bottom:30px;box-shadow:0 5px 20px rgba(0,0,0,.15)}
+        .chart-wrapper{height:300px;position:relative}
+        .theme-selector{display:flex;gap:15px;margin-top:20px}
+        .theme-option{width:80px;height:80px;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:all .3s;position:relative}
+        .theme-option:hover{transform:scale(1.1)}
+        .theme-option.active{border-color:#fff;box-shadow:0 0 20px rgba(255,255,255,.5)}
+        .theme-option.locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px}
+        .theme-default{background:linear-gradient(135deg,#5fc4b8,#6bcf7f)}
+        .theme-dark{background:linear-gradient(135deg,#2c3e50,#34495e)}
+        .theme-purple{background:linear-gradient(135deg,#667eea,#764ba2)}
+        .theme-gold{background:linear-gradient(135deg,#f7971e,#ffd200)}
+    </style>
+</head>
+<body class="gamification-enabled">
+    <header class="header with-gamification">
+        <div class="logo"><a href="index.html"><h1>En<span>Wise</span></h1></a></div>
+        <nav class="nav">
+            <a href="index.html" class="nav-link">🏠 Home</a>
+            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+            <a href="mindmap.html" class="nav-link">🧠 Mind Map</a>
+            <a href="quiz.html" class="nav-link">📝 Quiz</a>
+            <a href="profile.html" class="nav-link active">👤 Profile</a>
+        </nav>
+        <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </header>
+
+    <div class="nav-mobile" id="navMobile">
+        <a href="index.html" class="nav-link">🏠 Home</a>
+        <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+        <a href="mindmap.html" class="nav-link">🧠 Mind Map</a>
+        <a href="quiz.html" class="nav-link">📝 Quiz</a>
+        <a href="profile.html" class="nav-link active">👤 Profile</a>
+    </div>
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <div class="profile-main">
+        <div class="profile-container">
+            <div class="profile-hero">
+                <div class="avatar-display" id="avatarDisplay">👤</div>
+                <h1 style="margin:0 0 10px 0">Learning Champion</h1>
+                <div class="level-display">Level <span id="profileLevel">1</span></div>
+                <div class="xp-display"><span id="profileXP">0</span> XP</div>
+                <div class="xp-bar" style="max-width:400px;margin:20px auto">
+                    <div class="xp-fill" id="profileXPBar"></div>
+                </div>
+                <p style="opacity:.9;margin:10px 0 0 0">Next level: <span id="profileNextXP">100</span> XP</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="statStreak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value" id="statBadges">0</div>
+                    <div class="stat-label">Badges Earned</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="statQuizzes">0</div>
+                    <div class="stat-label">Quizzes Taken</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="statTopics">0</div>
+                    <div class="stat-label">Topics Mastered</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-value" id="statTime">0h</div>
+                    <div class="stat-label">Study Time</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="statAvgScore">0%</div>
+                    <div class="stat-label">Avg Quiz Score</div>
+                </div>
+            </div>
+
+            <div class="badges-section">
+                <div class="section-header">
+                    <h2 class="section-title">🏆 Badge Collection</h2>
+                    <span id="badgeCount">0/30</span>
+                </div>
+                <div class="badge-showcase" id="badgeShowcase"></div>
+            </div>
+
+            <div class="challenges-section">
+                <div class="section-header">
+                    <h2 class="section-title">🎯 Active Challenges</h2>
+                </div>
+                <div id="activeChallengesDisplay"></div>
+            </div>
+
+            <div class="progress-chart">
+                <h2 class="section-title">📈 Your Progress Journey</h2>
+                <div class="chart-wrapper">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+
+            <div class="badges-section">
+                <h2 class="section-title">🎨 Unlocked Themes</h2>
+                <div class="theme-selector">
+                    <div class="theme-option theme-default active" onclick="selectTheme('default')" data-theme="default"></div>
+                    <div class="theme-option theme-dark locked" onclick="selectTheme('dark')" data-theme="dark"></div>
+                    <div class="theme-option theme-purple locked" onclick="selectTheme('purple')" data-theme="purple"></div>
+                    <div class="theme-option theme-gold locked" onclick="selectTheme('gold')" data-theme="gold"></div>
+                </div>
+                <p style="margin-top:20px;color:#666;font-size:14px">Unlock new themes by leveling up!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="app.min.js"></script>
+    <script src="gamification.js"></script>
+    <script>
+        // Load profile data
+        function loadProfile() {
+            // Level & XP
+            document.getElementById('profileLevel').textContent = gamification.level;
+            document.getElementById('profileXP').textContent = gamification.xp;
+            document.getElementById('profileNextXP').textContent = gamification.getXPForNextLevel();
+            document.getElementById('profileXPBar').style.width = gamification.getXPProgress() + '%';
+
+            // Stats
+            document.getElementById('statStreak').textContent = gamification.streak;
+            document.getElementById('statBadges').textContent = gamification.badges.length;
+            document.getElementById('statQuizzes').textContent = gamification.quizzesTaken;
+            document.getElementById('statTopics').textContent = gamification.topicsCompleted;
+            document.getElementById('statTime').textContent = Math.floor(gamification.studyTime / 60) + 'h';
+            
+            const avgScore = Math.round(JSON.parse(localStorage.getItem('quizHistory') || '[]')
+                .reduce((acc, q) => acc + q.score, 0) / Math.max(gamification.quizzesTaken, 1));
+            document.getElementById('statAvgScore').textContent = avgScore + '%';
+
+            // Badges
+            loadBadges();
+            
+            // Challenges
+            loadChallenges();
+            
+            // Chart
+            renderProgressChart();
+            
+            // Themes
+            loadThemes();
+        }
+
+        function loadBadges() {
+            const allBadges = [
+                {id:'quiz_starter',name:'Quiz Starter',desc:'First quiz',icon:'📝',requirement:'Take 1 quiz'},
+                {id:'quiz_champion',name:'Quiz Champion',desc:'10 quizzes',icon:'🏆',requirement:'Take 10 quizzes'},
+                {id:'topic_master',name:'Topic Master',desc:'5 topics',icon:'🎓',requirement:'Master 5 topics'},
+                {id:'three_day_streak',name:'3-Day Warrior',desc:'3-day streak',icon:'🔥',requirement:'3-day streak'},
+                {id:'weekly_warrior',name:'Weekly Warrior',desc:'7-day streak',icon:'⚡',requirement:'7-day streak'},
+                {id:'monthly_master',name:'Monthly Master',desc:'30-day streak',icon:'👑',requirement:'30-day streak'},
+                {id:'early_bird',name:'Early Bird',desc:'Morning study',icon:'🌅',requirement:'Study 5-9 AM'},
+                {id:'night_owl',name:'Night Owl',desc:'Late study',icon:'🦉',requirement:'Study 10 PM-2 AM'},
+                {id:'dedicated_learner',name:'Dedicated',desc:'5+ hours',icon:'💪',requirement:'5 hours study'}
+            ];
+
+            const container = document.getElementById('badgeShowcase');
+            const earned = gamification.badges;
+            
+            container.innerHTML = '';
+            allBadges.forEach(badge => {
+                const owned = earned.find(b => b.id === badge.id);
+                const div = document.createElement('div');
+                div.className = 'badge-item' + (owned ? '' : ' locked');
+                div.innerHTML = `
+                    <div class="badge-item-icon">${badge.icon}</div>
+                    <div class="badge-item-name">${badge.name}</div>
+                    <div class="badge-item-desc">${owned ? badge.desc : '🔒 ' + badge.requirement}</div>
+                    ${owned ? '<div class="badge-date">' + new Date(owned.date).toLocaleDateString() + '</div>' : ''}
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('badgeCount').textContent = earned.length + '/' + allBadges.length;
+        }
+
+        function loadChallenges() {
+            const container = document.getElementById('activeChallengesDisplay');
+            container.innerHTML = '';
+            
+            gamification.challenges.forEach(c => {
+                const percent = (c.progress / c.target) * 100;
+                const div = document.createElement('div');
+                div.className = 'challenge-item' + (c.completed ? ' completed' : '');
+                div.innerHTML = `
+                    <div class="challenge-icon">${c.icon}</div>
+                    <div class="challenge-info">
+                        <div class="challenge-name">${c.name}</div>
+                        <div class="challenge-progress-bar">
+                            <div class="challenge-progress-fill" style="width:${percent}%"></div>
+                        </div>
+                        <div class="challenge-status">${c.progress}/${c.target}</div>
+                    </div>
+                    <div class="challenge-reward">+${c.xp} XP</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderProgressChart() {
+            const history = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+            const last10 = history.slice(-10);
+            
+            new Chart(document.getElementById('progressChart'), {
+                type: 'line',
+                data: {
+                    labels: last10.map((h, i) => `Quiz ${i + 1}`),
+                    datasets: [{
+                        label: 'Quiz Scores',
+                        data: last10.map(h => h.score),
+                        borderColor: '#5fc4b8',
+                        backgroundColor: 'rgba(95,196,184,0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        function loadThemes() {
+            const unlocked = JSON.parse(localStorage.getItem('unlockedThemes') || '["default"]');
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                const theme = opt.dataset.theme;
+                if (unlocked.includes(theme)) {
+                    opt.classList.remove('locked');
+                }
+            });
+        }
+
+        function selectTheme(theme) {
+            const unlocked = JSON.parse(localStorage.getItem('unlockedThemes') || '["default"]');
+            if (!unlocked.includes(theme)) {
+                alert('🔒 This theme is locked! Level up to unlock it.');
+                return;
+            }
+            
+            gamification.theme = theme;
+            gamification.saveToStorage();
+            
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+            
+            alert('✅ Theme applied! (Refresh to see changes)');
+        }
+
+        // Load on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadProfile);
+        } else {
+            loadProfile();
+        }
+    </script>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>EnWise</h3>
+                <p>Empowering students with AI-driven learning tools.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">→ Home</a></li>
+                    <li><a href="dashboard.html">→ Dashboard</a></li>
+                    <li><a href="mindmap.html">→ Mind Map</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 EnWise. All rights reserved. 🚀</p>
+        </div>
+    </footer>
+</body>
+</html>

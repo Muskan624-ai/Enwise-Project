@@ -11,15 +11,12 @@
         <!-- Header -->
         <header class="header">
             <a href="index.html" class="logo">
-                <span class="logo-icon">🧠</span>
-                <span class="logo-text">Think Unlimited</span>
+                <span class="logo-text">EnWise</span>
             </a>
             <nav class="nav">
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="dashboard.html" class="nav-link active">Dashboard</a>
-                <a href="upload.html" class="nav-link">Upload</a>
-                <a href="#timetable" class="nav-link">Timetable</a>
-                <a href="#chat" class="nav-link chat-link">💬 AI Chat</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
             </nav>
             <button class="profile-btn">Student profile</button>
             
@@ -37,214 +34,528 @@
         <!-- Mobile Navigation -->
         <nav class="nav-mobile" id="navMobile">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="dashboard.html" class="nav-link active">Dashboard</a>
-            <a href="upload.html" class="nav-link">Upload</a>
-            <a href="#timetable" class="nav-link">Timetable</a>
-            <a href="#chat" class="nav-link chat-link">💬 AI Chat</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
             <button class="profile-btn">Student profile</button>
         </nav>
 
-        <!-- Subject Content -->
-        <main class="subject-main">
-            <!-- Back Button -->
-            <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+        <!-- Subject Page Content -->
+        <main class="subject-page-main">
+            <h1 class="subject-title" id="subjectTitle">Subject Name</h1>
 
-            <!-- Subject Header -->
-            <div class="subject-header">
-                <div class="subject-icon-large">📐</div>
-                <div class="subject-info">
-                    <h1 class="subject-title">Discrete Mathematics</h1>
-                    <p class="subject-description">Master the fundamentals of algebra, geometry, and calculus</p>
-                </div>
-            </div>
-
-            <!-- Progress Section -->
-            <div class="progress-section">
-                <h2>Your Progress</h2>
-                <div class="progress-details">
-                    <div class="progress-item">
-                        <p class="progress-label">Overall Completion</p>
-                        <div class="progress-bar-large">
-                            <div class="progress-fill" style="width: 65%"></div>
-                        </div>
-                        <p class="progress-percentage">65%</p>
+            <div class="subject-layout">
+                <!-- Left Sidebar -->
+                <div class="left-sidebar">
+                    <div class="sidebar-card" id="syllabusCard">
+                        <h3>Syllabus</h3>
+                        <span class="add-icon">+</span>
+                        <input type="file" id="syllabusInput" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx" style="display: none;">
+                        <div class="uploaded-file" id="syllabusFile"></div>
+                    </div>
+                    <div class="sidebar-card" id="classNotesCard">
+                        <h3>ClassNotes</h3>
+                        <span class="add-icon">+</span>
+                        <input type="file" id="classNotesInput" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.ppt,.pptx" multiple style="display: none;">
+                        <div class="uploaded-file" id="classNotesFile"></div>
+                    </div>
+                    <div class="sidebar-card" id="timetableCard">
+                        <h3>Timetable</h3>
+                        <span class="add-icon">+</span>
+                        <input type="file" id="timetableInput" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.xlsx,.csv" style="display: none;">
+                        <div class="uploaded-file" id="timetableFile"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Quiz Section -->
-            <div class="quiz-section">
-                <h2 class="section-heading">Generate Quiz</h2>
-                <div class="quiz-container">
-                    <input type="text" id="userTopic" class="quiz-input" placeholder="Enter topic to generate quiz...">
-                    <button class="quiz-btn" onclick="generateQuiz()">Generate Quiz</button>
+                <!-- Main Content Area -->
+                <div class="main-content-area">
+                    <div class="content-card">
+                        <h3>Generate Quiz</h3>
+                        <p>
+                            Will take user on new tab as soon as the syllabus or class notes are added to check prerequisite knowledge of student which is required for the topic in syllabus.
+                        </p>
+                        <p style="margin-top: 0.8rem;">
+                            <strong>/Result</strong> After the Quiz is done, the quiz tab closes with analysis of the quiz. On all weak topics identified, they will be automatically added to the MindMap.
+                        </p>
+                        <button class="quiz-generate-btn" id="generateQuizBtn">🎯 Generate Quiz</button>
+                    </div>
+
+                    <div class="content-card ai-tutor-card">
+                        <h3>AI Tutor - Your Complete Study Companion</h3>
+                        <p>
+                            <strong>Get comprehensive help with:</strong><br>
+                            📚 Theory explanations with real-life analogies<br>
+                            🔢 Step-by-step numerical problem solutions<br>
+                            💡 Practical examples and applications<br>
+                            📝 Practice problems and quiz preparation<br>
+                            🎯 Personalized study strategies
+                        </p>
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">
+                            Ask anything from basic concepts to complex calculations!
+                        </p>
+                        
+                        <!-- Chat Input inside AI Tutor -->
+                        <div class="chat-input-container">
+                            <button class="attachment-btn" title="Attach file">📎</button>
+                            <input type="text" class="chat-input" placeholder="Ask anything - theory, numericals, examples..." id="chatInput">
+                            <button class="send-btn" id="sendBtn" title="Send">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div id="quiz-results"></div>
-            </div>
 
-            <!-- Three Column Layout: Left | Center (AI) | Right -->
-            <div class="subject-layout-wrapper">
-                <!-- Left Column -->
-                <aside class="subject-sidebar-left">
-                    <!-- Syllabus Section -->
-                    <section class="content-section">
-                        <h2>📚 Syllabus</h2>
-                        <div class="chapter-list">
-                            <div class="chapter-item">
-                                <h3>Chapter 1: Basics</h3>
-                                <p>Completed</p>
-                            </div>
-                            <div class="chapter-item">
-                                <h3>Chapter 2: Algebra</h3>
-                                <p>In Progress</p>
-                            </div>
-                            <div class="chapter-item">
-                                <h3>Chapter 3: Geometry</h3>
-                                <p>Not Started</p>
-                            </div>
-                            <div class="chapter-item">
-                                <h3>Chapter 4: Calculus</h3>
-                                <p>Not Started</p>
-                            </div>
-                        </div>
-                    </section>
+                <!-- Right Sidebar - MindMap -->
+                <div class="right-sidebar">
+                    <h3 class="mindmap-title">MindMap</h3>
+                    <p class="mindmap-subtitle">&lt;Make this mindMap interactive&gt;</p>
 
-                    <!-- Timetable Section -->
-                    <section class="content-section">
-                        <h2>📅 Schedule</h2>
-                        <div class="schedule-list">
-                            <div class="schedule-item">
-                                <p class="schedule-day">Monday & Thursday</p>
-                                <p class="schedule-time">2:00 PM - 3:30 PM</p>
-                            </div>
-                            <div class="schedule-item">
-                                <p class="schedule-day">Wednesday</p>
-                                <p class="schedule-time">4:00 PM - 5:00 PM</p>
-                            </div>
-                            <div class="schedule-item">
-                                <p class="schedule-day">Saturday</p>
-                                <p class="schedule-time">10:00 AM - 12:00 PM</p>
-                            </div>
+                    <div class="topic-list" id="topicList">
+                        <div class="topic-item">
+                            <input type="checkbox" class="topic-checkbox" id="weakness1">
+                            <label class="topic-label" for="weakness1">Weakness1</label>
                         </div>
-                    </section>
-                </aside>
-
-                <!-- Center Column: AI Chat -->
-                <section class="content-section ai-chat-center">
-                    <h2>🤖 Ask ENWISE AI</h2>
-                    <p class="ai-description">Get instant answers to your questions about this subject</p>
-                    <div class="ai-chat-box">
-                        <div class="chat-messages">
-                            <div class="message ai-message">
-                                <p>Hi! I'm ENWISE AI. Ask me anything about Mathematics!</p>
-                            </div>
+                        <div class="topic-item">
+                            <input type="checkbox" class="topic-checkbox" id="weakness2">
+                            <label class="topic-label" for="weakness2">Weakness2</label>
                         </div>
-                        <div class="chat-input-area">
-                            <input type="text" class="chat-input" placeholder="Ask a question...">
-                            <button class="send-btn">Send</button>
+                        <div class="topic-item">
+                            <input type="checkbox" class="topic-checkbox" id="weakness3">
+                            <label class="topic-label" for="weakness3">Weakness3</label>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" class="topic-checkbox" id="topic1">
+                            <label class="topic-label" for="topic1">New Topic1</label>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" class="topic-checkbox" id="topic2">
+                            <label class="topic-label" for="topic2">New Topic2</label>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" class="topic-checkbox" id="topic3">
+                            <label class="topic-label" for="topic3">New Topic3</label>
                         </div>
                     </div>
-                </section>
 
-                <!-- Right Column -->
-                <aside class="subject-sidebar-right">
-                    <!-- Notes Section -->
-                    <section class="content-section">
-                        <h2>📝 Notes</h2>
-                        <div class="notes-list">
-                            <div class="note-item">
-                                <h3>Chapter 1 Summary</h3>
-                                <p class="note-date">Jan 15, 2024</p>
-                                <button class="download-btn">Download</button>
-                            </div>
-                            <div class="note-item">
-                                <h3>Important Formulas</h3>
-                                <p class="note-date">Jan 10, 2024</p>
-                                <button class="download-btn">Download</button>
-                            </div>
-                            <div class="note-item">
-                                <h3>Practice Problems</h3>
-                                <p class="note-date">Jan 5, 2024</p>
-                                <button class="download-btn">Download</button>
-                            </div>
-                        </div>
-                    </section>
-
-                </aside>
-            </div>
-
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-grid">
-                <!-- About Section -->
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <span class="footer-logo-icon">🧠</span>
-                        <span>ENWISE</span>
-                    </div>
-                    <p class="footer-description">
-                        Your AI-powered study coach helping students master any subject with personalized learning paths and expert guidance.
+                    <p class="mindmap-note">
+                        &lt;Before Adding tick for checkbox, ai would ask one fundamental question on that topic and only then let it tick the checkbox&gt;
                     </p>
-                    <div class="social-links">
-                        <a href="#" title="Facebook">f</a>
-                        <a href="#" title="Twitter">𝕏</a>
-                        <a href="#" title="Instagram">📷</a>
-                        <a href="#" title="LinkedIn">in</a>
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="dashboard.html">Dashboard</a></li>
-                        <li><a href="upload.html">Upload Materials</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Help Center</a></li>
-                    </ul>
-                </div>
-
-                <!-- Features -->
-                <div class="footer-section">
-                    <h3>Features</h3>
-                    <ul>
-                        <li><a href="#">AI Study Coach</a></li>
-                        <li><a href="#">Subject Dashboard</a></li>
-                        <li><a href="#">Progress Tracking</a></li>
-                        <li><a href="#">Community Forum</a></li>
-                        <li><a href="#">Practice Tests</a></li>
-                    </ul>
-                </div>
-
-                <!-- Newsletter -->
-                <div class="footer-section">
-                    <h3>Stay Updated</h3>
-                    <p class="footer-description">Subscribe to get study tips and updates delivered to your inbox.</p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit">Subscribe</button>
-                    </form>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Footer Bottom -->
-            <div class="footer-bottom">
-                <div class="footer-bottom-left">
-                    &copy; 2024 ENWISE. All rights reserved. | Empowering students worldwide.
-                </div>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
-                    <a href="#">Contact Us</a>
-                </div>
+    <!-- Processing Overlay -->
+    <div id="processingOverlay" class="processing-overlay" style="display: none;">
+        <div class="processing-modal">
+            <div class="processing-icon">🤖</div>
+            <h3 id="processingTitle">AI is analyzing your file...</h3>
+            <p id="processingFile"></p>
+            <div class="loading-dots" id="loadingDots">
+                <span></span><span></span><span></span>
             </div>
+            <p class="processing-note">Generating prerequisite quiz based on topics...</p>
+            <button id="openQuizBtn" class="open-quiz-btn" style="display: none;">📝 Open Quiz</button>
         </div>
-    </footer>
+    </div>
+
+    <style>
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .processing-modal {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+        }
+        .processing-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .processing-modal h3 {
+            color: #2d8a6e;
+            margin-bottom: 0.5rem;
+        }
+        .processing-modal p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .processing-note {
+            color: #999 !important;
+            font-size: 0.85rem;
+        }
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.3rem;
+            margin: 1rem 0;
+        }
+        .loading-dots span {
+            width: 10px;
+            height: 10px;
+            background: #2d8a6e;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .open-quiz-btn {
+            background: #2d8a6e;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        .open-quiz-btn:hover {
+            background: #1f6b54;
+        }
+    </style>
 
     <script src="script.js"></script>
+    <script>
+        // Backend API Configuration
+        const API_BASE_URL = 'http://localhost:5000'; // Change this to your backend URL
+        
+        // Get subject name from URL parameter
+        var urlParams = new URLSearchParams(window.location.search);
+        var currentSubject = urlParams.get('subject') || 'New Subject';
+        document.getElementById('subjectTitle').textContent = currentSubject;
+
+        // Variables to track uploads
+        var syllabusUploaded = false;
+        var notesUploaded = false;
+        var pendingQuizSource = null;
+
+        // Setup file upload click handlers
+        document.getElementById('syllabusCard').addEventListener('click', function(e) {
+            if (e.target.tagName !== 'INPUT') {
+                document.getElementById('syllabusInput').click();
+            }
+        });
+        
+        document.getElementById('classNotesCard').addEventListener('click', function(e) {
+            if (e.target.tagName !== 'INPUT') {
+                document.getElementById('classNotesInput').click();
+            }
+        });
+        
+        document.getElementById('timetableCard').addEventListener('click', function(e) {
+            if (e.target.tagName !== 'INPUT') {
+                document.getElementById('timetableInput').click();
+            }
+        });
+
+        // File input change handlers
+        document.getElementById('syllabusInput').addEventListener('change', function() {
+            handleSyllabusUpload(this);
+        });
+        
+        document.getElementById('classNotesInput').addEventListener('change', function() {
+            handleClassNotesUpload(this);
+        });
+        
+        document.getElementById('timetableInput').addEventListener('change', function() {
+            handleTimetableUpload(this);
+        });
+
+        async function handleSyllabusUpload(input) {
+            if (input.files && input.files.length > 0) {
+                var file = input.files[0];
+                var fileName = file.name;
+                
+                // Update UI immediately
+                document.getElementById('syllabusFile').innerHTML = '<span class="file-name">📄 ' + fileName + '</span>';
+                
+                syllabusUploaded = true;
+                
+                // Send to backend and generate quiz
+                await handleFileSelect(input, 'Syllabus', 'syllabus');
+            }
+        }
+
+        async function handleClassNotesUpload(input) {
+            if (input.files && input.files.length > 0) {
+                var fileCount = input.files.length;
+                var firstFileName = input.files[0].name;
+                
+                // Update UI immediately
+                document.getElementById('classNotesFile').innerHTML = '<span class="file-name">📝 ' + fileCount + ' file(s)</span>';
+                
+                notesUploaded = true;
+                
+                // Send to backend and generate quiz
+                await handleFileSelect(input, 'Notes', 'notes');
+            }
+        }
+
+        function handleTimetableUpload(input) {
+            if (input.files && input.files.length > 0) {
+                var file = input.files[0];
+                var fileName = file.name;
+                
+                document.getElementById('timetableFile').innerHTML = '<span class="file-name">📅 ' + fileName + '</span>';
+                
+                var addIcon = document.querySelector('#timetableCard .add-icon');
+                addIcon.textContent = '✓';
+                addIcon.style.color = '#2d8a6e';
+                
+                alert('Timetable "' + fileName + '" uploaded successfully!');
+            }
+        }
+
+        // Main file upload handler with backend integration
+        async function handleFileSelect(input, type, sourceType) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // 1. Visual feedback for the user
+            console.log('Uploading ' + type + ': ' + file.name);
+            const overlay = document.getElementById('processingOverlay');
+            if (overlay) {
+                document.getElementById('processingTitle').textContent = 'AI is analyzing your ' + type + '...';
+                document.getElementById('processingFile').textContent = '"' + file.name + '"';
+                document.getElementById('openQuizBtn').style.display = 'none';
+                document.getElementById('loadingDots').style.display = 'flex';
+                overlay.style.display = 'flex';
+            }
+
+            // 2. Prepare the "Parcel" for the backend
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("subject", currentSubject);
+            formData.append("chapter", type);
+
+            try {
+                // 3. Send to your Python backend
+                const response = await fetch(API_BASE_URL + '/generate-offline-pack', {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error("Backend failed");
+
+                const data = await response.json();
+
+                // 4. Store the AI's Quiz and Summary in the browser memory
+                // Format: quiz should be an array of objects with { q: question, options: [], a: answer }
+                if (data.quiz && Array.isArray(data.quiz.questions)) {
+                    // Backend format conversion
+                    const formattedQuiz = data.quiz.questions.map(q => ({
+                        q: q.question,
+                        options: q.options,
+                        a: q.options[q.correct] || q.answer || q.correct_answer
+                    }));
+                    localStorage.setItem('latest_quiz_data', JSON.stringify(formattedQuiz));
+                } else if (Array.isArray(data.quiz)) {
+                    // If already in correct format
+                    localStorage.setItem('latest_quiz_data', JSON.stringify(data.quiz));
+                } else {
+                    console.warn('Quiz data format unexpected, using fallback');
+                    localStorage.setItem('latest_quiz_data', JSON.stringify([]));
+                }
+                
+                localStorage.setItem('latest_summary_data', JSON.stringify(data.summary || {}));
+
+                // 5. Update UI: Change '+' to '✓'
+                const addIcon = input.parentElement.querySelector('.add-icon');
+                if (addIcon) {
+                    addIcon.textContent = "✓";
+                    addIcon.style.color = "#2d8a6e";
+                }
+
+                // 6. Trigger the "Open Quiz" button in your overlay
+                document.getElementById('processingTitle').textContent = "AI Analysis Ready!";
+                document.getElementById('processingFile').textContent = 'Quiz generated successfully';
+                document.getElementById('loadingDots').style.display = "none";
+                document.getElementById('openQuizBtn').style.display = "block";
+                
+                pendingQuizSource = sourceType;
+
+            } catch (error) {
+                console.error("Upload error:", error);
+                console.log("⚠️ Backend unavailable - using local quiz generation");
+                
+                // Update overlay to show fallback mode
+                if (overlay) {
+                    document.getElementById('processingTitle').textContent = "Generating Local Quiz...";
+                    document.getElementById('processingFile').textContent = 'Backend offline - using smart fallback';
+                }
+                
+                // Still mark as uploaded (fallback to local quiz generation)
+                const addIcon = input.parentElement.querySelector('.add-icon');
+                if (addIcon) {
+                    addIcon.textContent = "✓";
+                    addIcon.style.color = "#2d8a6e";
+                }
+                
+                // Generate a simple fallback quiz after short delay
+                setTimeout(() => {
+                    generateFallbackQuiz(sourceType);
+                }, 800);
+            }
+        }
+
+        // Fallback quiz generation for when backend is unavailable
+        function generateFallbackQuiz(sourceType) {
+            const fallbackQuiz = [
+                {
+                    q: "What is the fundamental concept in " + currentSubject + "?",
+                    options: ["Basic principles", "Advanced theories", "Applied methods", "Historical context"],
+                    a: "Basic principles"
+                },
+                {
+                    q: "Which prerequisite knowledge is essential for " + currentSubject + "?",
+                    options: ["Foundation concepts", "Expert level skills", "Research experience", "Industry practice"],
+                    a: "Foundation concepts"
+                },
+                {
+                    q: "What approach is recommended for learning " + currentSubject + "?",
+                    options: ["Step-by-step progression", "Random exploration", "Skip basics", "Memorization only"],
+                    a: "Step-by-step progression"
+                },
+                {
+                    q: "How would you describe the difficulty level of " + currentSubject + "?",
+                    options: ["Requires systematic study", "Very simple", "Impossible to learn", "No preparation needed"],
+                    a: "Requires systematic study"
+                },
+                {
+                    q: "What is the best way to practice " + currentSubject + "?",
+                    options: ["Regular problem solving", "Occasional reading", "Avoid practice", "Theory only"],
+                    a: "Regular problem solving"
+                }
+            ];
+            
+            localStorage.setItem('latest_quiz_data', JSON.stringify(fallbackQuiz));
+            localStorage.setItem('latest_summary_data', JSON.stringify({
+                topics: [currentSubject + " basics"],
+                source: sourceType,
+                mode: "local"
+            }));
+            
+            // Update overlay to show ready state
+            const overlay = document.getElementById('processingOverlay');
+            if (overlay) {
+                document.getElementById('processingTitle').textContent = "Quiz Ready!";
+                document.getElementById('processingFile').textContent = '5 prerequisite questions generated';
+                document.getElementById('loadingDots').style.display = "none";
+                document.getElementById('openQuizBtn').style.display = "block";
+                
+                // Store the source type for opening later
+                pendingQuizSource = sourceType;
+            }
+        }
+
+        function openQuizInNewTab(sourceType) {
+            var quizUrl = 'quiz.html?subject=' + encodeURIComponent(currentSubject) + '&source=' + sourceType;
+            var quizWindow = window.open(quizUrl, '_blank');
+            
+            // Check if popup was blocked
+            if (!quizWindow || quizWindow.closed || typeof quizWindow.closed === 'undefined') {
+                // Show manual button
+                document.getElementById('processingTitle').textContent = 'Quiz Ready!';
+                document.getElementById('processingFile').textContent = 'Click below to open the quiz';
+                document.getElementById('loadingDots').style.display = 'none';
+                document.getElementById('openQuizBtn').style.display = 'inline-block';
+            } else {
+                // Close overlay
+                document.getElementById('processingOverlay').style.display = 'none';
+            }
+        }
+
+        // Manual quiz open button
+        document.getElementById('openQuizBtn').addEventListener('click', function() {
+            var quizUrl = 'quiz.html?subject=' + encodeURIComponent(currentSubject) + '&source=' + pendingQuizSource;
+            window.open(quizUrl, '_blank');
+            document.getElementById('processingOverlay').style.display = 'none';
+            document.getElementById('loadingDots').style.display = 'flex';
+        });
+
+        // Generate Quiz button
+        document.getElementById('generateQuizBtn').addEventListener('click', function() {
+            if (!syllabusUploaded && !notesUploaded) {
+                alert('Please upload a Syllabus or Class Notes first to generate a quiz.');
+                return;
+            }
+            
+            var sourceType = syllabusUploaded ? 'syllabus' : 'notes';
+            openQuizInNewTab(sourceType);
+        });
+
+        // Listen for quiz results from popup
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.weakTopics) {
+                var weakTopics = e.data.weakTopics;
+                weakTopics.forEach(function(topic) {
+                    addWeakTopicToMindMap(topic);
+                });
+            }
+        });
+
+        function addWeakTopicToMindMap(topicName) {
+            var topicList = document.getElementById('topicList');
+            var newTopic = document.createElement('div');
+            newTopic.className = 'topic-item';
+            var safeId = 'weak_' + topicName.replace(/\s+/g, '');
+            newTopic.innerHTML = '<input type="checkbox" class="topic-checkbox" id="' + safeId + '">' +
+                '<label class="topic-label" for="' + safeId + '" style="color: #d32f2f;">⚠️ ' + topicName + '</label>';
+            topicList.insertBefore(newTopic, topicList.firstChild);
+        }
+
+        // Send message function
+        document.getElementById('sendBtn').addEventListener('click', function() {
+            sendMessage();
+        });
+
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            var input = document.getElementById('chatInput');
+            var message = input.value.trim();
+            if (message) {
+                console.log('Sending message:', message);
+                alert('Message sent: ' + message);
+                input.value = '';
+            }
+        }
+
+        // Checkbox confirmation logic
+        document.querySelectorAll('.topic-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('click', function(e) {
+                if (!this.checked) {
+                    return;
+                }
+                e.preventDefault();
+                var topicName = this.nextElementSibling.textContent;
+                var confirmed = confirm('AI Question: Before marking "' + topicName + '" as complete, please answer a fundamental question about this topic.\n\nDo you want to proceed with the question?');
+                if (confirmed) {
+                    alert('Question would appear here. For now, marking as complete.');
+                    this.checked = true;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
