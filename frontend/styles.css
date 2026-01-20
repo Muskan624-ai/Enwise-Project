@@ -338,6 +338,35 @@ body {
     animation: slideUpIn 0.8s ease-out 0.1s both;
 }
 
+.subtitle-badge {
+    display: flex;
+    gap: clamp(0.6rem, 1.5vw, 1rem);
+    flex-wrap: wrap;
+    margin-bottom: clamp(1rem, 3vw, 1.5rem);
+    animation: slideUpIn 0.8s ease-out 0.15s both;
+}
+
+.pill-badge {
+    display: inline-block;
+    padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+    font-weight: 600;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pill-badge:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(95, 196, 184, 0.2);
+}
+
 .main-description {
     font-size: clamp(1rem, 2.5vw, 1.2rem);
     color: #2c3e50;
@@ -682,8 +711,9 @@ body {
     width: clamp(150px, 25vw, 300px);
     height: clamp(150px, 25vw, 300px);
     object-fit: contain;
+    border-radius:25px;
     filter: drop-shadow(0 10px 30px rgba(95, 196, 184, 0.2));
-    animation: float 3s ease-in-out infinite;
+    animation: float 3s ease-in-out 4s;
     user-select: none;
 }
 
