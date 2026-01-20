@@ -72,12 +72,32 @@
                 </div>
             </div>
 
+            <!-- Upload Section -->
+            <div class="upload-quick-section">
+                <h2 class="section-heading">📤 Upload & Share</h2>
+                <p class="section-subtitle">Upload notes, practice sets, or learning materials for this subject</p>
+                <div class="upload-actions">
+                    <button class="upload-btn" onclick="openUploadModal('dsa')">
+                        <span class="upload-icon">📄</span>
+                        <span class="upload-text">Upload Notes</span>
+                    </button>
+                    <button class="upload-btn" onclick="openUploadModal('dsa-pdf')">
+                        <span class="upload-icon">📕</span>
+                        <span class="upload-text">Upload PDF</span>
+                    </button>
+                    <button class="upload-btn" onclick="openUploadModal('dsa-resources')">
+                        <span class="upload-icon">🎓</span>
+                        <span class="upload-text">Upload Resources</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Quiz Section -->
             <div class="quiz-section">
                 <h2 class="section-heading">Generate Quiz</h2>
                 <div class="quiz-container">
                     <input type="text" id="userTopic" class="quiz-input" placeholder="Enter topic to generate quiz...">
-                    <button class="quiz-btn" onclick="generateQuiz()">Generate Quiz</button>
+                    <button id="generate-btn" class="quiz-btn">Generate Quiz</button>
                 </div>
                 <div id="quiz-results"></div>
             </div>

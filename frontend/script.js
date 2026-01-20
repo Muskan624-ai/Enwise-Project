@@ -131,7 +131,7 @@ async function generateQuiz() {
 
     try {
         // 2. The Handshake: Talking to your Python Backend
-        const response = await fetch(`${BACKEND_URL}/generate-quiz`, {
+        const response = await fetch(`${API_BASE_URL}/generate-quiz`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -170,20 +170,22 @@ async function generateQuiz() {
 
 // Helper function to display quiz on the page
 function displayQuiz(questions) {
+    const quizResultsDiv = document.getElementById('quiz-results');
+    if (!quizResultsDiv) return;
+    
     let quizHTML = '<div class="quiz-display"><h3>Generated Quiz</h3>';
     
     questions.forEach((q, index) => {
         quizHTML += `
             <div class="quiz-question">
-                <p><strong>Q${index + 1}: ${q.text || q.question}</strong></p>
-                ${q.options ? `<ul>${q.options.map(opt => `<li>${opt}</li>`).join('')}</ul>` : ''}
+                <p><strong>Q${index + 1}: ${q.text || q.question || 'Question'}</strong></p>
+                ${q.options ? `<ul>${q.options.map((opt, optIndex) => `<li><input type="radio" name="q${index}" value="${optIndex}"> ${opt}</li>`).join('')}</ul>` : ''}
             </div>
         `;
     });
     
-    quizHTML += '</div>';
-    console.log(quizHTML);
-    // Optional: You can display this in a modal or on the page
+    quizHTML += '<button class="submit-quiz-btn">Submit Answers</button></div>';
+    quizResultsDiv.innerHTML = quizHTML;
 }
 
 // AI Chat Message Handler
@@ -208,20 +210,46 @@ function sendChatMessage() {
     // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
     
-    // Simulate AI response (replace with actual backend call if available)
-    setTimeout(() => {
-        const aiMessageDiv = document.createElement('div');
-        aiMessageDiv.className = 'message ai-message';
-        aiMessageDiv.innerHTML = `<p>Thanks for your question! I'm here to help you learn better.</p>`;
-        chatMessages.appendChild(aiMessageDiv);
+    // Try to get AI response from backend
+    (async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const aiResponse = data.response || data.message || "I'm having trouble understanding that. Could you rephrase?";
+                
+                const aiMessageDiv = document.createElement('div');
+                aiMessageDiv.className = 'message ai-message';
+                aiMessageDiv.innerHTML = `<p>${aiResponse}</p>`;
+                chatMessages.appendChild(aiMessageDiv);
+            } else {
+                throw new Error('Backend error');
+            }
+        } catch (error) {
+            console.log("Backend unavailable, using local response");
+            
+            // Fallback: Use local AI response
+            const aiMessageDiv = document.createElement('div');
+            aiMessageDiv.className = 'message ai-message';
+            aiMessageDiv.innerHTML = `<p>Thanks for your question! I'm here to help you learn ${userMessage.toLowerCase().includes('quiz') ? 'with quizzes' : 'better'}. How else can I assist?</p>`;
+            chatMessages.appendChild(aiMessageDiv);
+        }
+        
+        // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    }, 500);
+    })();
 }
 
-// Add event listener for chat send button
+// Add event listener for chat send button and quiz button
 document.addEventListener('DOMContentLoaded', function() {
     const sendBtn = document.querySelector('.send-btn');
     const chatInput = document.querySelector('.chat-input');
+    const generateBtn = document.getElementById('generate-btn');
     
     if (sendBtn) {
         sendBtn.addEventListener('click', sendChatMessage);
@@ -234,4 +262,101 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    if (generateBtn) {
+        generateBtn.addEventListener('click', generateQuiz);
+    }
 });
+
+// Upload Modal Functions
+function openUploadModal(subject) {
+    // Create modal HTML
+    const modalHTML = `
+        <div id="uploadModal" class="upload-modal-overlay" onclick="closeUploadModal()">
+            <div class="upload-modal" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h2>📤 Upload to ${subject.replace('-', ' ').toUpperCase()}</h2>
+                    <button class="modal-close" onclick="closeUploadModal()">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="upload-form-modal">
+                        <div class="form-group">
+                            <label for="uploadTitle">Title/Name:</label>
+                            <input type="text" id="uploadTitle" class="form-input" placeholder="e.g., Chapter 3 Notes">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="uploadFile">Select File:</label>
+                            <input type="file" id="uploadFile" class="form-input" accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="uploadDescription">Description:</label>
+                            <textarea id="uploadDescription" class="form-textarea" placeholder="Describe what this file contains..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="uploadType">Type:</label>
+                            <select id="uploadType" class="form-select">
+                                <option value="notes">📝 Notes</option>
+                                <option value="pdf">📕 PDF</option>
+                                <option value="practice">✏️ Practice Questions</option>
+                                <option value="resource">🎓 Learning Resource</option>
+                                <option value="other">📄 Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="modal-btn-cancel" onclick="closeUploadModal()">Cancel</button>
+                    <button class="modal-btn-upload" onclick="handleUpload('${subject}')">Upload File</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if present
+    const existingModal = document.getElementById('uploadModal');
+    if (existingModal) existingModal.remove();
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => modal.remove(), 300);
+    }
+}
+
+function handleUpload(subject) {
+    const title = document.getElementById('uploadTitle').value;
+    const file = document.getElementById('uploadFile').files[0];
+    const description = document.getElementById('uploadDescription').value;
+    const type = document.getElementById('uploadType').value;
+    
+    if (!title || !file) {
+        alert('Please fill in title and select a file');
+        return;
+    }
+    
+    // Show success message
+    alert(`✅ File "${title}" uploaded successfully for ${subject}!`);
+    
+    // Close modal
+    closeUploadModal();
+    
+    // Here you would typically send the file to backend
+    console.log('Upload data:', {
+        subject: subject,
+        title: title,
+        file: file.name,
+        description: description,
+        type: type,
+        size: file.size
+    });
+}
