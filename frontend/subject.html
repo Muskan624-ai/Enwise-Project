@@ -53,7 +53,7 @@
             <div class="subject-header">
                 <div class="subject-icon-large">📐</div>
                 <div class="subject-info">
-                    <h1 class="subject-title">Mathematics</h1>
+                    <h1 class="subject-title">Discrete Mathematics</h1>
                     <p class="subject-description">Master the fundamentals of algebra, geometry, and calculus</p>
                 </div>
             </div>
@@ -82,74 +82,55 @@
                 <div id="quiz-results"></div>
             </div>
 
-            <!-- Content Sections -->
-            <div class="subject-content-grid">
-                <!-- Syllabus Section -->
-                <section class="content-section">
-                    <h2>📚 Syllabus</h2>
-                    <div class="chapter-list">
-                        <div class="chapter-item">
-                            <h3>Chapter 1: Basics</h3>
-                            <p>Completed</p>
+            <!-- Three Column Layout: Left | Center (AI) | Right -->
+            <div class="subject-layout-wrapper">
+                <!-- Left Column -->
+                <aside class="subject-sidebar-left">
+                    <!-- Syllabus Section -->
+                    <section class="content-section">
+                        <h2>📚 Syllabus</h2>
+                        <div class="chapter-list">
+                            <div class="chapter-item">
+                                <h3>Chapter 1: Basics</h3>
+                                <p>Completed</p>
+                            </div>
+                            <div class="chapter-item">
+                                <h3>Chapter 2: Algebra</h3>
+                                <p>In Progress</p>
+                            </div>
+                            <div class="chapter-item">
+                                <h3>Chapter 3: Geometry</h3>
+                                <p>Not Started</p>
+                            </div>
+                            <div class="chapter-item">
+                                <h3>Chapter 4: Calculus</h3>
+                                <p>Not Started</p>
+                            </div>
                         </div>
-                        <div class="chapter-item">
-                            <h3>Chapter 2: Algebra</h3>
-                            <p>In Progress</p>
-                        </div>
-                        <div class="chapter-item">
-                            <h3>Chapter 3: Geometry</h3>
-                            <p>Not Started</p>
-                        </div>
-                        <div class="chapter-item">
-                            <h3>Chapter 4: Calculus</h3>
-                            <p>Not Started</p>
-                        </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Notes Section -->
-                <section class="content-section">
-                    <h2>📝 Notes</h2>
-                    <div class="notes-list">
-                        <div class="note-item">
-                            <h3>Chapter 1 Summary</h3>
-                            <p class="note-date">Jan 15, 2024</p>
-                            <button class="download-btn">Download</button>
+                    <!-- Timetable Section -->
+                    <section class="content-section">
+                        <h2>📅 Schedule</h2>
+                        <div class="schedule-list">
+                            <div class="schedule-item">
+                                <p class="schedule-day">Monday & Thursday</p>
+                                <p class="schedule-time">2:00 PM - 3:30 PM</p>
+                            </div>
+                            <div class="schedule-item">
+                                <p class="schedule-day">Wednesday</p>
+                                <p class="schedule-time">4:00 PM - 5:00 PM</p>
+                            </div>
+                            <div class="schedule-item">
+                                <p class="schedule-day">Saturday</p>
+                                <p class="schedule-time">10:00 AM - 12:00 PM</p>
+                            </div>
                         </div>
-                        <div class="note-item">
-                            <h3>Important Formulas</h3>
-                            <p class="note-date">Jan 10, 2024</p>
-                            <button class="download-btn">Download</button>
-                        </div>
-                        <div class="note-item">
-                            <h3>Practice Problems</h3>
-                            <p class="note-date">Jan 5, 2024</p>
-                            <button class="download-btn">Download</button>
-                        </div>
-                    </div>
-                </section>
+                    </section>
+                </aside>
 
-                <!-- Timetable Section -->
-                <section class="content-section">
-                    <h2>📅 Schedule</h2>
-                    <div class="schedule-list">
-                        <div class="schedule-item">
-                            <p class="schedule-day">Monday & Thursday</p>
-                            <p class="schedule-time">2:00 PM - 3:30 PM</p>
-                        </div>
-                        <div class="schedule-item">
-                            <p class="schedule-day">Wednesday</p>
-                            <p class="schedule-time">4:00 PM - 5:00 PM</p>
-                        </div>
-                        <div class="schedule-item">
-                            <p class="schedule-day">Saturday</p>
-                            <p class="schedule-time">10:00 AM - 12:00 PM</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- AI Chat Section -->
-                <section class="content-section full-width">
+                <!-- Center Column: AI Chat -->
+                <section class="content-section ai-chat-center">
                     <h2>🤖 Ask ENWISE AI</h2>
                     <p class="ai-description">Get instant answers to your questions about this subject</p>
                     <div class="ai-chat-box">
@@ -164,31 +145,50 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Right Column -->
+                <aside class="subject-sidebar-right">
+                    <!-- Notes Section -->
+                    <section class="content-section">
+                        <h2>📝 Notes</h2>
+                        <div class="notes-list">
+                            <div class="note-item">
+                                <h3>Chapter 1 Summary</h3>
+                                <p class="note-date">Jan 15, 2024</p>
+                                <button class="download-btn">Download</button>
+                            </div>
+                            <div class="note-item">
+                                <h3>Important Formulas</h3>
+                                <p class="note-date">Jan 10, 2024</p>
+                                <button class="download-btn">Download</button>
+                            </div>
+                            <div class="note-item">
+                                <h3>Practice Problems</h3>
+                                <p class="note-date">Jan 5, 2024</p>
+                                <button class="download-btn">Download</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Resources Section -->
+                    <div class="resources-section">
+                        <h2>Related Resources</h2>
+                        <div class="resources-grid">
+                            <div class="resource-card">
+                                <span class="resource-icon">💡</span>
+                                <h3>Tips & Tricks</h3>
+                                <p>Useful study techniques and shortcuts</p>
+                            </div>
+                            <div class="resource-card">
+                                <span class="resource-icon">🧪</span>
+                                <h3>Practice Tests</h3>
+                                <p>Test your knowledge with quizzes</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
             </div>
 
-            <!-- Related Resources -->
-            <div class="resources-section">
-                <h2>Related Resources</h2>
-                <div class="resources-grid">
-                    <div class="resource-card">
-                        <span class="resource-icon">💡</span>
-                        <h3>Tips & Tricks</h3>
-                        <p>Useful study techniques and shortcuts</p>
-                    </div>
-                    <div class="resource-card">
-                        <span class="resource-icon">🧪</span>
-                        <h3>Practice Tests</h3><!--Here i want to add the quiz generator-->
-                        <p>Test your knowledge with quizzes</p>
-                    </div>
-                    <div class="resource-card">
-                        <span class="resource-icon">👥</span>
-                        <h3>Discussion Forum</h3>
-                        <p>Connect with other students</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
 
     <!-- Footer -->
     <footer>
