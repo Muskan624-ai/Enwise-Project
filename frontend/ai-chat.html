@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat - ENWISE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="ai-chat-page">
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">Think Unlimited</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+                <a href="#timetable" class="nav-link">Timetable</a>
+                <a href="ai-chat.html" class="nav-link active">💬 AI Chat</a>
+            </nav>
+            <button class="profile-btn">Student profile</button>
+            
+            <!-- Hamburger Menu -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="nav-overlay" id="navOverlay"></div>
+        
+        <!-- Mobile Navigation -->
+        <nav class="nav-mobile" id="navMobile">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="upload.html" class="nav-link">Upload</a>
+            <a href="#timetable" class="nav-link">Timetable</a>
+            <a href="ai-chat.html" class="nav-link active">💬 AI Chat</a>
+            <button class="profile-btn">Student profile</button>
+        </nav>
+
+        <!-- Main Chat Content -->
+        <main class="ai-chat-main">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-title">
+                        <span class="chat-icon">🤖</span>
+                        <div>
+                            <h1>Study Assistant AI</h1>
+                            <p class="chat-status">Always here to help</p>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="chat-action-btn" onclick="clearChatHistory()">🗑️ Clear</button>
+                        <button class="chat-action-btn" onclick="exportChat()">📥 Export</button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages Area -->
+                <div class="chat-messages-full">
+                    <div class="message welcome-message">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <h3>Welcome to Study Assistant!</h3>
+                            <p>I'm here to help you learn and understand concepts better. You can:</p>
+                            <ul>
+                                <li>Ask questions about any topic</li>
+                                <li>Request quiz explanations</li>
+                                <li>Get study tips and advice</li>
+                                <li>Discuss difficult concepts</li>
+                                <li>Prepare for exams</li>
+                            </ul>
+                            <p style="margin-top: 1rem; color: #999; font-size: 0.9rem;">💡 Tip: Be specific in your questions for better answers!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Area -->
+                <div class="chat-input-full-area">
+                    <div class="input-suggestions">
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Explain the concept of time complexity')">⏱️ Time Complexity</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('How do I solve this recursion problem?')">🔄 Recursion</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('Generate a practice quiz on trees')">🌳 Practice Quiz</button>
+                        <button class="suggestion-btn" onclick="sendPredefinedMessage('What are the best study tips?')">💡 Study Tips</button>
+                    </div>
+                    
+                    <div class="chat-input-area-full">
+                        <input type="text" class="chat-input-full" placeholder="Ask me anything about your studies... 💬" id="aiChatInput">
+                        <button class="send-btn-full" onclick="sendAIChatMessage()">Send →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar with Quick Links -->
+            <aside class="chat-sidebar">
+                <div class="sidebar-section">
+                    <h3>📚 Subject Help</h3>
+                    <a href="discrete.html" class="sidebar-link">Discrete Mathematics</a>
+                    <a href="dsa.html" class="sidebar-link">DSA & Algorithms</a>
+                    <a href="#" class="sidebar-link">Data Science</a>
+                    <a href="#" class="sidebar-link">Web Development</a>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>⚡ Quick Actions</h3>
+                    <button class="sidebar-btn" onclick="openUploadModal('current-subject')">📤 Upload Material</button>
+                    <button class="sidebar-btn" onclick="window.location.href='#timetable'">📅 View Schedule</button>
+                    <button class="sidebar-btn" onclick="window.location.href='dashboard.html'">📊 Dashboard</button>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>💬 Chat History</h3>
+                    <div class="chat-history-list" id="chatHistory">
+                        <p class="empty-history">No previous chats</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // AI Chat page specific functions
+        function sendAIChatMessage() {
+            const input = document.getElementById('aiChatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatMessages = document.querySelector('.chat-messages-full');
+            
+            // Add user message
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user-message-full';
+            userMsgDiv.innerHTML = `
+                <div class="message-avatar">👤</div>
+                <div class="message-content">
+                    <p>${message}</p>
+                </div>
+            `;
+            chatMessages.appendChild(userMsgDiv);
+            
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            
+            // Simulate AI response after delay
+            setTimeout(() => {
+                typingDiv.remove();
+                
+                const aiMsgDiv = document.createElement('div');
+                aiMsgDiv.className = 'message ai-message-full';
+                
+                let response = '';
+                const lowerMsg = message.toLowerCase();
+                
+                if (lowerMsg.includes('time complex')) {
+                    response = `Time complexity measures how the running time of an algorithm grows with the input size. Common complexities:<br>
+                    • O(1) - Constant time<br>
+                    • O(n) - Linear time<br>
+                    • O(n²) - Quadratic<br>
+                    • O(log n) - Logarithmic<br>
+                    For example, binary search is O(log n) because each iteration eliminates half the data.`;
+                } else if (lowerMsg.includes('recursion')) {
+                    response = `Recursion is when a function calls itself. Key points:<br>
+                    1. Base case - when to stop<br>
+                    2. Recursive case - make progress toward base case<br>
+                    Example: Factorial<br>
+                    factorial(5) = 5 × factorial(4)<br>
+                    Each recursive call reduces n until reaching factorial(0) = 1`;
+                } else if (lowerMsg.includes('quiz') || lowerMsg.includes('practice')) {
+                    response = `Great! Let's test your knowledge. Here's a practice quiz:<br>
+                    <strong>Q1: What is the time complexity of binary search?</strong><br>
+                    A) O(n)<br>
+                    B) O(log n)<br>
+                    C) O(n²)<br>
+                    D) O(1)<br><br>
+                    <em>Answer: B) O(log n) - because it divides the search space in half each time</em>`;
+                } else if (lowerMsg.includes('study') || lowerMsg.includes('tips')) {
+                    response = `Here are effective study tips:<br>
+                    1. <strong>Active Learning</strong> - Solve problems, don't just read<br>
+                    2. <strong>Spaced Repetition</strong> - Review regularly<br>
+                    3. <strong>Practice Coding</strong> - Code by hand first<br>
+                    4. <strong>Teach Others</strong> - Explaining reinforces learning<br>
+                    5. <strong>Take Breaks</strong> - Study in 25-minute blocks<br>
+                    6. <strong>Review Mistakes</strong> - Learn from wrong answers`;
+                } else {
+                    response = `That's a great question! I can help you with:<br>
+                    • Explaining concepts in detail<br>
+                    • Solving practice problems step-by-step<br>
+                    • Generating quizzes on specific topics<br>
+                    • Recommending study strategies<br><br>
+                    Feel free to ask follow-up questions or try one of my suggestions above! 😊`;
+                }
+                
+                aiMsgDiv.innerHTML = `
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p>${response}</p>
+                        <small class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                    </div>
+                `;
+                chatMessages.appendChild(aiMsgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 800);
+        }
+        
+        function sendPredefinedMessage(message) {
+            const input = document.getElementById('aiChatInput');
+            input.value = message;
+            sendAIChatMessage();
+        }
+        
+        function clearChatHistory() {
+            if (confirm('Clear all chat messages?')) {
+                document.querySelector('.chat-messages-full').innerHTML = `
+                    <div class="message welcome-message">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <h3>Welcome to Study Assistant!</h3>
+                            <p>I'm here to help you learn and understand concepts better.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function exportChat() {
+            alert('Chat exported! Check your downloads folder.');
+        }
+        
+        // Enable Enter key to send
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('aiChatInput');
+            if (input) {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendAIChatMessage();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
