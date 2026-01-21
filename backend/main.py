@@ -14,8 +14,14 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --- INITIALIZATION ---
-load_dotenv(dotenv_path=".env.local") 
+# Get the directory where this script is located
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(dotenv_path=os.path.join(SCRIPT_DIR, ".env.local"))
 API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    logger.warning("⚠️ GEMINI_API_KEY not found! Set it in .env.local")
+    API_KEY = ""  # Will fail on actual API calls but won't crash on startup
 
 app = FastAPI(title="Enwise AI Backend")
 
@@ -37,6 +43,12 @@ class MindMapRequest(BaseModel):
     syllabus_text: str
     timetable_text: str
     days: int = 14
+
+class ChatRequest(BaseModel):
+    message: str
+    subject: str = ""
+    language: str = "auto"  # auto-detect or specify: english, hindi, spanish, etc.
+    context: str = ""  # Additional context like uploaded notes
 
 # --- HELPER FUNCTIONS ---
 def extract_text_from_pdf(file_bytes):
@@ -129,6 +141,129 @@ async def generate_14_day_plan(request: MindMapRequest):
     except Exception as e:
         logger.error(f"AI Roadmap Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/chat")
+async def ai_tutor_chat(request: ChatRequest):
+    """
+    Flexible AI Tutor that can:
+    - Explain any educational topic
+    - Respond in multiple languages
+    - Solve numerical problems step-by-step
+    - Provide real-life analogies
+    """
+    logger.info(f"💬 Chat Request: {request.message[:50]}...")
+    
+    try:
+        # Build the system prompt for a flexible educational AI
+        system_prompt = f"""You are EnWise AI Tutor - an extremely flexible, knowledgeable, and friendly educational assistant.
+
+YOUR CAPABILITIES:
+1. **Multilingual**: Detect the language of the user's question and respond in the SAME language. If they ask in Hindi, reply in Hindi. If Spanish, reply in Spanish. If they explicitly request a language (e.g., "explain in French"), use that language.
+
+2. **Any Educational Topic**: You can explain ANY subject - Science, Math, History, Literature, Programming, Economics, Philosophy, Art, Music, Languages, and more.
+
+3. **Adaptive Explanations**:
+   - Use simple language for beginners
+   - Use technical terms for advanced questions
+   - Always include real-life analogies and examples
+   - Break down complex concepts step-by-step
+
+4. **Problem Solving**:
+   - Solve mathematical/numerical problems with detailed steps
+   - Show formulas, calculations, and explain each step
+   - Provide practice problems when helpful
+
+5. **Learning Support**:
+   - Create mnemonics and memory tricks
+   - Suggest study strategies
+   - Clarify doubts patiently
+   - Encourage the student
+
+CURRENT CONTEXT:
+- Subject being studied: {request.subject if request.subject else 'General'}
+- Additional context: {request.context[:1000] if request.context else 'None provided'}
+
+RESPONSE STYLE:
+- Be warm, encouraging, and patient
+- Use emojis sparingly for friendliness
+- Format responses with clear sections
+- Keep explanations concise but complete
+- If unsure, admit it and suggest resources
+
+Remember: You are here to make learning enjoyable and accessible!"""
+
+        # Create the full prompt
+        full_prompt = f"{system_prompt}\n\nStudent's Question: {request.message}"
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=full_prompt
+        )
+        
+        return {
+            "response": response.text,
+            "detected_language": "auto",
+            "subject": request.subject
+        }
+        
+    except Exception as e:
+        logger.error(f"Chat Error: {e}")
+        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
+
+@app.post("/generate-pyq-quiz")
+async def generate_pyq_quiz(
+    file: UploadFile = File(...), 
+    subject: str = Form(...),
+    num_questions: int = Form(5)
+):
+    """
+    Analyze PYQ papers and generate practice questions based on the patterns
+    """
+    logger.info(f"📚 PYQ Quiz Request: {subject} - {file.filename}")
+    content = await file.read()
+    text = extract_text_from_pdf(content)
+
+    if not text:
+        raise HTTPException(status_code=400, detail="Could not read PDF text.")
+
+    try:
+        prompt = f"""
+        You are analyzing a Previous Year Question paper for {subject}.
+        
+        PYQ Content: {text[:8000]}
+        
+        Based on the patterns, topics, and difficulty level in this PYQ paper:
+        1. Identify the key topics that appear frequently
+        2. Generate {num_questions} NEW practice questions similar to the PYQ style
+        3. Include a mix of conceptual and numerical questions if applicable
+        4. Make questions exam-ready with proper difficulty
+        
+        Return ONLY a valid JSON object in this exact format:
+        {{
+            "topics_found": ["Topic 1", "Topic 2", "Topic 3"],
+            "difficulty": "Medium",
+            "quiz": [
+                {{
+                    "q": "Question text here?",
+                    "options": ["Option A", "Option B", "Option C", "Option D"],
+                    "a": "Option A",
+                    "explanation": "Brief explanation of the correct answer"
+                }}
+            ]
+        }}
+        """
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash", 
+            contents=prompt
+        )
+        
+        result = json.loads(clean_json_response(response.text))
+        return result
+        
+    except Exception as e:
+        logger.error(f"PYQ Quiz Error: {e}")
+        raise HTTPException(status_code=500, detail=f"PYQ Generation Failed: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

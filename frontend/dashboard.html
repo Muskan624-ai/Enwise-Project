@@ -360,10 +360,101 @@
         document.getElementById('addSubjectCard').addEventListener('click', function() {
             var subjectName = prompt('Enter the subject name:');
             if (subjectName && subjectName.trim() !== '') {
-                // Navigate to subject.html with the subject name as a parameter
-                window.location.href = 'subject.html?subject=' + encodeURIComponent(subjectName.trim());
+                subjectName = subjectName.trim();
+                
+                // Save subject to localStorage
+                var subjects = JSON.parse(localStorage.getItem('user_subjects') || '[]');
+                if (!subjects.includes(subjectName)) {
+                    subjects.push(subjectName);
+                    localStorage.setItem('user_subjects', JSON.stringify(subjects));
+                }
+                
+                // Add the new subject card to the grid immediately
+                addSubjectCardToGrid(subjectName);
             }
         });
+        
+        // Function to add a subject card to the grid
+        function addSubjectCardToGrid(subjectName) {
+            var grid = document.querySelector('.subjects-grid-new');
+            var addCard = document.getElementById('addSubjectCard');
+            
+            // Create new subject card
+            var newCard = document.createElement('a');
+            newCard.href = 'subject.html?subject=' + encodeURIComponent(subjectName);
+            newCard.className = 'subject-card-new';
+            newCard.id = 'card_' + subjectName.replace(/\s+/g, '_');
+            
+            var chartId = 'chart_' + Date.now();
+            newCard.innerHTML = `
+                <h3>${subjectName}</h3>
+                <div class="subject-chart-container">
+                    <canvas id="${chartId}" width="180" height="100"></canvas>
+                </div>
+            `;
+            
+            // Insert before the Add Subject card
+            grid.insertBefore(newCard, addCard);
+            
+            // Initialize chart for the new card
+            var canvas = document.getElementById(chartId);
+            if (canvas) {
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', '', '', ''],
+                        datasets: [
+                            {
+                                data: [0, 0, 0, 0, 0, 0, 0],
+                                borderColor: '#1a1a1a',
+                                backgroundColor: 'transparent',
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#1a1a1a',
+                                pointBorderWidth: 2,
+                                borderWidth: 2
+                            },
+                            {
+                                data: [0, 0, 0, 0, 0, 0, 0],
+                                borderColor: '#7cb5ec',
+                                backgroundColor: 'transparent',
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#7cb5ec',
+                                pointBorderWidth: 2,
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: true, grid: { display: true, color: 'rgba(0,0,0,0.1)' }, ticks: { display: false } },
+                            y: { display: true, grid: { display: false }, ticks: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Load saved subjects on page load
+        function loadSavedSubjects() {
+            var subjects = JSON.parse(localStorage.getItem('user_subjects') || '[]');
+            subjects.forEach(function(subjectName) {
+                // Check if card already exists (like Calculus which is hardcoded)
+                var existingCard = document.querySelector(`a[href="subject.html?subject=${encodeURIComponent(subjectName)}"]`);
+                if (!existingCard) {
+                    addSubjectCardToGrid(subjectName);
+                }
+            });
+        }
+        
+        // Load saved subjects after charts are initialized
+        setTimeout(loadSavedSubjects, 100);
     </script>
 </body>
 </html>

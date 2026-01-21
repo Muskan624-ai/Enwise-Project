@@ -110,6 +110,68 @@
             border-radius: 8px; 
             margin-top: 1rem; 
         }
+        .question-result {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 0.8rem 0;
+            position: relative;
+            border-left: 4px solid;
+        }
+        .question-result.correct-answer {
+            background: #e8f5e9;
+            border-left-color: #2d8a6e;
+        }
+        .question-result.incorrect-answer {
+            background: #ffebee;
+            border-left-color: #d32f2f;
+        }
+        .question-result p { margin: 0.3rem 0; }
+        .question-result .your-answer span {
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .question-result .correct-ans span {
+            font-weight: 600;
+            color: #2d8a6e;
+        }
+        .question-result .status-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.2rem;
+        }
+        .weak-tag {
+            display: inline-block;
+            background: #ffcdd2;
+            color: #c62828;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 0.3rem 0.2rem;
+        }
+        .score-circle.good { background: linear-gradient(135deg, #2d8a6e, #1f6b54); }
+        .score-circle.medium { background: linear-gradient(135deg, #ff9800, #f57c00); }
+        .score-circle.poor { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
+        .loading { text-align: center; padding: 2rem; }
+        .spinner { 
+            width: 40px; height: 40px; 
+            border: 4px solid #e0e0e0; 
+            border-top-color: #2d8a6e; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error { color: #d32f2f; text-align: center; padding: 2rem; }
+        .back-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: #2d8a6e;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -118,23 +180,24 @@
             <span class="icon">🤖</span>
             <div>
                 <h1>AI Prerequisite Quiz</h1>
-                <p class="quiz-subtitle" id="subjectName">Loading Subject...</p>
+                <p class="quiz-subtitle" id="subjectName">Loading...</p>
             </div>
         </div>
-        <span class="source-badge" id="sourceBadge">Analyzing Document...</span>
+        <span class="source-badge" id="sourceBadge">Loading...</span>
         <p class="intro-text">Answer these questions based on your uploaded material to unlock your study path.</p>
         
-        <div id="dynamic-questions-container">
-            <p style="text-align:center; padding: 20px;">🤖 AI is preparing your questions...</p>
+        <div id="quizContent">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>🤖 Loading your AI-generated questions...</p>
+            </div>
         </div>
-        
-        <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">📊 Submit & Analyze</button>
         
         <div class="result" id="quizResult"></div>
     </div>
 
     <script>
-        // 1. Get parameters from URL
+        // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const subject = urlParams.get('subject') || 'Subject';
         const source = urlParams.get('source') || 'File';
@@ -142,89 +205,201 @@
         document.getElementById('subjectName').textContent = subject;
         document.getElementById('sourceBadge').textContent = '📄 Generated from ' + source;
 
-        // 2. Load the AI data from localStorage
         let quizData = [];
-        document.addEventListener('DOMContentLoaded', function() {
+
+        // Load quiz data immediately
+        window.onload = function() {
+            console.log('🔄 Loading quiz data...');
+            loadQuizData();
+        };
+
+        function loadQuizData() {
+            // Try localStorage first
             const rawData = localStorage.getItem('latest_quiz_data');
-            if (rawData) {
-                quizData = JSON.parse(rawData);
-                renderAIQuestions(quizData);
-            } else {
-                document.getElementById('dynamic-questions-container').innerHTML = 
-                    "<p style='color:red; text-align:center;'>No quiz data found. Please upload a file on the main page first.</p>";
+            console.log('📦 Raw localStorage data:', rawData);
+            
+            if (rawData && rawData !== '[]' && rawData !== 'null' && rawData !== 'undefined') {
+                try {
+                    quizData = JSON.parse(rawData);
+                    console.log('✅ Parsed quiz data:', quizData);
+                    
+                    if (quizData && Array.isArray(quizData) && quizData.length > 0) {
+                        renderQuiz(quizData);
+                        return;
+                    }
+                } catch(e) {
+                    console.error('❌ Parse error:', e);
+                }
             }
-        });
-
-        // 3. Render questions to the screen
-        function renderAIQuestions(questions) {
-            const container = document.getElementById('dynamic-questions-container');
-            container.innerHTML = ""; 
-
-            questions.forEach((q, index) => {
-                const qDiv = document.createElement('div');
-                qDiv.className = 'question';
-                qDiv.innerHTML = `
-                    <p><strong>Q${index + 1}:</strong> ${q.q}</p>
-                    <div class="options">
-                        ${q.options.map(opt => `
-                            <label>
-                                <input type="radio" name="q${index}" value="${opt}"> ${opt}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(qDiv);
-            });
+            
+            // No data - show helpful error instead of "Offline"
+            document.getElementById('quizContent').innerHTML = `
+                <div class="error">
+                    <p style="font-size: 2rem;">📚</p>
+                    <p><strong>No Quiz Available Yet</strong></p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                        Please upload a Syllabus or Class Notes first to generate a quiz.
+                    </p>
+                    <a href="subject.html?subject=${encodeURIComponent(subject)}" class="back-btn">← Go to Subject Page</a>
+                </div>
+            `;
         }
 
-        // 4. Submit and Send Weak Topics back to Dashboard
+        function renderQuiz(questions) {
+            console.log('🎨 Rendering', questions.length, 'questions');
+            
+            let html = '';
+            questions.forEach((q, index) => {
+                html += `
+                    <div class="question">
+                        <p><strong>Q${index + 1}:</strong> ${q.q}</p>
+                        <div class="options">
+                            ${q.options.map((opt, i) => `
+                                <label>
+                                    <input type="radio" name="q${index}" value="${opt}"> ${opt}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `<button class="submit-btn" onclick="submitQuiz()">📊 Submit & Analyze</button>`;
+            
+            document.getElementById('quizContent').innerHTML = html;
+        }
+
         function submitQuiz() {
             let correctCount = 0;
             let weakTopics = [];
+            let strongTopics = [];
+            let questionResults = [];
 
             quizData.forEach((q, i) => {
-                const selected = document.querySelector(input[name="q${i}"]:checked);
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const topicGuess = q.q.split(' ').slice(0, 5).join(' ') + '...';
+                const userAnswer = selected ? selected.value : 'Not answered';
+                const isCorrect = selected && selected.value === q.a;
                 
-                if (selected && selected.value === q.a) {
+                questionResults.push({
+                    questionNum: i + 1,
+                    question: q.q,
+                    userAnswer: userAnswer,
+                    correctAnswer: q.a,
+                    isCorrect: isCorrect
+                });
+                
+                if (isCorrect) {
                     correctCount++;
+                    strongTopics.push(topicGuess);
                 } else {
-                    // Extract a short topic name from the question text
-                    const topicGuess = q.q.split(' ').slice(0, 3).join(' ');
                     weakTopics.push(topicGuess); 
                 }
             });
 
             const percentage = Math.round((correctCount / quizData.length) * 100);
             
-            // Display Results on screen
+            // Store quiz result in history
+            const quizResult = {
+                id: Date.now(),
+                subject: subject,
+                source: source,
+                score: percentage,
+                correctCount: correctCount,
+                totalQuestions: quizData.length,
+                weakTopics: weakTopics,
+                strongTopics: strongTopics,
+                date: new Date().toISOString(),
+                questions: questionResults
+            };
+            
+            // Save to quiz history in localStorage
+            let quizHistory = JSON.parse(localStorage.getItem('quiz_history') || '[]');
+            quizHistory.unshift(quizResult); // Add newest first
+            // Keep only last 50 quizzes
+            if (quizHistory.length > 50) quizHistory = quizHistory.slice(0, 50);
+            localStorage.setItem('quiz_history', JSON.stringify(quizHistory));
+            
+            // Store weak topics for mindmap (cumulative per subject)
+            let allWeakTopics = JSON.parse(localStorage.getItem('weak_topics_' + subject) || '[]');
+            weakTopics.forEach(t => {
+                if (!allWeakTopics.includes(t)) allWeakTopics.push(t);
+            });
+            localStorage.setItem('weak_topics_' + subject, JSON.stringify(allWeakTopics));
+            localStorage.setItem('weak_topics', JSON.stringify(weakTopics)); // Current quiz weak topics
+            
+            // Hide questions, show results
+            document.getElementById('quizContent').style.display = 'none';
             const resultDiv = document.getElementById('quizResult');
             resultDiv.className = 'result show';
-            document.getElementById('submitBtn').style.display = 'none';
 
             let resultHTML = `
-                <div class="score-circle">${percentage}%</div>
-                <p style="text-align:center;">Score: <strong>${correctCount}/${quizData.length}</strong></p>
+                <div class="score-circle ${percentage >= 70 ? 'good' : percentage >= 40 ? 'medium' : 'poor'}">${percentage}%</div>
+                <p style="text-align:center; margin-bottom: 1rem;">Score: <strong>${correctCount}/${quizData.length}</strong></p>
             `;
+            
+            // Detailed Question Analysis
+            resultHTML += `<h3 style="margin: 1.5rem 0 1rem; color: #333;">📋 Detailed Analysis</h3>`;
+            
+            questionResults.forEach((qr) => {
+                const statusClass = qr.isCorrect ? 'correct-answer' : 'incorrect-answer';
+                const statusIcon = qr.isCorrect ? '✅' : '❌';
+                
+                resultHTML += `
+                    <div class="question-result ${statusClass}">
+                        <p><strong>Q${qr.questionNum}:</strong> ${qr.question}</p>
+                        <p class="your-answer">Your Answer: <span>${qr.userAnswer}</span></p>
+                        ${!qr.isCorrect ? `<p class="correct-ans">Correct Answer: <span>${qr.correctAnswer}</span></p>` : ''}
+                        <span class="status-icon">${statusIcon}</span>
+                    </div>
+                `;
+            });
 
+            // Weak Areas Summary
             if (weakTopics.length > 0) {
                 resultHTML += `
                     <div class="weak-topics">
-                        <strong>⚠️ Found Weaknesses:</strong><br>
-                        ${weakTopics.map(t => '• ' + t).join('<br>')}
+                        <strong>⚠️ Weak Areas to Focus On:</strong><br>
+                        ${weakTopics.map((t, i) => `<span class="weak-tag">${i + 1}. ${t}</span>`).join('')}
+                        <p style="font-size: 0.85rem; margin-top: 0.8rem; color: #666;">
+                            💡 These topics will be added to your MindMap for revision.
+                        </p>
                     </div>
-                    <p style="text-align:center; font-size: 0.8rem; margin-top: 10px; color: #666;">
-                        These topics have been added to your Dashboard MindMap.
-                    </p>
                 `;
             } else {
-                resultHTML += <div class="strong-topics">✅ Perfect! You have mastered these prerequisites.</div>;
+                resultHTML += `<div class="strong-topics">🎉 Perfect Score! You have mastered all topics.</div>`;
             }
+            
+            // Strong Areas
+            if (strongTopics.length > 0) {
+                resultHTML += `
+                    <div class="strong-topics">
+                        <strong>✅ Strong Areas:</strong><br>
+                        ${strongTopics.map(t => '• ' + t).join('<br>')}
+                    </div>
+                `;
+            }
+
+            resultHTML += `
+                <p style="text-align:center; font-size: 0.85rem; margin-top: 1.5rem; color: #2d8a6e;">
+                    ✅ Results saved to quiz history
+                </p>
+                <a href="subject.html?subject=${encodeURIComponent(subject)}" class="back-btn" style="display:block;text-align:center;margin:1rem auto 0;width:fit-content;">
+                    ← Back to Subject
+                </a>
+            `;
 
             resultDiv.innerHTML = resultHTML;
 
-            // CRITICAL: Send data back to the parent Dashboard
-            if (window.opener) {
-                window.opener.postMessage({ weakTopics: weakTopics }, '*');
+            // Send to parent window if opened from subject page
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({ 
+                    weakTopics: weakTopics, 
+                    strongTopics: strongTopics,
+                    score: percentage,
+                    subject: subject,
+                    quizResult: quizResult
+                }, '*');
             }
         }
     </script>
