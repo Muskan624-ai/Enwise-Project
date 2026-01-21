@@ -16,7 +16,7 @@
             <nav class="nav">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
+                <a href="#aiTutorSection" class="nav-link" onclick="scrollToAITutor(event)">AI-Tutor</a>
             </nav>
             <button class="profile-btn">Student profile</button>
             
@@ -35,7 +35,7 @@
         <nav class="nav-mobile" id="navMobile">
             <a href="index.html" class="nav-link">Home</a>
             <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
+            <a href="#aiTutorSection" class="nav-link" onclick="scrollToAITutor(event)">AI-Tutor</a>
             <button class="profile-btn">Student profile</button>
         </nav>
 
@@ -76,11 +76,36 @@
 
                 <!-- Main Content Area -->
                 <div class="main-content-area">
-                    <div class="content-card">
-                        <button class="quiz-generate-btn" id="generateQuizBtn">🎯 Generate Quiz</button>
+                    <!-- Quiz Levels Card -->
+                    <div class="content-card quiz-levels-card">
+                        <h3>📝 Practice Quizzes</h3>
+                        <p style="margin-bottom: 1rem; color: #888;">Select difficulty level to test your knowledge</p>
+                        <div class="quiz-levels-container">
+                            <button class="quiz-level-btn level-1" onclick="generateLevelQuiz(1)">
+                                <span class="level-icon">🌱</span>
+                                <span class="level-text">
+                                    <strong>Level 1</strong>
+                                    <small>Basics & Fundamentals</small>
+                                </span>
+                            </button>
+                            <button class="quiz-level-btn level-2" onclick="generateLevelQuiz(2)">
+                                <span class="level-icon">🌿</span>
+                                <span class="level-text">
+                                    <strong>Level 2</strong>
+                                    <small>Intermediate Concepts</small>
+                                </span>
+                            </button>
+                            <button class="quiz-level-btn level-3" onclick="generateLevelQuiz(3)">
+                                <span class="level-icon">🌳</span>
+                                <span class="level-text">
+                                    <strong>Level 3</strong>
+                                    <small>Advanced & Application</small>
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="content-card ai-tutor-card">
+                    <div class="content-card ai-tutor-card" id="aiTutorSection">
                         <h3>AI Tutor - Your Complete Study Companion</h3>
                         <p>
                             <strong>Get comprehensive help with:</strong><br>
@@ -221,6 +246,72 @@
     </div>
 
     <style>
+        /* Quiz Level Buttons Styles */
+        .quiz-levels-card {
+            background: linear-gradient(135deg, #1a2a3a 0%, #2d3e50 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+        .quiz-levels-card h3 {
+            color: #5fc4b8;
+            margin-bottom: 0.5rem;
+        }
+        .quiz-levels-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .quiz-level-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .quiz-level-btn .level-icon {
+            font-size: 1.8rem;
+        }
+        .quiz-level-btn .level-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .quiz-level-btn .level-text strong {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+        .quiz-level-btn .level-text small {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        .quiz-level-btn.level-1 {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: #052e16;
+        }
+        .quiz-level-btn.level-1:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.4);
+        }
+        .quiz-level-btn.level-2 {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #451a03;
+        }
+        .quiz-level-btn.level-2:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
+        }
+        .quiz-level-btn.level-3 {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: #450a0a;
+        }
+        .quiz-level-btn.level-3:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(248, 113, 113, 0.4);
+        }
+
         /* Expanded Sidebar Cards - Syllabus & ClassNotes */
         .sidebar-card-expanded {
             background: #e8f5e9;
@@ -1151,12 +1242,22 @@
 
             } catch (error) {
                 console.error("Upload error:", error);
+                
+                // Check if it's a rate limit error
+                let errorMessage = 'Backend offline - using smart fallback';
+                let titleMessage = 'Generating Local Quiz...';
+                
+                if (error.message && error.message.includes('429')) {
+                    errorMessage = 'API rate limit reached (20/day). Using local quiz.';
+                    titleMessage = 'Rate Limit - Using Fallback...';
+                }
+                
                 console.log("⚠️ Backend unavailable - using local quiz generation");
                 
                 // Update overlay to show fallback mode
                 if (overlay) {
-                    document.getElementById('processingTitle').textContent = "Generating Local Quiz...";
-                    document.getElementById('processingFile').textContent = 'Backend offline - using smart fallback';
+                    document.getElementById('processingTitle').textContent = titleMessage;
+                    document.getElementById('processingFile').textContent = errorMessage;
                 }
                 
                 // Still mark as uploaded (fallback to local quiz generation)
@@ -1237,6 +1338,50 @@
             } else {
                 // Close overlay
                 document.getElementById('processingOverlay').style.display = 'none';
+            }
+        }
+
+        // Generate quiz based on level (1=Easy, 2=Medium, 3=Hard)
+        function generateLevelQuiz(level) {
+            var levelNames = {1: 'easy', 2: 'medium', 3: 'hard'};
+            var levelLabels = {1: 'Basics & Fundamentals', 2: 'Intermediate Concepts', 3: 'Advanced & Application'};
+            
+            // Check if any content is uploaded
+            if (!syllabusUploaded && !notesUploaded) {
+                alert('Please upload Syllabus or Class Notes first to generate a quiz!');
+                return;
+            }
+            
+            // Show processing overlay
+            var overlay = document.getElementById('processingOverlay');
+            document.getElementById('processingTitle').textContent = 'Generating Level ' + level + ' Quiz...';
+            document.getElementById('processingFile').textContent = levelLabels[level];
+            document.getElementById('openQuizBtn').style.display = 'none';
+            document.getElementById('loadingDots').style.display = 'flex';
+            overlay.style.display = 'flex';
+            
+            // Determine source
+            var sourceType = syllabusUploaded ? 'syllabus' : 'notes';
+            
+            // Open quiz with level parameter
+            var quizUrl = 'quiz.html?subject=' + encodeURIComponent(currentSubject) + 
+                          '&source=' + sourceType + 
+                          '&level=' + level +
+                          '&difficulty=' + levelNames[level];
+            
+            var quizWindow = window.open(quizUrl, '_blank');
+            
+            if (!quizWindow || quizWindow.closed) {
+                document.getElementById('processingTitle').textContent = 'Level ' + level + ' Quiz Ready!';
+                document.getElementById('processingFile').textContent = 'Click below to open';
+                document.getElementById('loadingDots').style.display = 'none';
+                document.getElementById('openQuizBtn').style.display = 'inline-block';
+                document.getElementById('openQuizBtn').onclick = function() {
+                    window.open(quizUrl, '_blank');
+                    overlay.style.display = 'none';
+                };
+            } else {
+                overlay.style.display = 'none';
             }
         }
 
@@ -1828,6 +1973,20 @@
 
         // Initialize timeline on load
         initTimeline();
+
+        // Scroll to AI Tutor section
+        function scrollToAITutor(event) {
+            event.preventDefault();
+            var aiSection = document.getElementById('aiTutorSection');
+            if (aiSection) {
+                aiSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Flash effect to highlight the section
+                aiSection.style.boxShadow = '0 0 30px rgba(95, 196, 184, 0.6)';
+                setTimeout(function() {
+                    aiSection.style.boxShadow = '';
+                }, 2000);
+            }
+        }
     </script>
 </body>
 </html>

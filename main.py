@@ -9,10 +9,15 @@ import json
 import fitz  # PyMuPDF
 
 # --- 1. SETUP & ENVIRONMENT ---
-load_dotenv()
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(dotenv_path=os.path.join(SCRIPT_DIR, "backend", ".env.local"))
+
+API_KEY = os.getenv("GEMINI_API_KEY")
+if not API_KEY:
+    raise ValueError("GEMINI_API_KEY not found! Set it in backend/.env.local")
 
 # The Client now handles the API key and global configuration
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+client = genai.Client(api_key=API_KEY)
 
 # Use the latest stable 2.5 Flash model for reliability
 MODEL_ID = "gemini-2.5-flash"

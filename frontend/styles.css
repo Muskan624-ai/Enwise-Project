@@ -97,7 +97,7 @@ body {
     display: flex;
     align-items: center;
     gap: clamp(0.5rem, 1vw, 0.8rem);
-    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
     font-weight: 800;
     background: linear-gradient(135deg, #5fc4b8 0%, #a8e6cf 100%);
     -webkit-background-clip: text;
@@ -135,7 +135,7 @@ body {
 }
 
 .logo-icon {
-    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    font-size: clamp(1.5rem, 3vw, 2rem);
     background: linear-gradient(135deg, #5fc4b8, #a8e6cf);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -148,8 +148,8 @@ body {
 }
 
 .logo-text {
-    letter-spacing: 0.8px;
-    font-size: clamp(0.95rem, 2vw, 1.2rem);
+    letter-spacing: 1px;
+    font-size: clamp(1.3rem, 2.8vw, 1.6rem);
     font-weight: 800;
     text-transform: uppercase;
 }

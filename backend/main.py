@@ -21,7 +21,9 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not API_KEY:
     logger.warning("⚠️ GEMINI_API_KEY not found! Set it in .env.local")
-    API_KEY = ""  # Will fail on actual API calls but won't crash on startup
+    raise ValueError("GEMINI_API_KEY is required. Please set it in .env.local file")
+
+logger.info(f"✅ API Key loaded successfully (starts with: {API_KEY[:10]}...)")
 
 app = FastAPI(title="Enwise AI Backend")
 
@@ -35,7 +37,12 @@ app.add_middleware(
 )
 
 # Initialize the Client with Gemini 2.5 capabilities
-client = genai.Client(api_key=API_KEY)
+try:
+    client = genai.Client(api_key=API_KEY)
+    logger.info("✅ Gemini Client initialized successfully")
+except Exception as e:
+    logger.error(f"❌ Failed to initialize Gemini Client: {e}")
+    raise
 
 # --- DATA MODELS ---
 class MindMapRequest(BaseModel):
@@ -75,11 +82,46 @@ def clean_json_response(response_text):
         text = text[start:end+1]
     return text.strip()
 
+# List of models to try (each has separate quota)
+FALLBACK_MODELS = [
+    "gemini-2.5-pro",
+    "gemini-2.0-flash-exp",
+    "gemini-2.5-flash-lite",
+    "gemini-exp-1206",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite", 
+    "gemini-2.5-flash",
+]
+
+async def generate_with_fallback(prompt: str):
+    """Try multiple models until one works (each has separate rate limits)"""
+    last_error = None
+    for model in FALLBACK_MODELS:
+        try:
+            logger.info(f"🔄 Trying model: {model}")
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt
+            )
+            logger.info(f"✅ Success with model: {model}")
+            return response.text
+        except Exception as e:
+            error_msg = str(e)
+            logger.warning(f"⚠️ {model} failed: {error_msg[:100]}")
+            last_error = e
+            if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
+                continue  # Try next model
+            else:
+                raise  # Re-raise non-quota errors
+    
+    # All models exhausted
+    raise last_error
+
 # --- ENDPOINTS ---
 
 @app.get("/health")
 async def health():
-    return {"status": "healthy", "model": "gemini-2.5-flash"}
+    return {"status": "healthy", "models": FALLBACK_MODELS}
 
 @app.post("/generate-offline-pack")
 async def generate_offline_pack(
@@ -102,15 +144,20 @@ async def generate_offline_pack(
         Return ONLY a JSON object: {{"summary": ["Key Concept 1"], "quiz": [{{"q": "Quest?", "options": ["A","B","C","D"], "a": "A"}}]}}
         """
         
-        # Using the verified Gemini 2.5 Flash model
-        response = client.models.generate_content(
-            model="gemini-2.5-flash", 
-            contents=prompt
-        )
-        return json.loads(clean_json_response(response.text))
+        # Use fallback system to try multiple models
+        response_text = await generate_with_fallback(prompt)
+        return json.loads(clean_json_response(response_text))
     except Exception as e:
+        error_msg = str(e)
         logger.error(f"AI Quiz Error: {e}")
-        raise HTTPException(status_code=500, detail=f"Generation Failed: {str(e)}")
+        
+        # Handle rate limiting specifically
+        if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg or "quota" in error_msg.lower():
+            raise HTTPException(
+                status_code=429, 
+                detail="API rate limit reached. Free tier allows 20 requests/day. Please wait a minute and try again."
+            )
+        raise HTTPException(status_code=500, detail=f"Generation Failed: {error_msg}")
 
 @app.post("/generate-14-day-plan")
 async def generate_14_day_plan(request: MindMapRequest):
@@ -133,11 +180,8 @@ async def generate_14_day_plan(request: MindMapRequest):
             }}]
         }}
         """
-        response = client.models.generate_content(
-            model="gemini-2.5-flash", 
-            contents=prompt
-        )
-        return json.loads(clean_json_response(response.text))
+        response_text = await generate_with_fallback(prompt)
+        return json.loads(clean_json_response(response_text))
     except Exception as e:
         logger.error(f"AI Roadmap Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -195,13 +239,10 @@ Remember: You are here to make learning enjoyable and accessible!"""
         # Create the full prompt
         full_prompt = f"{system_prompt}\n\nStudent's Question: {request.message}"
         
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=full_prompt
-        )
+        response_text = await generate_with_fallback(full_prompt)
         
         return {
-            "response": response.text,
+            "response": response_text,
             "detected_language": "auto",
             "subject": request.subject
         }
@@ -253,12 +294,9 @@ async def generate_pyq_quiz(
         }}
         """
         
-        response = client.models.generate_content(
-            model="gemini-2.5-flash", 
-            contents=prompt
-        )
+        response_text = await generate_with_fallback(prompt)
         
-        result = json.loads(clean_json_response(response.text))
+        result = json.loads(clean_json_response(response_text))
         return result
         
     except Exception as e:

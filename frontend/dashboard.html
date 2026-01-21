@@ -98,7 +98,7 @@
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="dashboard.html" class="nav-link active">Dashboard</a>
 
-                <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
+                <a href="#" class="nav-link" onclick="toggleAIChat(event)">AI-Tutor</a>
             </nav>
             <button class="profile-btn">Student profile</button>
             
@@ -118,9 +118,30 @@
             <a href="index.html" class="nav-link">Home</a>
             <a href="dashboard.html" class="nav-link active">Dashboard</a>
 
-            <a href="ai-chat.html" class="nav-link">AI-Tutor</a>
+            <a href="#" class="nav-link" onclick="toggleAIChat(event)">AI-Tutor</a>
             <button class="profile-btn">Student profile</button>
         </nav>
+
+        <!-- AI Tutor Floating Chat Widget -->
+        <div id="aiChatWidget" class="ai-chat-widget">
+            <div class="chat-widget-header">
+                <div class="chat-widget-title">
+                    <span>🤖</span>
+                    <span>AI Tutor</span>
+                </div>
+                <button class="chat-widget-close" onclick="toggleAIChat(event)">&times;</button>
+            </div>
+            <div class="chat-widget-messages" id="widgetMessages">
+                <div class="widget-message ai">
+                    <span class="msg-avatar">🤖</span>
+                    <div class="msg-content">Hi! I'm your AI Tutor. Ask me anything about any subject! I support multiple languages too! 🌍</div>
+                </div>
+            </div>
+            <div class="chat-widget-input">
+                <input type="text" id="widgetInput" placeholder="Ask anything..." onkeypress="if(event.key==='Enter')sendWidgetMessage()">
+                <button onclick="sendWidgetMessage()">➤</button>
+            </div>
+        </div>
 
         <!-- Dashboard Content -->
         <main class="dashboard-main">
@@ -455,6 +476,101 @@
         
         // Load saved subjects after charts are initialized
         setTimeout(loadSavedSubjects, 100);
+
+        // AI Chat Widget Functions
+        function toggleAIChat(event) {
+            if (event) event.preventDefault();
+            var widget = document.getElementById('aiChatWidget');
+            widget.classList.toggle('open');
+        }
+
+        async function sendWidgetMessage() {
+            var input = document.getElementById('widgetInput');
+            var messages = document.getElementById('widgetMessages');
+            var userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            messages.innerHTML += '<div class="widget-message user"><div class="msg-content">' + userMsg + '</div><span class="msg-avatar">👤</span></div>';
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            messages.innerHTML += '<div class="widget-message ai typing" id="typingIndicator"><span class="msg-avatar">🤖</span><div class="msg-content"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>';
+            messages.scrollTop = messages.scrollHeight;
+
+            try {
+                var response = await fetch('http://localhost:8000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMsg, subject: '', language: 'auto' })
+                });
+                
+                var typing = document.getElementById('typingIndicator');
+                if (typing) typing.remove();
+
+                if (response.ok) {
+                    var data = await response.json();
+                    var aiReply = data.response || 'I apologize, I could not process that.';
+                    messages.innerHTML += '<div class="widget-message ai"><span class="msg-avatar">🤖</span><div class="msg-content">' + aiReply.replace(/\n/g, '<br>') + '</div></div>';
+                } else {
+                    throw new Error('Backend error');
+                }
+            } catch (error) {
+                var typing = document.getElementById('typingIndicator');
+                if (typing) typing.remove();
+                messages.innerHTML += '<div class="widget-message ai"><span class="msg-avatar">🤖</span><div class="msg-content">Sorry, I am having trouble connecting. Please try again!</div></div>';
+            }
+            messages.scrollTop = messages.scrollHeight;
+        }
     </script>
+
+    <style>
+        .ai-chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 380px;
+            height: 500px;
+            background: linear-gradient(135deg, #1a2a3a 0%, #2d3e50 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            z-index: 10000;
+            transform: scale(0) translateY(20px);
+            opacity: 0;
+            transform-origin: bottom right;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow: hidden;
+        }
+        .ai-chat-widget.open { transform: scale(1) translateY(0); opacity: 1; }
+        .chat-widget-header {
+            background: linear-gradient(135deg, #5fc4b8, #4db6ac);
+            padding: 1rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-widget-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.1rem; color: #1a2a3a; }
+        .chat-widget-close { background: rgba(0,0,0,0.2); border: none; color: #1a2a3a; font-size: 1.5rem; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .chat-widget-close:hover { background: rgba(0,0,0,0.3); transform: rotate(90deg); }
+        .chat-widget-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
+        .widget-message { display: flex; gap: 0.5rem; align-items: flex-start; }
+        .widget-message.user { flex-direction: row-reverse; }
+        .widget-message .msg-avatar { font-size: 1.2rem; }
+        .widget-message .msg-content { background: rgba(255,255,255,0.1); padding: 0.7rem 1rem; border-radius: 16px; color: #fff; font-size: 0.9rem; max-width: 80%; line-height: 1.4; }
+        .widget-message.user .msg-content { background: #5fc4b8; color: #1a2a3a; }
+        .widget-message.typing .msg-content { display: flex; gap: 4px; padding: 0.8rem 1rem; }
+        .widget-message.typing .dot { width: 8px; height: 8px; background: #5fc4b8; border-radius: 50%; animation: typingDot 1.4s infinite; }
+        .widget-message.typing .dot:nth-child(2) { animation-delay: 0.2s; }
+        .widget-message.typing .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingDot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.6; } 30% { transform: translateY(-6px); opacity: 1; } }
+        .chat-widget-input { display: flex; padding: 1rem; gap: 0.5rem; background: rgba(0,0,0,0.2); }
+        .chat-widget-input input { flex: 1; padding: 0.8rem 1rem; border: none; border-radius: 25px; background: rgba(255,255,255,0.1); color: #fff; font-size: 0.9rem; }
+        .chat-widget-input input::placeholder { color: rgba(255,255,255,0.5); }
+        .chat-widget-input input:focus { outline: none; background: rgba(255,255,255,0.15); }
+        .chat-widget-input button { width: 45px; height: 45px; border: none; border-radius: 50%; background: #5fc4b8; color: #1a2a3a; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; }
+        .chat-widget-input button:hover { transform: scale(1.1); background: #4db6ac; }
+        @media (max-width: 480px) { .ai-chat-widget { width: calc(100% - 20px); right: 10px; bottom: 10px; height: 60vh; } }
+    </style>
 </body>
 </html>
