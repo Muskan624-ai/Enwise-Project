@@ -147,12 +147,7 @@
             margin-right: 0.7rem;
             accent-color: #2d8a6e;
         }
-        .options input[type="radio"]:checked + span,
-        .options input[type="checkbox"]:checked + span {
-            font-weight: 600;
-            color: #2d8a6e;
-        }
-        .options label:has(input:checked) {
+        .options label.selected {
             background: linear-gradient(135deg, #e8f5e9, #d0f0e0);
             border-color: #2d8a6e;
             border-left: 4px solid #2d8a6e;
@@ -403,7 +398,7 @@
                         <p><strong>Q${index + 1}:</strong> ${q.q}</p>
                         <div class="options">
                             ${q.options.map((opt, i) => `
-                                <label>
+                                <label onclick="selectOption(this, 'q${index}')">
                                     <input type="radio" name="q${index}" value="${opt}"> ${opt}
                                 </label>
                             `).join('')}
@@ -415,6 +410,14 @@
             html += `<button class="submit-btn" onclick="submitQuiz()">📊 Submit & Analyze</button>`;
             
             document.getElementById('quizContent').innerHTML = html;
+        }
+
+        function selectOption(label, questionName) {
+            // Remove selected class from all labels in this question
+            const allLabels = label.parentElement.querySelectorAll('label');
+            allLabels.forEach(l => l.classList.remove('selected'));
+            // Add selected class to clicked label
+            label.classList.add('selected');
         }
 
         function submitQuiz() {
