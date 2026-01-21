@@ -143,8 +143,11 @@
 
     <script src="script.js"></script>
     <script>
+        // Backend API Configuration
+        const CHAT_API_URL = 'http://localhost:8000';
+        
         // AI Chat page specific functions
-        function sendAIChatMessage() {
+        async function sendAIChatMessage() {
             const input = document.getElementById('aiChatInput');
             const message = input.value.trim();
             
@@ -178,66 +181,61 @@
                 </div>
             `;
             chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
             
-            // Simulate AI response after delay
-            setTimeout(() => {
+            try {
+                // Connect to real backend
+                const response = await fetch(`${CHAT_API_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        subject: '',
+                        language: 'auto',
+                        context: ''
+                    })
+                });
+                
                 typingDiv.remove();
+                
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiResponse = data.response || data.message || 'Sorry, I could not process your request.';
                 
                 const aiMsgDiv = document.createElement('div');
                 aiMsgDiv.className = 'message ai-message-full';
-                
-                let response = '';
-                const lowerMsg = message.toLowerCase();
-                
-                if (lowerMsg.includes('time complex')) {
-                    response = `Time complexity measures how the running time of an algorithm grows with the input size. Common complexities:<br>
-                    • O(1) - Constant time<br>
-                    • O(n) - Linear time<br>
-                    • O(n²) - Quadratic<br>
-                    • O(log n) - Logarithmic<br>
-                    For example, binary search is O(log n) because each iteration eliminates half the data.`;
-                } else if (lowerMsg.includes('recursion')) {
-                    response = `Recursion is when a function calls itself. Key points:<br>
-                    1. Base case - when to stop<br>
-                    2. Recursive case - make progress toward base case<br>
-                    Example: Factorial<br>
-                    factorial(5) = 5 × factorial(4)<br>
-                    Each recursive call reduces n until reaching factorial(0) = 1`;
-                } else if (lowerMsg.includes('quiz') || lowerMsg.includes('practice')) {
-                    response = `Great! Let's test your knowledge. Here's a practice quiz:<br>
-                    <strong>Q1: What is the time complexity of binary search?</strong><br>
-                    A) O(n)<br>
-                    B) O(log n)<br>
-                    C) O(n²)<br>
-                    D) O(1)<br><br>
-                    <em>Answer: B) O(log n) - because it divides the search space in half each time</em>`;
-                } else if (lowerMsg.includes('study') || lowerMsg.includes('tips')) {
-                    response = `Here are effective study tips:<br>
-                    1. <strong>Active Learning</strong> - Solve problems, don't just read<br>
-                    2. <strong>Spaced Repetition</strong> - Review regularly<br>
-                    3. <strong>Practice Coding</strong> - Code by hand first<br>
-                    4. <strong>Teach Others</strong> - Explaining reinforces learning<br>
-                    5. <strong>Take Breaks</strong> - Study in 25-minute blocks<br>
-                    6. <strong>Review Mistakes</strong> - Learn from wrong answers`;
-                } else {
-                    response = `That's a great question! I can help you with:<br>
-                    • Explaining concepts in detail<br>
-                    • Solving practice problems step-by-step<br>
-                    • Generating quizzes on specific topics<br>
-                    • Recommending study strategies<br><br>
-                    Feel free to ask follow-up questions or try one of my suggestions above! 😊`;
-                }
-                
                 aiMsgDiv.innerHTML = `
                     <div class="message-avatar">🤖</div>
                     <div class="message-content">
-                        <p>${response}</p>
+                        <p>${aiResponse.replace(/\n/g, '<br>')}</p>
                         <small class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
                     </div>
                 `;
                 chatMessages.appendChild(aiMsgDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 800);
+                
+            } catch (error) {
+                typingDiv.remove();
+                console.error('Chat API Error:', error);
+                
+                // Show error message
+                const errorMsgDiv = document.createElement('div');
+                errorMsgDiv.className = 'message ai-message-full';
+                errorMsgDiv.innerHTML = `
+                    <div class="message-avatar">⚠️</div>
+                    <div class="message-content">
+                        <p><strong>Connection Error</strong><br>
+                        Could not connect to AI backend. Please ensure the backend server is running on ${CHAT_API_URL}<br><br>
+                        <em>Error: ${error.message}</em></p>
+                        <small class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                    </div>
+                `;
+                chatMessages.appendChild(errorMsgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
         
         function sendPredefinedMessage(message) {

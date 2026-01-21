@@ -1,7 +1,7 @@
 // Main JavaScript file for Logic Links
 
 // API Configuration
-const API_BASE_URL = 'http://10.108.178.37:8000';
+const API_BASE_URL = 'http://localhost:8000';
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Logic Links loaded');
