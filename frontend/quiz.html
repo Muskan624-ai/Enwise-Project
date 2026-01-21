@@ -4,125 +4,273 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prerequisite Quiz - ENWISE</title>
+    <link rel="stylesheet" href="enhanced-styles.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             padding: 2rem; 
-            background: linear-gradient(135deg, #cdffd8, #94b9ff); 
-            min-height: 100vh; 
+            background: linear-gradient(135deg, #cdffd8, #7dd4c4, #94b9ff); 
+            min-height: 100vh;
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .quiz-container { 
-            max-width: 700px; 
+            max-width: 750px; 
             margin: 0 auto; 
-            background: white; 
-            padding: 2rem; 
-            border-radius: 16px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            animation: scaleIn 0.5s ease-out;
+        }
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         .quiz-header { 
             display: flex; 
             align-items: center; 
             gap: 1rem; 
-            margin-bottom: 1.5rem; 
+            margin-bottom: 1.5rem;
+            animation: slideInFromLeft 0.6s ease-out;
         }
-        .quiz-header .icon { font-size: 2.5rem; }
-        h1 { color: #2d8a6e; margin: 0; font-size: 1.5rem; }
-        .quiz-subtitle { color: #666; margin-top: 0.3rem; }
-        .source-badge { 
-            background: #e8f5e9; 
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .quiz-header .icon { 
+            font-size: 3rem;
+            animation: bounce-gentle 2s infinite ease-in-out;
+        }
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        h1 { 
             color: #2d8a6e; 
-            padding: 0.3rem 0.8rem; 
-            border-radius: 20px; 
-            font-size: 0.8rem; 
-            display: inline-block; 
-            margin-bottom: 1rem; 
+            margin: 0; 
+            font-size: 1.75rem;
+            font-weight: 700;
         }
-        .intro-text { color: #555; margin-bottom: 1.5rem; line-height: 1.5; }
+        .quiz-subtitle { 
+            color: #666; 
+            margin-top: 0.4rem;
+            font-size: 0.95rem;
+        }
+        .source-badge { 
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #2d8a6e; 
+            padding: 0.4rem 1rem; 
+            border-radius: 30px; 
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block; 
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(45, 138, 110, 0.2);
+        }
+        .intro-text { 
+            color: #555; 
+            margin-bottom: 1.5rem; 
+            line-height: 1.6;
+            font-size: 1rem;
+        }
         .question { 
             margin: 1.5rem 0; 
-            padding: 1.2rem; 
-            background: #f8f9fa; 
-            border-radius: 12px; 
-            border-left: 4px solid #2d8a6e; 
+            padding: 1.5rem; 
+            background: linear-gradient(135deg, #f8f9fa, #ffffff); 
+            border-radius: 16px; 
+            border-left: 5px solid #2d8a6e;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .question p { margin: 0 0 0.8rem 0; font-weight: 500; }
+        .question::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #2d8a6e, #5fc4b8);
+            transition: width 0.3s ease;
+        }
+        .question:hover::before {
+            width: 8px;
+        }
+        .question:hover {
+            transform: translateX(6px);
+            box-shadow: 0 6px 20px rgba(45, 138, 110, 0.15);
+        }
+        .question p { 
+            margin: 0 0 1rem 0; 
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #1a1a1a;
+        }
         .options label { 
             display: block; 
-            padding: 0.6rem 1rem; 
-            margin: 0.4rem 0; 
+            padding: 0.8rem 1.2rem; 
+            margin: 0.5rem 0; 
             cursor: pointer; 
-            border-radius: 8px; 
-            border: 2px solid transparent; 
-            transition: all 0.2s; 
+            border-radius: 12px; 
+            border: 2px solid transparent;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .options label:hover { background: #e8f5e9; border-color: #2d8a6e; }
-        .options input[type="radio"] { margin-right: 0.5rem; }
+        .options label:hover { 
+            background: linear-gradient(135deg, #e8f5e9, #f1f8f4);
+            border-color: #5fc4b8;
+            transform: translateX(6px);
+            box-shadow: 0 2px 8px rgba(95, 196, 184, 0.2);
+        }
+        .options input[type="radio"],
+        .options input[type="checkbox"] { 
+            margin-right: 0.7rem;
+            accent-color: #2d8a6e;
+        }
+        .options input[type="radio"]:checked + span,
+        .options input[type="checkbox"]:checked + span {
+            font-weight: 600;
+            color: #2d8a6e;
+        }
+        .options label:has(input:checked) {
+            background: linear-gradient(135deg, #e8f5e9, #d0f0e0);
+            border-color: #2d8a6e;
+            border-left: 4px solid #2d8a6e;
+            font-weight: 600;
+        }
         .submit-btn { 
-            background: linear-gradient(135deg, #2d8a6e, #1f6b54); 
+            background: linear-gradient(135deg, #2d8a6e, #5fc4b8); 
             color: white; 
             border: none; 
-            padding: 1rem 2.5rem; 
-            border-radius: 10px; 
-            font-size: 1rem; 
+            padding: 1.2rem 3rem; 
+            border-radius: 50px; 
+            font-size: 1.1rem; 
             cursor: pointer; 
-            margin-top: 1.5rem; 
-            font-weight: 600; 
+            margin-top: 2rem; 
+            font-weight: 700; 
             width: 100%;
-            transition: all 0.3s; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(45, 138, 110, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .submit-btn:hover::before {
+            left: 100%;
         }
         .submit-btn:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 4px 15px rgba(45,138,110,0.4); 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 25px rgba(45,138,110,0.4);
+            background: linear-gradient(135deg, #1f6b54, #4ab3a1);
+        }
+        .submit-btn:active {
+            transform: translateY(-1px);
         }
         .result { 
-            margin-top: 2rem; 
-            padding: 1.5rem; 
-            border-radius: 12px; 
-            background: #f8f9fa; 
+            margin-top: 2.5rem; 
+            padding: 2rem; 
+            border-radius: 20px; 
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
             display: none;
+            animation: slideInFromBottom 0.5s ease-out;
+        }
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .result.show { display: block; }
         .score-circle { 
-            width: 100px; 
-            height: 100px; 
+            width: 120px; 
+            height: 120px; 
             border-radius: 50%; 
-            background: linear-gradient(135deg, #2d8a6e, #1f6b54); 
+            background: linear-gradient(135deg, #2d8a6e, #5fc4b8); 
             color: white; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            font-size: 1.5rem; 
-            font-weight: bold; 
-            margin: 1rem auto; 
+            font-size: 1.8rem; 
+            font-weight: 900; 
+            margin: 1.5rem auto; 
+            box-shadow: 0 8px 25px rgba(45, 138, 110, 0.4);
+            animation: scaleIn 0.6s ease-out, pulse 2s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         .weak-topics { 
-            color: #d32f2f; 
-            background: #ffebee; 
-            padding: 1rem; 
-            border-radius: 8px; 
-            margin-top: 1rem; 
+            color: #c62828; 
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            padding: 1.2rem; 
+            border-radius: 12px; 
+            margin-top: 1rem;
+            border-left: 4px solid #d32f2f;
+            box-shadow: 0 2px 10px rgba(211, 47, 47, 0.1);
         }
         .strong-topics { 
             color: #2d8a6e; 
-            background: #e8f5e9; 
-            padding: 1rem; 
-            border-radius: 8px; 
-            margin-top: 1rem; 
+            background: linear-gradient(135deg, #e8f5e9, #d0f0e0);
+            padding: 1.2rem; 
+            border-radius: 12px; 
+            margin-top: 1rem;
+            border-left: 4px solid #2d8a6e;
+            box-shadow: 0 2px 10px rgba(45, 138, 110, 0.1);
         }
         .question-result {
-            padding: 1rem;
-            border-radius: 10px;
-            margin: 0.8rem 0;
+            padding: 1.2rem;
+            border-radius: 14px;
+            margin: 1rem 0;
             position: relative;
-            border-left: 4px solid;
+            border-left: 5px solid;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .question-result:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
         }
         .question-result.correct-answer {
-            background: #e8f5e9;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8f4);
             border-left-color: #2d8a6e;
         }
         .question-result.incorrect-answer {
-            background: #ffebee;
+            background: linear-gradient(135deg, #ffebee, #fff5f5);
             border-left-color: #d32f2f;
         }
         .question-result p { margin: 0.3rem 0; }
@@ -279,13 +427,33 @@
                 const selected = document.querySelector(`input[name="q${i}"]:checked`);
                 const topicGuess = q.q.split(' ').slice(0, 5).join(' ') + '...';
                 const userAnswer = selected ? selected.value : 'Not answered';
-                const isCorrect = selected && selected.value === q.a;
+                
+                // FIX: Handle both letter answers ("A", "B") and full text answers
+                let isCorrect = false;
+                let correctAnswerDisplay = q.a; // For display purposes
+                
+                if (selected) {
+                    const correctAnswer = String(q.a).trim();
+                    
+                    // Check if q.a is just a letter (A, B, C, D)
+                    if (correctAnswer.length === 1 && ['A', 'B', 'C', 'D'].includes(correctAnswer.toUpperCase())) {
+                        // q.a is a letter - find the corresponding option by index
+                        const correctIndex = correctAnswer.toUpperCase().charCodeAt(0) - 65; // A=0, B=1, C=2, D=3
+                        if (q.options && q.options[correctIndex]) {
+                            correctAnswerDisplay = q.options[correctIndex]; // Show full text
+                            isCorrect = selected.value === q.options[correctIndex];
+                        }
+                    } else {
+                        // q.a is the full option text - direct comparison
+                        isCorrect = selected.value.trim() === correctAnswer;
+                    }
+                }
                 
                 questionResults.push({
                     questionNum: i + 1,
                     question: q.q,
                     userAnswer: userAnswer,
-                    correctAnswer: q.a,
+                    correctAnswer: correctAnswerDisplay,
                     isCorrect: isCorrect
                 });
                 

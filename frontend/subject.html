@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject - ENWISE</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="enhanced-styles.css">
 </head>
 <body class="subject-page">
     <div class="container">
@@ -148,24 +149,9 @@
                     <h3 class="mindmap-title">MindMap</h3>
                 
                     <div class="topic-list" id="topicList">
-                        <div class="topic-item">
-                            <input type="checkbox" class="topic-checkbox" id="weakness1">
-                            <label class="topic-label" for="weakness1">Weakness1</label>
+                        <div class="topic-item no-topics-placeholder" id="noTopicsMsg">
+                            <span style="color: #888; font-style: italic; font-size: 0.9rem;">📝 Complete a quiz to see your weak topics here!</span>
                         </div>
-                        <div class="topic-item">
-                            <input type="checkbox" class="topic-checkbox" id="weakness2">
-                            <label class="topic-label" for="weakness2">Weakness2</label>
-                        </div>
-                       
-                        <div class="topic-item">
-                            <input type="checkbox" class="topic-checkbox" id="topic1">
-                            <label class="topic-label" for="topic1">New Topic1</label>
-                        </div>
-                        <div class="topic-item">
-                            <input type="checkbox" class="topic-checkbox" id="topic2">
-                            <label class="topic-label" for="topic2">New Topic2</label>
-                        </div>
-                    
                     </div>
 
                     <!-- PYQs Section -->
@@ -1447,6 +1433,11 @@
 
         function addWeakTopicToMindMap(topicName) {
             var topicList = document.getElementById('topicList');
+            if (!topicList) return;
+            
+            // Hide the "no topics" placeholder
+            var placeholder = document.getElementById('noTopicsMsg');
+            if (placeholder) placeholder.style.display = 'none';
             
             // Check if topic already exists
             var existingLabels = topicList.querySelectorAll('.topic-label');
@@ -1483,12 +1474,20 @@
         // Load existing weak topics from localStorage on page load
         function loadSavedWeakTopics() {
             var savedTopics = localStorage.getItem('weak_topics_' + currentSubject);
+            console.log('📚 Loading weak topics for', currentSubject, ':', savedTopics);
+            
             if (savedTopics) {
                 try {
                     var topics = JSON.parse(savedTopics);
-                    topics.forEach(function(topic) {
-                        addWeakTopicToMindMap(topic);
-                    });
+                    if (topics && topics.length > 0) {
+                        // Hide the placeholder message
+                        var placeholder = document.getElementById('noTopicsMsg');
+                        if (placeholder) placeholder.style.display = 'none';
+                        
+                        topics.forEach(function(topic) {
+                            addWeakTopicToMindMap(topic);
+                        });
+                    }
                 } catch(e) {
                     console.error('Error loading saved weak topics:', e);
                 }
@@ -1497,6 +1496,14 @@
         
         // Load saved topics when page loads
         loadSavedWeakTopics();
+        
+        // Reload weak topics when user comes back to this tab (after completing quiz)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                console.log('🔄 Tab visible - checking for new weak topics');
+                loadSavedWeakTopics();
+            }
+        });
 
         // Send message function
         document.getElementById('sendBtn').addEventListener('click', function() {
